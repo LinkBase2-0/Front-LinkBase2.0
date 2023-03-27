@@ -49,7 +49,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={COLORS}>
-      <StatusBar style="dark" translucent backgroundColor="red" />
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
 
       <View style={styles.container}>
         <Text style={styles.text}>Intro de linkBase</Text>
@@ -67,7 +67,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.COLORS.ATTENTION_LIGHT4,
+    //backgroundColor: COLORS.COLORS.ATTENTION_LIGHT4,
     alignItems: "center",
     justifyContent: "center",
   },
