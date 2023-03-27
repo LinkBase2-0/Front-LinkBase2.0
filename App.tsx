@@ -3,6 +3,9 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
 
+
+
+
 //encapsulamiento
 
 import { ThemeProvider } from "styled-components/native";
@@ -32,6 +35,8 @@ import COLORS from "./src/styles/theme";
 //ruta login
 import { Login } from "./src/screens/Login/Login";
 
+import { IntroScreen } from "./src/screens/IntroScreen/Intro";
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Outfit_300Light,
@@ -57,7 +62,8 @@ export default function App() {
           {/* <Image source={svgInicio} style={styles.image}/> */}
           {/* <SvgXml xml={svgSlider}/> */}
           {/* <Text>Me gusta react-native f expochf</Text> */}
-          <Login />
+          {/* <Login /> */}
+          <IntroScreen />
         </View>
       </View>
     </ThemeProvider>
