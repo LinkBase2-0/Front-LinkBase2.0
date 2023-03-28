@@ -1,26 +1,45 @@
 import React from "react";
+
 //text,view,etc
+import { SafeAreaView, View, Text } from "react-native";
 
-import { SvgXml } from "react-native-svg";
+import {
+  Container,
+  ContentHeader,
+  Title,
+  Description,
+  ViewButton,
+  ContentBody,
+  ContentFooter,
+} from "./styles";
 
-// import SvgComponent from "../../assets/IntroScreen/introScreen_svg";
-import SvgUri from "react-native-svg-uri";
+//importando svgs
 
-import { View, Text } from "react-native";
-
-import { Container } from "./styles";
+import { IntroScreenn } from "../../assets";
 
 const IntroScreen: React.FC = () => {
   return (
-    <Container>
-      <Text>Screen Intro</Text>
-      {/* <SvgComponent/>   */}
-      <SvgUri
-        source={require("../../assets/IntroScreen/introScreen_svg")}
-        width={200}
-        height={200}
-      />
-    </Container>
+    <SafeAreaView>
+      <Container>
+        <Container>
+          <ContentHeader>
+            <Text>Omitir</Text>
+            <IntroScreenn width={600} height={200} />
+            <Title>Conecta Con Proveedores</Title>
+            <Description>
+              LinkBase te permite encontrar y conectar con el proveedor indicado
+              para {"\n"}hacer crecer tu negocio.
+            </Description>
+
+            <ViewButton></ViewButton>
+          </ContentHeader>
+
+          <ContentBody></ContentBody>
+
+          <ContentFooter></ContentFooter>
+        </Container>
+      </Container>
+    </SafeAreaView>
   );
 };
 

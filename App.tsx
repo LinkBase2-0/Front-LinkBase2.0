@@ -1,20 +1,10 @@
-//import { SvgXml } from "react-native.svg";
 //statusBar
 import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
 
-
-
-
 //encapsulamiento
 
 import { ThemeProvider } from "styled-components/native";
-
-//const svgInicio = require("./assets/splash.png");
-
-//import el svg y usarlo con react-native.svg
-
-//import svgSlider from "./src/assets/slider.svg";
 
 import {
   useFonts,
@@ -57,12 +47,7 @@ export default function App() {
       <StatusBar style="dark" translucent backgroundColor="transparent" />
 
       <View style={styles.container}>
-        <Text style={styles.text}>Intro de linkBase</Text>
         <View style={styles.imageContainer}>
-          {/* <Image source={svgInicio} style={styles.image}/> */}
-          {/* <SvgXml xml={svgSlider}/> */}
-          {/* <Text>Me gusta react-native f expochf</Text> */}
-          {/* <Login /> */}
           <IntroScreen />
         </View>
       </View>
