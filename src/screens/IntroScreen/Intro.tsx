@@ -3,8 +3,8 @@ import React from "react";
 
 import { SvgXml } from "react-native-svg";
 
-// import SvgComponent from "../../assets/IntroScreen/introScreen_svg";
-import SvgUri from "react-native-svg-uri";
+import SvgComponent from "../../assets/IntroScreen/introScreen_svg";
+
 
 import { View, Text } from "react-native";
 
@@ -14,12 +14,12 @@ const IntroScreen: React.FC = () => {
   return (
     <Container>
       <Text>Screen Intro</Text>
-      {/* <SvgComponent/>   */}
-      <SvgUri
+      <SvgComponent/>  
+      {/* <SvgUri
         source={require("../../assets/IntroScreen/introScreen_svg")}
         width={200}
         height={200}
-      />
+      /> */}
     </Container>
   );
 };
