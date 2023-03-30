@@ -1,11 +1,6 @@
-//statusBar
 import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, View } from "react-native";
-
-//encapsulamiento
-
 import { ThemeProvider } from "styled-components/native";
-
 import {
   useFonts,
   Outfit_300Light,
@@ -14,18 +9,20 @@ import {
   Outfit_700Bold,
   Outfit_800ExtraBold,
 } from "@expo-google-fonts/outfit";
-
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
-
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
-
-//COLORS
 import COLORS from "./src/styles/theme";
+import { Login } from "./src/screens/Usuario/Login/Login";
+import { IntroScreen } from "./src/screens/Usuario/IntroScreen/Intro";
+import { Home } from "./src/screens/Usuario/Home/Home";
+import { NavigationContainer } from "@react-navigation/native";
+import { NativeBaseProvider } from "native-base";
 
-//ruta login
-import { Login } from "./src/screens/Login/Login";
+import 'react-native-gesture-handler';
+import { MyTabs } from "./src/components/Navbar/Navbar";
+import { Main } from "./src/screens/Usuario/Main/Main";
 
-import { IntroScreen } from "./src/screens/IntroScreen/Intro";
+
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -43,28 +40,31 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider theme={COLORS}>
-      <StatusBar style="dark" translucent backgroundColor="transparent" />
+    <NativeBaseProvider>
+      <ThemeProvider theme={COLORS}>
+        <NavigationContainer>
+          <StatusBar style="dark" translucent backgroundColor="transparent" />
 
-      <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <IntroScreen />
-        </View>
-      </View>
-    </ThemeProvider>
+          <View style={styles.container}>
+            <View style={styles.imageContainer}>
+             <Main/>
+            </View>
+          </View>
+        </NavigationContainer>
+      </ThemeProvider>
+    </NativeBaseProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: COLORS.COLORS.ATTENTION_LIGHT4,
-    alignItems: "center",
+    // alignItems: "center",
     justifyContent: "center",
   },
   text: {
     flex: 1,
-    paddingTop: 30,
+    paddingTop: 0,
   },
   imageContainer: {
     flex: 3,

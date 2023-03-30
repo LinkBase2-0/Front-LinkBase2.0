@@ -37,7 +37,7 @@ export default {
     PURPLE: "#9038FF",
     PURPLEDARK1: "#6E34B8",
     PURPLEDARK2: "#5B259F",
-    PURPLEDARK3: "#2F1155",
+    LINKBASECOLOR: "rgba(132, 26, 142, 0.7)",
 
     TONE: "#E6E3D6",
     AVATAR: "#E0E0E0",

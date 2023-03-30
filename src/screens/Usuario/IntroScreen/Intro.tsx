@@ -15,7 +15,7 @@ import {
 
 //importando svgs
 
-import { IntroScreenn } from "../../assets";
+// import { IntroScreenn } from "../../../assets";
 
 const IntroScreen: React.FC = () => {
   return (
@@ -24,13 +24,13 @@ const IntroScreen: React.FC = () => {
         <Container>
           <ContentHeader>
             <Text>Omitir</Text>
-            <IntroScreenn width={600} height={200} />
+            {/* <IntroScreenn width={600} height={200} /> */}
             <Title>Conecta Con Proveedores</Title>
             <Description>
               LinkBase te permite encontrar y conectar con el proveedor indicado
               para {"\n"}hacer crecer tu negocio.
             </Description>
-
+            <Description>LinkBase te para {"\n"}h</Description>
             <ViewButton></ViewButton>
           </ContentHeader>
 
