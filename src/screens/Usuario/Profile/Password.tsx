@@ -1,10 +1,21 @@
 import React,{useState} from "react";
-import { Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { ArrowLeftIcon, UserCircleIcon }from "react-native-heroicons/solid";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { ProfilePic, EditText, EditInput, Button} from "./styles";
 
 const Password: React.FC = ({navigation}) => {
+
+    const handleSubmit = () =>{
+        const title = "Aviso"
+        const message = "Tu cambio ha sido realizado con éxito"
+        Alert.alert(title,message,[{
+            text:"OK",
+            onPress: ()=> navigation.navigate("ProfileDetail"),
+        }])
+        
+    }
+
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAwareScrollView 
@@ -25,7 +36,7 @@ const Password: React.FC = ({navigation}) => {
             <EditInput secureTextEntry={true}/>
             <EditText style={{alignSelf:"flex-start", marginTop: 43, marginLeft:62}}>Confirmar Contraseña:</EditText>
             <EditInput secureTextEntry={true}/>
-            <Button onPress={()=> navigation.navigate("ProfileDetail")}>
+            <Button onPress={handleSubmit}>
                  <Text style={{
                   fontFamily: "Outfit_700Bold",
                   color: "#fff",  
