@@ -1,10 +1,21 @@
 import React,{useState} from "react";
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from "react-native";
+import { Alert, Text, TouchableOpacity } from "react-native";
 import { AddphotoSvg } from "../../../assets";
 import { ArrowLeftIcon, UserCircleIcon }from "react-native-heroicons/solid";
 import { Container, ProfilePic, EditText, EditInput, Button} from "./styles";
 
 const Edit: React.FC = ({navigation}) => {
+
+    const handleSubmit = () =>{
+        const title = "Aviso"
+        const message = "Tu cambio ha sido realizado con éxito"
+        Alert.alert(title,message,[{
+            text:"OK",
+            onPress: ()=> navigation.navigate("ProfileDetail"),
+        }])
+        
+    }
+
     return(
         <Container style={{marginTop: 88,
             flex: 1,
@@ -19,7 +30,7 @@ const Edit: React.FC = ({navigation}) => {
             <EditInput autoCapitalize="none"/>
             <EditText style={{alignSelf:"flex-start", marginTop: 43, marginLeft:62}}>Editar Correo:</EditText>
             <EditInput autoCapitalize="none"/>
-            <Button onPress={()=> navigation.navigate("ProfileDetail")}>
+            <Button onPress={handleSubmit}>
                  <Text style={{
                   fontFamily: "Outfit_700Bold",
                   color: "#fff",  
