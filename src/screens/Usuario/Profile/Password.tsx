@@ -1,11 +1,16 @@
 import React,{useState} from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { ArrowLeftIcon, UserCircleIcon }from "react-native-heroicons/solid";
-import { Container, ProfilePic, EditText, EditInput, Button} from "./styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ProfilePic, EditText, EditInput, Button} from "./styles";
 
 const Password: React.FC = ({navigation}) => {
     return(
-        <Container style={{marginTop: 88,
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <KeyboardAwareScrollView 
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            scrollEnabled={true}
+            contentContainerStyle={{marginTop: 88,
             flex: 1,
             alignItems: "center",
             justifyContent: "flex-start"}}>
@@ -30,7 +35,8 @@ const Password: React.FC = ({navigation}) => {
                     Guardar
                 </Text>
             </Button>
-        </Container>
+        </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
     )
 }
 
