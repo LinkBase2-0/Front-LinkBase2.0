@@ -1,12 +1,28 @@
-import React from "react";
-import { Text } from "react-native";
-import { Container } from "../Login/styles";
-const Profile: React.FC = () => {
-  return (
-    <Container style={{flex: 1, justifyContent: "center" , alignItems: "center"}}>
-      <Text>Profile</Text>
-    </Container>
-  );
+import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import {ProfileDetail} from './ProfileDetail';
+import { Edit } from './Edit';
+import { Password } from './Password';
+
+
+type RootStackParamList = {
+  ProfileDetail: undefined;
+  Edit: undefined;
+  Password: undefined;
 };
 
-export { Profile };
+const Stack = createStackNavigator<RootStackParamList>();
+
+function Profile() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ProfileDetail" component={ProfileDetail} options={{ headerShown: false }}/>
+      <Stack.Screen name="Edit" component={Edit} options={{ headerShown: false }}/>
+      <Stack.Screen name="Password" component={Password} options={{ headerShown: false }}/>
+     
+    </Stack.Navigator>
+  );
+}
+
+export {Profile};

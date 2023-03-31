@@ -1,13 +1,13 @@
 import React,{useState} from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Keyboard, TouchableWithoutFeedback,View,Text } from "react-native";
-import { Link } from "expo-router";
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import { Alert, Keyboard, TouchableWithoutFeedback,View,Text } from "react-native";
+import { ArrowLeftIcon, UserCircleIcon } from "react-native-heroicons/solid";
 import DropdownComponent from "../../components/Dropdown";
 
 import { Title,Description,Input,Button } from "./styles";
+import { RegisterProps } from "../../../App";
 
-const IntroScreen: React.FC = () => {
+const Register: React.FC<RegisterProps> = ({ navigation }) => {
   type Form ={
     name:string;
     email:string;
@@ -17,6 +17,14 @@ const IntroScreen: React.FC = () => {
     cargo:string;
   };
 
+  const handleSubmit = () =>{
+    const title = "Aviso"
+    const message = "Te has registrado con éxito"
+    Alert.alert(title,message,[{
+        text:"OK",
+        onPress: ()=> navigation.navigate("Log In"),
+    }])
+  }
 
   const [form, setForm] = useState<Form>({ name: "", email: "", password: "", passwordConfirm: "", empresa: "", cargo: "", });
   
@@ -62,7 +70,7 @@ const IntroScreen: React.FC = () => {
                <Input placeholder="Confirmar Contraseña" secureTextEntry={true} value={form.passwordConfirm} onChangeText={(value) => handleInputChange('passwordConfirm', value)}/>
               <DropdownComponent data={empresas} placeholderName={"Nombre de la Empresa"}/>
               <DropdownComponent data={puestos} placeholderName={"Cargo en la Empresa"}/>
-              <Button>
+              <Button onPress={handleSubmit}>
                 <Text style={{
                   fontFamily: "Outfit_700Bold",
                   color: "#fff",  
@@ -80,4 +88,4 @@ const IntroScreen: React.FC = () => {
   );
 };
 
-export { IntroScreen };
+export default Register;
