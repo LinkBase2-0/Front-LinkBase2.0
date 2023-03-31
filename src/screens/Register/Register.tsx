@@ -1,13 +1,12 @@
 import React,{useState} from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Keyboard, TouchableWithoutFeedback,View,Text } from "react-native";
-import { Link } from "expo-router";
 import { ArrowLeftIcon, UserCircleIcon } from "react-native-heroicons/solid";
 import DropdownComponent from "../../components/Dropdown";
 
 import { Title,Description,Input,Button } from "./styles";
 
-const IntroScreen: React.FC = () => {
+const Register: React.FC = () => {
   type Form ={
     name:string;
     email:string;
@@ -80,4 +79,4 @@ const IntroScreen: React.FC = () => {
   );
 };
 
-export { IntroScreen };
+export default Register;
