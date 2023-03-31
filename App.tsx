@@ -1,8 +1,8 @@
 import React from "react";
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from '@react-navigation/stack';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { createStackNavigator } from "@react-navigation/stack";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NativeBaseProvider } from "native-base";
 import { ThemeProvider } from "styled-components/native";
 import {
@@ -21,16 +21,18 @@ import Register from "./src/screens/Register/Register";
 import LogInScreen from "./src/components/LogInScreen";
 import { Main } from "./src/screens/Usuario/Main/Main";
 import theme from "./theme";
+import IntroAdmin from "./src/screens/Admin/Intro";
+
 
 type RootStackParamList = {
-  "Intro": undefined;
-  "Log In": undefined;
-  "Main": undefined;
-  "Register": undefined;
-}
+  Intro: { isAdmin: boolean };
+  "Log In": { isAdmin?: boolean };
+  Main: undefined;
+  Register: undefined;
+  "Intro Admin": { isAdmin?: boolean };
+};
 
 const App = () => {
-
   const Stack = createStackNavigator<RootStackParamList>();
 
   const [fontsLoaded] = useFonts({
@@ -54,15 +56,26 @@ const App = () => {
             <Stack.Screen name="Log In" component={LogInScreen} />
             <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Intro Admin" component={IntroAdmin} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
     </NativeBaseProvider>
   );
-}
+};
 
-export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">
-export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">
-export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">
-export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">
+export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
+export type LogInProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Log In"
+>;
+export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">;
+export type RegisterProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Register"
+>;
+export type IntroAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Intro Admin"
+>;
 export default App;
