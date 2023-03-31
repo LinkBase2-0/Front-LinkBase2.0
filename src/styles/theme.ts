@@ -109,6 +109,7 @@ export default {
   FONTS: {
     TEXT: "DMSans_400Regular",
     OUTFITBOLD: "Outfit_700Bold",
+    OUTFITBOLD2: "Outfit_700Bold",
     OUTFITLIGHT: "Outfit_300Light",
     OUTFITMEDIUM: "Outfit_500Medium",
     TITLE: "DMSerifDisplay_400Regular",

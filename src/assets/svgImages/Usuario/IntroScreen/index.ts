@@ -1,3 +1,3 @@
-import IntroScreenn from "../Login/intro.svg";
+import IntroScreenn from "../Login/intro_2.svg";
 
 export { IntroScreenn };

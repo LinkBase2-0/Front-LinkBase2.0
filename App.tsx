@@ -1,4 +1,7 @@
-import { StatusBar } from "expo-status-bar";
+import React from "react";
+
+import { StatusBar } from "expo-status-bar/build/StatusBar";
+
 import { Image, StyleSheet, Text, View } from "react-native";
 import { ThemeProvider } from "styled-components/native";
 import {
@@ -18,11 +21,9 @@ import { Home } from "./src/screens/Usuario/Home/Home";
 import { NavigationContainer } from "@react-navigation/native";
 import { NativeBaseProvider } from "native-base";
 
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 import { MyTabs } from "./src/components/Navbar/Navbar";
 import { Main } from "./src/screens/Usuario/Main/Main";
-
-
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -47,7 +48,7 @@ export default function App() {
 
           <View style={styles.container}>
             <View style={styles.imageContainer}>
-             <Main/>
+              <Main />
             </View>
           </View>
         </NavigationContainer>

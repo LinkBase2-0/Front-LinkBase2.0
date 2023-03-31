@@ -5,87 +5,74 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 export const Container = styled.View`
   position: relative;
-  width: 390px;
-  height: 844px;
+  width: 100%;
+  height: 100%;
   background: ${(props) => props.theme.COLORS.WHITE};
-  border-radius: 50px;
 `;
 
-export const ContentWrapper = styled.View`
-  position: absolute;
-  top: 100px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding-bottom: 150px;
-  /* o cualquier otro valor que funcione para tu diseño */
-`;
+export const ContentWrapper = styled.View``;
 
 export const SearchBar = styled.TextInput.attrs({
-  placeholderTextColor: "gray",
+  placeholderTextColor: "black",
   placeholder: "¿Qué estás buscando?",
 })`
   position: absolute;
-  top: 180px;
-  left: 20px;
-  right: 20px;
-  height: 55px;
-  background-color: white;
-  border-radius: 20px;
-  padding: 8px 16px;
+  width: 84%;
+  height: 49px;
+  left: 34px;
+  top: 145px;
+
+  background: ${(props) => props.theme.COLORS.WHITE};
+  border-radius: 15px;
+  font-family: ${(props) => props.theme.FONTS.OUTFITLIGHT};
+  padding-left: 25px;
   font-size: 16px;
-  border-width: 1px;
-  border-color: ${(props) => props.theme.COLORS.BLACK};
-  padding-right: 30px;
 `;
 
 export const SearchIcon = styled(Icon).attrs({
   name: "search-outline",
   size: 20,
-  color: "gray",
+  color: "black",
 })`
   position: absolute;
-  top: 195px;
-  right: 40px;
-`;
-
-export const CategoryList = styled.View`
-  margin: 10px;
-`;
-
-export const CategoryItem = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
+  left: 81.28%;
+  right: 13.59%;
+  top: 160px;
+  bottom: 74.05%;
 `;
 
 export const ScrollViewCategory = styled(ScrollView)`
+  position: absolute;
+  width: 92%;
+  height: 152px;
+  left: 8%;
+  top: 20px;
+  border-radius: 15px;
   background: ${(props) => props.theme.COLORS.WHITE};
 `;
 
 export const ContainerCategory = styled.View`
   position: relative;
   margin-top: 20px;
-  width: 390px;
+  width: 90%;
   height: 84px;
   background: ${(props) => props.theme.COLORS.WHITE};
   border-radius: 50px;
 `;
 
 export const TextProveedor = styled.Text`
+  display: flex;
   position: absolute;
 
-  width: 230px;
+  width: 100%;
   height: 25px;
-  left: 79px;
-  top: 410px;
+  top: 399px;
 
-  font-family: ${(props) => props.theme.FONTS.OUTFITBOLD};
+  font-family: ${(props) => props.theme.FONTS.OUTFITEXTRABOLD};
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
   line-height: 25px;
-  display: flex;
   align-items: center;
   text-align: center;
 
@@ -93,14 +80,12 @@ export const TextProveedor = styled.Text`
 `;
 export const ProveedorContainer = styled.View`
   display: flex;
-  margin-left: 15px;
-  margin-top: 60px;
+  width: 100%;
+  margin-left: 4%;
+  
 `;
 
 export const ProveedorImage = styled.Image`
-  width: 100px;
-  height: 100px;
-  border-radius: 10px;
 `;
 
 export const ProveedorName = styled.Text`
@@ -111,9 +96,23 @@ export const ProveedorName = styled.Text`
 `;
 
 export const ScrollViewProveedor = styled(ScrollView)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+`;
+
+export const GridContainer = styled.View`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const CategoriaCard = styled.View`
+  width: 32%;
+  margin-bottom: 10px;
+  aspect-ratio: 1;
+`;
+
+export const CategoriaCardText = styled.Text`
+  margin-top: 5px;
+  font-size: 14px;
 `;
