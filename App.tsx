@@ -16,15 +16,11 @@ import {
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
 import COLORS from "./src/styles/theme";
-import { NavigationContainer } from "@react-navigation/native";
-import { NativeBaseProvider } from "native-base";
-
-import "react-native-gesture-handler";
 import Intro from "./src/components/Intro";
+import Register from "./src/screens/Register/Register";
 import LogInScreen from "./src/components/LogInScreen";
 import { Main } from "./src/screens/Usuario/Main/Main";
 import theme from "./theme";
-import Register from "./src/screens/Register/Register";
 
 type RootStackParamList = {
   "Intro": undefined;
