@@ -1,5 +1,9 @@
-import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import 'react-native-gesture-handler';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from '@react-navigation/stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { NativeBaseProvider } from "native-base";
 import { ThemeProvider } from "styled-components/native";
 import {
   useFonts,
@@ -12,19 +16,23 @@ import {
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
 import COLORS from "./src/styles/theme";
-import { Login } from "./src/screens/Usuario/Login/Login";
-import { IntroScreen } from "./src/screens/Usuario/IntroScreen/Intro";
-import { Home } from "./src/screens/Usuario/Home/Home";
-import { NavigationContainer } from "@react-navigation/native";
-import { NativeBaseProvider } from "native-base";
-
-import 'react-native-gesture-handler';
-import { MyTabs } from "./src/components/Navbar/Navbar";
+import Intro from "./src/components/Intro";
+import LogInScreen from "./src/components/LogInScreen";
 import { Main } from "./src/screens/Usuario/Main/Main";
+import theme from "./theme";
+import Register from "./src/screens/Register/Register";
 
+type RootStackParamList = {
+  "Intro": undefined;
+  "Log In": undefined;
+  "Main": undefined;
+  "Register": undefined;
+}
 
+const App = () => {
 
-export default function App() {
+  const Stack = createStackNavigator<RootStackParamList>();
+
   const [fontsLoaded] = useFonts({
     Outfit_300Light,
     Outfit_400Regular,
@@ -35,44 +43,26 @@ export default function App() {
     DMSerifDisplay_400Regular,
   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return (
-    <NativeBaseProvider>
+    <NativeBaseProvider theme={theme}>
       <ThemeProvider theme={COLORS}>
         <NavigationContainer>
-          <StatusBar style="dark" translucent backgroundColor="transparent" />
-
-          <View style={styles.container}>
-            <View style={styles.imageContainer}>
-             <Main/>
-            </View>
-          </View>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Intro" component={Intro} />
+            <Stack.Screen name="Log In" component={LogInScreen} />
+            <Stack.Screen name="Main" component={Main} />
+            <Stack.Screen name="Register" component={Register} />
+          </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
     </NativeBaseProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    flex: 1,
-    paddingTop: 0,
-  },
-  imageContainer: {
-    flex: 3,
-    paddingTop: 0,
-  },
-  image: {
-    width: 320,
-    height: 440,
-    borderRadius: 18,
-  },
-});
+export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">
+export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">
+export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">
+export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">
+export default App;

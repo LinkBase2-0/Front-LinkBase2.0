@@ -6,7 +6,7 @@ import DropdownComponent from "../../components/Dropdown";
 
 import { Title,Description,Input,Button } from "./styles";
 
-const IntroScreen: React.FC = () => {
+const Register: React.FC = () => {
   type Form ={
     name:string;
     email:string;
@@ -79,4 +79,4 @@ const IntroScreen: React.FC = () => {
   );
 };
 
-export { IntroScreen };
+export default Register;
