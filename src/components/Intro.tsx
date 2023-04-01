@@ -127,4 +127,4 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 	);
 }
 
-export default Intro;	 
+export default Intro;
