@@ -1,9 +1,8 @@
 import React from "react";
-import 'react-native-gesture-handler';
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from '@react-navigation/stack';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { NativeBaseProvider } from "native-base";
+import { createStackNavigator } from '@react-navigation/stack';
+import { NativeBaseProvider, StatusBar } from "native-base";
 import { ThemeProvider } from "styled-components/native";
 import {
   useFonts,
@@ -15,18 +14,18 @@ import {
 } from "@expo-google-fonts/outfit";
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
+import nativeBaseExtendTheme from "./src/styles/nativeBaseExtendTheme";
 import COLORS from "./src/styles/theme";
 import Intro from "./src/components/Intro";
-import Register from "./src/screens/Register/Register";
 import LogInScreen from "./src/components/LogInScreen";
-import { Main } from "./src/screens/Usuario/Main/Main";
-import theme from "./theme";
+import Register from "./src/screens/Register/Register";
+import Main from "./src/screens/Usuario/Main/Main";
 
 type RootStackParamList = {
   "Intro": undefined;
   "Log In": undefined;
-  "Main": undefined;
   "Register": undefined;
+  "Main": undefined;
 }
 
 const App = () => {
@@ -46,14 +45,15 @@ const App = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <NativeBaseProvider theme={theme}>
+    <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
+        <StatusBar backgroundColor="black" />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Intro" component={Intro} />
             <Stack.Screen name="Log In" component={LogInScreen} />
-            <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Main" component={Main} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
@@ -63,6 +63,6 @@ const App = () => {
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">
-export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">
 export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">
+export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">
 export default App;
