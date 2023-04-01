@@ -20,6 +20,7 @@ import Intro from "./src/components/Intro";
 import LogInScreen from "./src/components/LogInScreen";
 import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 type RootStackParamList = {
   "Intro": undefined;
@@ -47,7 +48,7 @@ const App = () => {
   return (
     <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
-        <StatusBar backgroundColor="black" />
+        <StatusBar barStyle="dark-content"/>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Intro" component={Intro} />

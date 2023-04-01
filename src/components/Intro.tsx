@@ -16,23 +16,21 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 			safeArea 
 			display="flex"
 			flex="1"
-			justifyContent="center"
 			alignItems="center"
 			bgColor="white"
 		>
-			<VStack 
-				safeArea
+			<VStack
 				width="320" 
-				height="700"
-				pt="10" 
+				height="100%"
 				justifyContent="center"
 				alignItems="center" 
 				space={5}
 			>
 				<Box 
 					display="flex"
+					flex="0.7"
 					width="100%" 
-					pb="10"
+					mt="8"
 					flexDirection="row" 
 					justifyContent="flex-end"
 				>
@@ -45,10 +43,10 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 						>Omitir</Text>	
 					</Pressable>	
 				</Box>
-				<Box display="flex">
+				<Box display="flex" flex="3">
 					<IntroSvg />
 				</Box>
-				<Box display="flex" py="6" alignItems="center">
+				<Box display="flex" flex="1.3" alignItems="center">
 					<Text
 						pb="4"
 						fontFamily="body"
@@ -66,7 +64,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 					>LinkBase te permite encontrar y conectar con el 
 					proveedor indicado para hacer crecer tu negocio.</Text>	
 				</Box>
-				<Box>
+				<Box display="flex" flex="1">
 					<Box display="flex" flexDirection="row">
 						<Button
 							width="160"
@@ -103,7 +101,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 							>Registrarse</Text>
 						</Button>
 					</Box>
-					<Box display="flex" pt="5" pb="3">
+					<Box display="flex" pt="5">
 						<Pressable onPress={() => navigation.navigate("Log In")}>
 							<Text
 								textAlign="center"
@@ -115,9 +113,10 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 						</Pressable>
 					</Box>
 				</Box>
-				<Box display="flex">
+				<Box display="flex" flex="1" mb="8" justifyContent="flex-end">
 					<Image 
-						size="lg"
+						height="5"
+						width="20"
 						resizeMode="contain"
 						source={require("../assets/images/netGlobal.png")} 
 						alt="Net Global Solutions Logo"
