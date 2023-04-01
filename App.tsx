@@ -23,8 +23,8 @@ import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
 
 type RootStackParamList = {
-  "Intro": { isAdmin: boolean }
-  "Log In": { isAdmin?: boolean }
+  "Intro": undefined
+  "Log In": undefined
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
