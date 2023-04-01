@@ -2,7 +2,7 @@ import React from 'react';
 import { PixelRatio } from "react-native";
 import { Box, Button, Image, Pressable, Text, VStack } from "native-base";
 import { IntroProps } from '../../App';
-import IntroSvg from '../assets/svg/intro.svg';
+import IntroSvg from '../assets/svg/introSvg';
 
 const Intro: React.FC<IntroProps> = ({ navigation }) => {
 
