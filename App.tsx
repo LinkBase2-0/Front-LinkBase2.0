@@ -22,7 +22,7 @@ import LogInScreen from "./src/components/LogInScreen";
 import { Main } from "./src/screens/Usuario/Main/Main";
 import theme from "./theme";
 import IntroAdmin from "./src/screens/Admin/Intro";
-
+import HomeAdmin from "./src/screens/Admin/Home/HomeAdmin";
 
 type RootStackParamList = {
   Intro: { isAdmin: boolean };
@@ -30,6 +30,7 @@ type RootStackParamList = {
   Main: undefined;
   Register: undefined;
   "Intro Admin": { isAdmin?: boolean };
+  "Home Admin": { isAdmin?: boolean };
 };
 
 const App = () => {
@@ -52,11 +53,15 @@ const App = () => {
       <ThemeProvider theme={COLORS}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {/* User */}
             <Stack.Screen name="Intro" component={Intro} />
             <Stack.Screen name="Log In" component={LogInScreen} />
             <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Register" component={Register} />
+
+            {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
+            <Stack.Screen name="Home Admin" component={HomeAdmin} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
@@ -65,10 +70,7 @@ const App = () => {
 };
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
-export type LogInProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Log In"
->;
+export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
 export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">;
 export type RegisterProps = NativeStackScreenProps<
   RootStackParamList,
@@ -77,5 +79,10 @@ export type RegisterProps = NativeStackScreenProps<
 export type IntroAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Intro Admin"
+>;
+
+export type HomeAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Home Admin"
 >;
 export default App;

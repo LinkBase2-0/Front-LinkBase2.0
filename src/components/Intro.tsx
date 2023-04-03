@@ -55,7 +55,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => (
             fontFamily="heading"
             fontSize="lg"
             fontWeight="700"
-            color="white"
+            color="#ffffff"
           >
             Iniciar Sesión
           </Text>
@@ -70,7 +70,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => (
           _pressed={{ bg: "#d9d9d9" }}
           shadow="9"
         >
-          <Text fontFamily="body" fontSize="lg" fontWeight="700" color="545151">
+          <Text fontFamily="body" fontSize="lg" fontWeight="700" color="#545151">
             Registrarse
           </Text>
         </Button>
