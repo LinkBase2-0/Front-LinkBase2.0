@@ -1,9 +1,8 @@
 import React from "react";
-import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { NativeBaseProvider } from "native-base";
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { createStackNavigator } from '@react-navigation/stack';
+import { NativeBaseProvider, StatusBar } from "native-base";
 import { ThemeProvider } from "styled-components/native";
 import {
   useFonts,
@@ -15,20 +14,20 @@ import {
 } from "@expo-google-fonts/outfit";
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
+import nativeBaseExtendTheme from "./src/styles/nativeBaseExtendTheme";
 import COLORS from "./src/styles/theme";
 import Intro from "./src/components/Intro";
-import Register from "./src/screens/Register/Register";
-import LogInScreen from "./src/components/LogInScreen";
-import { Main } from "./src/screens/Usuario/Main/Main";
-import theme from "./theme";
 import IntroAdmin from "./src/screens/Admin/Intro";
 import HomeAdmin from "./src/screens/Admin/Home/HomeAdmin";
+import LogInScreen from "./src/components/LogInScreen";
+import Register from "./src/screens/Register/Register";
+import Main from "./src/screens/Usuario/Main/Main";
 
 type RootStackParamList = {
-  Intro: { isAdmin: boolean };
-  "Log In": { isAdmin?: boolean };
-  Main: undefined;
-  Register: undefined;
+  "Intro": undefined
+  "Log In": undefined
+  "Register": undefined;
+  "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
 };
@@ -49,15 +48,17 @@ const App = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <NativeBaseProvider theme={theme}>
+    <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
+        <StatusBar barStyle="dark-content"/>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* User */}
             <Stack.Screen name="Intro" component={Intro} />
             <Stack.Screen name="Log In" component={LogInScreen} />
-            <Stack.Screen name="Main" component={Main} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Main" component={Main} />
+
 
             {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
@@ -68,6 +69,7 @@ const App = () => {
     </NativeBaseProvider>
   );
 };
+
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
@@ -86,3 +88,4 @@ export type HomeAdminProps = NativeStackScreenProps<
   "Home Admin"
 >;
 export default App;
+
