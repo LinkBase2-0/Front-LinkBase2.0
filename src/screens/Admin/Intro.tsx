@@ -4,7 +4,9 @@ import { IntroAdminProps } from "../../../App";
 import IntroSvg from "../../assets/svg/IntroSvg";
 import { IntroAdminSvg } from "../../assets";
 
-const IntroAdmin: React.FC<IntroAdminProps> = ({ navigation }) => (
+const IntroAdmin: React.FC<IntroAdminProps> = ({ navigation }) => {
+
+return(
   <Box safeArea display="flex" flex="1" justifyContent="center" bgColor="white">
     <Pressable onPress={() => navigation.navigate("Main")}>
       <Box
@@ -72,6 +74,6 @@ const IntroAdmin: React.FC<IntroAdminProps> = ({ navigation }) => (
       size="lg"
     />
   </Box>
-);
+)};
 
 export default IntroAdmin;

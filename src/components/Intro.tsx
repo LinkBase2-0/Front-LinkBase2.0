@@ -6,6 +6,7 @@ import IntroSvg from '../assets/svg/introSvg';
 
 const Intro: React.FC<IntroProps> = ({ navigation }) => {
 
+
 	type responsiveFontSize = (size: number) => number;
 
 	const fontScale: number = PixelRatio.getFontScale();
@@ -74,7 +75,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 							bg="#981D9A"
 							shadow="9"
 							_pressed={{ bg: "#6f1570" }}
-							onPress={() => navigation.navigate("Log In")}
+							onPress={() => navigation.navigate("Log In", { isAdmin: false })}
 						>
 							<Text 
 								fontFamily="body" 
@@ -102,7 +103,7 @@ const Intro: React.FC<IntroProps> = ({ navigation }) => {
 						</Button>
 					</Box>
 					<Box display="flex" pt="5">
-						<Pressable onPress={() => navigation.navigate("Log In")}>
+						  onPress={() => navigation.navigate("Intro Admin", { isAdmin: true })}
 							<Text
 								textAlign="center"
 								fontFamily="body" 

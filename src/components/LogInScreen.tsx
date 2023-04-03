@@ -14,6 +14,14 @@ import { TouchableOpacity } from "react-native";
 
 const LogInScreen: React.FC<LogInProps> = ({ navigation, route}) => {
 	const isAdmin = route.params?.isAdmin || false;
+
+  const handlePress = () => {
+    if (isAdmin) {
+      navigation.navigate({ name: "Home Admin", params: { isAdmin: true } });
+    } else {
+      navigation.navigate("Main");
+    }
+  };
     //console.log("isAdmin:", isAdmin);
   return (
     <Box
@@ -101,7 +109,7 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route}) => {
           </Pressable>
           <Box display="flex" flexDirection="row">
             <Button
-              onPress={() => navigation.navigate("Main")}
+              onPress={handlePress}
               width="320"
               height="60"
               borderRadius="15"
@@ -113,7 +121,7 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route}) => {
                 fontFamily="heading"
                 fontSize="lg"
                 fontWeight="700"
-                color="white"
+                color="#ffffff"
               >
                 Iniciar Sesión
               </Text>

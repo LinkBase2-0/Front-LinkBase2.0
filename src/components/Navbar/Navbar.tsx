@@ -56,7 +56,7 @@ function MyTabs() {
             <Icon
               name={focused ? iconNameFocused : iconNameUnfocused}
               size={24}
-              color={color}
+              //color={color}
             />
           );
         },
