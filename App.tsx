@@ -25,8 +25,8 @@ import Main from "./src/screens/Usuario/Main/Main";
 import ReviewsAdmin from "./src/screens/Admin/Reviews/Reviews";
 
 type RootStackParamList = {
-  "Intro": { isAdmin?: boolean };
-  "Log In": { isAdmin?: boolean };
+  "Intro": undefined;
+  "Log In": { isAdmin: boolean };
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
@@ -75,21 +75,9 @@ const App = () => {
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
 export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">;
-export type RegisterProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Register"
->;
-export type IntroAdminProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Intro Admin"
->;
-export type HomeAdminProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Home Admin"
->;
-export type ReviewsAdminProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Reviews Admin"
->;
+export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">;
+export type IntroAdminProps = NativeStackScreenProps<RootStackParamList, "Intro Admin">;
+export type HomeAdminProps = NativeStackScreenProps<RootStackParamList, "Home Admin">;
+export type ReviewsAdminProps = NativeStackScreenProps<RootStackParamList, "Reviews Admin">;
 
 export default App;
