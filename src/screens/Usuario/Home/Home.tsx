@@ -13,7 +13,7 @@ import {
   CategoriaCardText,
 } from "./styles";
 
-import { Box } from "native-base";
+import { Box, Pressable } from "native-base";
 import { Carousel } from "./carousel/Carousel";
 //import { RenderItems } from "./carousel/Carousel";
 
@@ -64,7 +64,7 @@ const categories: Category[] = [
   },
 ];
 
-const Home: React.FC = () => {
+const Home: React.FC = ({ navigation: { navigate } }) => {
   return (
     <SafeAreaView>
       <Container>
@@ -86,7 +86,7 @@ const Home: React.FC = () => {
             <GridContainer>
               {categories.map((category) => (
                 <CategoriaCard key={category.id}>
-                  <Box
+                  <Pressable
                     bg="#FFFFFF"
                     rounded="lg"
                     p={0}
@@ -94,13 +94,14 @@ const Home: React.FC = () => {
                     height="70%"
                     justifyContent="center"
                     alignItems="center"
+                    onPress={()=> navigate("CategoryDetail", {categoryName:category.name})}
                   >
                     <Image
                       source={category.icon}
                       style={{ width: "33%", height: "55%" }}
                     />
                     <CategoriaCardText style={{ width: "65%", height: "30%" , fontSize: 10}}>{category.name}</CategoriaCardText>
-                  </Box>
+                  </Pressable>
                 </CategoriaCard>
               ))}
             </GridContainer>

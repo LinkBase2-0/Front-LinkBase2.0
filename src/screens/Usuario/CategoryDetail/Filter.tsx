@@ -20,12 +20,13 @@ type Props = {
         }[];
     
     placeholderName:string;
+    search:boolean;
+    handleSort:Function;
   }
 
-const DropdownComponent: React.FC<Props> = ({data,placeholderName})=>{
+const DropdownComponent: React.FC<Props> = ({data,placeholderName,search,handleSort})=>{
   const [value, setValue] = useState("");
   const [isFocus, setIsFocus] = useState(false);
-
   
 
   return (<>
@@ -36,10 +37,10 @@ const DropdownComponent: React.FC<Props> = ({data,placeholderName})=>{
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
         itemTextStyle={styles.itemTextStyle}
-        mode={"modal"}
+        mode={"default"}
         data={data}
-        search
-        maxHeight={200}
+        search={search}
+        maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? `${placeholderName}` : '...'}
@@ -50,6 +51,7 @@ const DropdownComponent: React.FC<Props> = ({data,placeholderName})=>{
         onChange={item => {
           setValue(item.value);
           setIsFocus(false);
+          handleSort(item.value);
         }}
        
       />
@@ -65,18 +67,19 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   dropdown: {
-    width:322,
-    height: 59,
-    backgroundColor: '#F3F3F3',
-    borderRadius: 15,
+    width:160,
+    height: 31,
+    backgroundColor: '#FFF',
+    borderRadius: 20,
     fontFamily: "Outfit_500Medium",
-    fontSize: 15,
-    color:'#fff',
-    shadowColor: "#0000001F",
-    shadowOffset: { width: -1, height: 2 },
-    shadowOpacity: 0.12,
+    fontSize: 12,
+    color:'#000000',
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.1,
     shadowRadius: 1,
     marginBottom:12,
+
   },
   icon: {
     marginRight: 5,

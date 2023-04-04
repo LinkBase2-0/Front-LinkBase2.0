@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Alert, Keyboard, TouchableWithoutFeedback,View,Text } from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback,View,Text,TouchableOpacity } from "react-native";
 import { ArrowLeftIcon, UserCircleIcon } from "react-native-heroicons/solid";
 import DropdownComponent from "../../components/Dropdown";
 
@@ -60,7 +60,9 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
             scrollEnabled={true}
           >
           <View style={{flexDirection:"row", width:"100%", justifyContent:"center", position:"relative"}}>
-          <ArrowLeftIcon color ="black" size={30 }style={{alignSelf:"flex-start", position:"absolute", left:32}}/> 
+          <TouchableOpacity  style={{alignSelf:"flex-start", position:"absolute", left:32}} onPress={()=> navigation.goBack()}>
+          <ArrowLeftIcon color ="black" size={30}/>
+        </TouchableOpacity> 
               <Title>Registrarse</Title>
             </View>
             <Description>Crea una cuenta para empezar a conectar con proveedores cerca de ti</Description> 
