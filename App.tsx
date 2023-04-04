@@ -23,6 +23,8 @@ import LogInScreen from "./src/components/LogInScreen";
 import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
 import ReviewsAdmin from "./src/screens/Admin/Reviews/Reviews";
+import { ProfileAdmin } from "./src/screens/Admin/Profile/Profile";
+import { PasswordAdmin } from "./src/screens/Admin/Profile/Password";
 
 type RootStackParamList = {
   "Intro": undefined;
@@ -32,6 +34,8 @@ type RootStackParamList = {
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
   "Reviews Admin": { isAdmin?: boolean };
+  "Profile Admin": { isAdmin?: boolean };
+  "Password Admin": { isAdmin?: boolean };
 };
 
 const App = () => {
@@ -65,6 +69,8 @@ const App = () => {
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
             <Stack.Screen name="Home Admin" component={HomeAdmin} />
             <Stack.Screen name="Reviews Admin" component={ReviewsAdmin} />
+            <Stack.Screen name="Profile Admin" component={ProfileAdmin} />
+            <Stack.Screen name="Password Admin" component={PasswordAdmin} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
@@ -75,9 +81,31 @@ const App = () => {
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
 export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">;
-export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">;
-export type IntroAdminProps = NativeStackScreenProps<RootStackParamList, "Intro Admin">;
-export type HomeAdminProps = NativeStackScreenProps<RootStackParamList, "Home Admin">;
-export type ReviewsAdminProps = NativeStackScreenProps<RootStackParamList, "Reviews Admin">;
+export type RegisterProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Register"
+>;
+export type IntroAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Intro Admin"
+>;
+
+export type HomeAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Home Admin"
+>;
+export type ReviewsAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Reviews Admin"
+>;
+export type ProfileAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile Admin"
+>;
+
+export type PasswordAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Password Admin"
+>;
 
 export default App;

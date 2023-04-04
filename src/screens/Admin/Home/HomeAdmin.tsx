@@ -106,7 +106,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
           </Center>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate({ name: "Intro", params: { isAdmin: true } })
+              navigation.navigate({ name: "Profile Admin", params: { isAdmin: true } })
             }
           >
             <Ionicons
@@ -231,9 +231,9 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                   paddingBottom: "5%",
                 }}
               >
-                <TouchableOpacity>
+                {/* <TouchableOpacity> */}
                   <Text>Administrar</Text>
-                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
                 <View
                   style={{
                     borderLeftWidth: 2,
