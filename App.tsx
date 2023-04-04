@@ -27,8 +27,8 @@ import { ProfileAdmin } from "./src/screens/Admin/Profile/Profile";
 import { PasswordAdmin } from "./src/screens/Admin/Profile/Password";
 
 type RootStackParamList = {
-  "Intro": { isAdmin?: boolean };
-  "Log In": { isAdmin?: boolean };
+  "Intro": undefined;
+  "Log In": { isAdmin: boolean };
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
@@ -39,6 +39,7 @@ type RootStackParamList = {
 };
 
 const App = () => {
+
   const Stack = createStackNavigator<RootStackParamList>();
 
   const [fontsLoaded] = useFonts({
@@ -56,8 +57,7 @@ const App = () => {
   return (
     <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
-        <StatusBar/>
-        {/* <StatusBar barStyle="dark-content"/> */}
+        <StatusBar barStyle="dark-content" />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* User */}
@@ -65,8 +65,6 @@ const App = () => {
             <Stack.Screen name="Log In" component={LogInScreen} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Main" component={Main} />
-
-
             {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
             <Stack.Screen name="Home Admin" component={HomeAdmin} />
@@ -78,8 +76,7 @@ const App = () => {
       </ThemeProvider>
     </NativeBaseProvider>
   );
-};
-
+}
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
@@ -112,4 +109,3 @@ export type PasswordAdminProps = NativeStackScreenProps<
 >;
 
 export default App;
-
