@@ -6,4 +6,8 @@ import UsersAdminSvg from "./Users.svg";
 
 import YelpAdminSvg from "./yelpAdmin.svg";
 
-export { IntroAdminSvg, TrashSvg, UsersAdminSvg, YelpAdminSvg};
+import TrashIcon2 from "./trash_icon.svg";
+
+import EditSvgAdmin from "./edit_icon.svg";
+
+export { IntroAdminSvg, TrashSvg, UsersAdminSvg, YelpAdminSvg, TrashIcon2, EditSvgAdmin};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Menu,
   Button,
@@ -6,22 +6,22 @@ import {
   Center,
   NativeBaseProvider,
   Text,
-} from 'native-base';
-import {Ionicons} from '@expo/vector-icons';
+} from "native-base";
+import { Ionicons } from "@expo/vector-icons";
 
 //colors
 import COLORS from "../../../../styles/theme";
 
-function Filtro() {
+function FiltroPositivos() {
   const [shouldOverlapWithTrigger] = React.useState(false);
-  const [position, setPosition] = React.useState('auto');
+  const [position, setPosition] = React.useState("auto");
   return (
     <VStack space={2} alignSelf="flex-start" w="100%">
       <Menu
         w="160"
         shouldOverlapWithTrigger={shouldOverlapWithTrigger}
         // @ts-ignore
-        placement={position == 'auto' ? undefined : position}
+        placement={position == "auto" ? undefined : position}
         trigger={(triggerProps: any) => {
           return (
             <Button
@@ -30,19 +30,27 @@ function Filtro() {
               backgroundColor="#FFFFFF"
               colorScheme="dark"
               borderRadius={20}
-              shadow={1}
+              width="320%"
+              shadow={2}
               height={10}
               startIcon={
-                <Ionicons name="menu-outline" size={15} color="#000000"/>
+                <Ionicons name="menu-outline" size={15} color="#000000" />
               }
               endIcon={
-                <Ionicons name="chevron-down-outline" size={16} color="#000000"/>
+                <Ionicons
+                  name="chevron-down-outline"
+                  size={16}
+                  color="#000000"
+                  style={{marginStart: "65%"}}
+                />
               }
-              {...triggerProps}>
-              <Text >Rating</Text>
+              {...triggerProps}
+            >
+              <Text >Positivos</Text>
             </Button>
           );
-        }}>
+        }}
+      >
         <Menu.Item>1</Menu.Item>
         <Menu.Item>2</Menu.Item>
         <Menu.Item>3</Menu.Item>
@@ -53,5 +61,4 @@ function Filtro() {
   );
 }
 
-export default Filtro;
-
+export default FiltroPositivos;
