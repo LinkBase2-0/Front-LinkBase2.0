@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { PasswordSvg, BoardSvg, GearSvg, QmSvg } from "../../../assets";
+import { PasswordSvg, BoardSvg, GearSvg, QmSvg } from "../../../assets/svgImages/Usuario/Profile";
 
 import { Container, ProfilePic, Title, Description, Button,Line,Option, Logout } from "./styles";
 const ProfileDetail: React.FC = ({navigation}) => {

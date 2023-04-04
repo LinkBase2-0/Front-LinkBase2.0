@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { PasswordSvg, BoardSvg, GearSvg, QmSvg } from "../../../assets";
+import { PasswordSvg, BoardSvg, GearSvg, QmSvg } from "../../../assets/svgImages/Usuario/Profile/index";
 
 import {
   Container,

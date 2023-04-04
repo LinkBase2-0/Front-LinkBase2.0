@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import {Container, Title, Description, EmployeeSearch, SearchIcon, EmployeeContainer,FullName, BusinessName, Role, Mail, Trash} from "./styles"
 import { EmployeeInfo } from "./EmployeeInfo";
+import { EmployeesProps } from "../../../../App";
 
 interface Empleado {
   id: string;
@@ -12,7 +13,7 @@ interface Empleado {
 }
 
 
-const Mas: React.FC = () => {
+const Employees: React.FC<EmployeesProps> = () => {
 
   const empleadosInit : Empleado[] = [
     {
@@ -116,4 +117,4 @@ const Mas: React.FC = () => {
 };
 
 
-export { Mas };
+export { Employees };

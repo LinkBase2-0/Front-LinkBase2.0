@@ -9,16 +9,19 @@ import {
   Outfit_300Light,
   Outfit_400Regular,
   Outfit_500Medium,
+  Outfit_600SemiBold,
   Outfit_700Bold,
   Outfit_800ExtraBold,
 } from "@expo-google-fonts/outfit";
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
+import {OpenSans_300Light} from "@expo-google-fonts/open-sans"
 import nativeBaseExtendTheme from "./src/styles/nativeBaseExtendTheme";
 import COLORS from "./src/styles/theme";
 import Intro from "./src/components/Intro";
 import IntroAdmin from "./src/screens/Admin/Intro";
 import HomeAdmin from "./src/screens/Admin/Home/HomeAdmin";
+import {Employees} from "./src/screens/Admin/Employees/Employees"
 import LogInScreen from "./src/components/LogInScreen";
 import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
@@ -31,11 +34,13 @@ type RootStackParamList = {
   "Log In": { isAdmin: boolean };
   "Register": undefined;
   "Main": undefined;
+  "CategoryDetails": undefined;
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
   "Reviews Admin": { isAdmin?: boolean };
   "Profile Admin": { isAdmin?: boolean };
   "Password Admin": { isAdmin?: boolean };
+  "Employees": {isAdmin?: boolean}
 };
 
 const App = () => {
@@ -46,10 +51,12 @@ const App = () => {
     Outfit_300Light,
     Outfit_400Regular,
     Outfit_500Medium,
+    Outfit_600SemiBold,
     Outfit_700Bold,
     Outfit_800ExtraBold,
     DMSans_400Regular,
     DMSerifDisplay_400Regular,
+    OpenSans_300Light
   });
 
   if (!fontsLoaded) return null;
@@ -71,6 +78,7 @@ const App = () => {
             <Stack.Screen name="Reviews Admin" component={ReviewsAdmin} />
             <Stack.Screen name="Profile Admin" component={ProfileAdmin} />
             <Stack.Screen name="Password Admin" component={PasswordAdmin} />
+            <Stack.Screen name="Employees" component={Employees} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
@@ -102,6 +110,8 @@ export type ProfileAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Profile Admin"
 >;
+export type CategoryDetailProps = NativeStackScreenProps<RootStackParamList, "CategoryDetails">;
+export type EmployeesProps = NativeStackScreenProps<RootStackParamList, "Employees">;
 
 export type PasswordAdminProps = NativeStackScreenProps<
   RootStackParamList,

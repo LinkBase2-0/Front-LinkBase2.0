@@ -19,7 +19,7 @@ import COLORS from "../../../styles/theme";
 import Filtro from "./FiltroRating/Filtro";
 import { SearchIcon } from "../../Usuario/Home/styles";
 import { ScrollView } from "react-native-gesture-handler";
-import { TrashSvg, UsersAdminSvg, YelpAdminSvg } from "../../../assets";
+import { TrashSvg, UsersAdminSvg, YelpAdminSvg } from "../../../assets/svgImages/Admin/Intro/index";
 
 const proveedores = [
   {
@@ -251,7 +251,11 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                 >
                   <YelpAdminSvg />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate({ name: "Employees", params: { isAdmin: true } })
+                }
+                >
                   <UsersAdminSvg />
                 </TouchableOpacity>
               </View>

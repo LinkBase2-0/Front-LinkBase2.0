@@ -8,7 +8,6 @@ import { Pressable } from "native-base";
 
 import { Title, Description, Input, Button } from "./styles";
 import { RegisterProps } from "../../../App";
-import { TouchableOpacity } from "react-native";
 
 const Register: React.FC<RegisterProps> = ({ navigation }) => {
   type Form = {

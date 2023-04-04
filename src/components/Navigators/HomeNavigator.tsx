@@ -3,10 +3,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Home } from "../../screens/Usuario/Home/Home";
 import ProviderScreen from "../ProviderScreen";
+import CategoryDetail from "../../screens/Usuario/CategoryDetail/CategoryDetail"
 
 type RootStackParamList = {
   "Overview": undefined;
-  "Provider": undefined; 
+  "Provider": undefined;
+  "CategoryDetail": undefined; 
 }
 
 const HomeNavigator: React.FC = () => {
@@ -17,6 +19,7 @@ const HomeNavigator: React.FC = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Overview" component={Home}/>
       <Stack.Screen name="Provider" component={ProviderScreen}/>
+      <Stack.Screen name="CategoryDetail" component={CategoryDetail}/>
     </Stack.Navigator>
   );
 }
