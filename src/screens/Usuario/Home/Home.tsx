@@ -15,6 +15,7 @@ import {
 
 import { Box, Pressable } from "native-base";
 import { Carousel } from "./carousel/Carousel";
+import { OverviewProps } from "../../../components/Navigators/HomeNavigator";
 //import { RenderItems } from "./carousel/Carousel";
 
 interface Category {
@@ -64,7 +65,8 @@ const categories: Category[] = [
   },
 ];
 
-const Home: React.FC = ({ navigation: { navigate } }) => {
+
+const Home: React.FC<OverviewProps> = ({ navigation }) => {
   return (
     <SafeAreaView>
       <Container>
@@ -112,7 +114,9 @@ const Home: React.FC = ({ navigation: { navigate } }) => {
         <ProveedorContainer
           style={{ display: "flex", justifyContent: "center", height: "90%", width: "100%", elevation: 1 }}
         >
-          <Carousel />
+          <Pressable onPress={() => navigation.navigate("Provider")}>
+            <Carousel />
+          </Pressable>
         </ProveedorContainer>
       </Container>
     </SafeAreaView>

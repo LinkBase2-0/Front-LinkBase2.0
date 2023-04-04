@@ -8,29 +8,36 @@ import {
 } from "react-native";
 import { ArrowLeftIcon, UserCircleIcon } from "react-native-heroicons/solid";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { ProfilePic, EditText, EditInput, Button } from "./styles";
+import {
+  ProfilePic,
+  EditText,
+  EditInput,
+  Button,
+} from "../../Usuario/Profile/styles";
 import { ScrollView } from "react-native-gesture-handler";
+import { PasswordAdminProps } from "../../../../App";
+import { Input } from "native-base";
 
-const Password: React.FC = ({ navigation }) => {
+const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
   const handleSubmit = () => {
     const title = "Aviso";
     const message = "Tu cambio ha sido realizado con éxito";
     Alert.alert(title, message, [
       {
         text: "OK",
-        onPress: () => navigation.navigate("ProfileDetail"),
+        onPress: () => navigation.navigate("Profile Admin", { isAdmin: true }),
       },
     ]);
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           scrollEnabled={true}
           contentContainerStyle={{
-            marginTop: 88,
+            marginTop: "10%",
             flex: 1,
             alignItems: "center",
             justifyContent: "flex-start",
@@ -38,33 +45,49 @@ const Password: React.FC = ({ navigation }) => {
         >
           <TouchableOpacity
             style={{ alignSelf: "flex-start", position: "absolute", left: 32 }}
-            onPress={() => navigation.navigate("ProfileDetail")}
+            //onPress={() => navigation.navigate("ProfileDetail")}
           >
             <ArrowLeftIcon color="black" size={30} />
           </TouchableOpacity>
           <ProfilePic
-            source={require("./pic.jpeg")}
+            source={require("../../Usuario/Profile/pic.jpeg")}
             style={{ marginTop: 41 }}
           />
-
-          <EditText
+          <Text
             style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
           >
             Contraseña Actual:
-          </EditText>
-          <EditInput secureTextEntry={true} />
-          <EditText
+          </Text>
+          <Input
+            width="70%"
+            variant="underlined"
+            //placeholder="Underlined"
+            style={{ alignSelf: "center", marginTop: 2 }}
+          />
+          <Text
             style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
           >
             Nueva Contraseña:
-          </EditText>
-          <EditInput secureTextEntry={true} />
-          <EditText
+          </Text>
+          <Input
+            width="70%"
+            variant="underlined"
+            secureTextEntry={true}
+            //placeholder="Underlined"
+            style={{ alignSelf: "center", marginTop: 2, width: "80%" }}
+          />
+          <Text
             style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
           >
             Confirmar Contraseña:
-          </EditText>
-          <EditInput secureTextEntry={true} />
+          </Text>
+          <Input
+            width="70%"
+            variant="underlined"
+            secureTextEntry={true}
+            //placeholder="Underlined"
+            style={{ alignSelf: "center", marginTop: 2, width: "80%" }}
+          />
           <Button onPress={handleSubmit}>
             <Text
               style={{
@@ -84,4 +107,4 @@ const Password: React.FC = ({ navigation }) => {
   );
 };
 
-export { Password };
+export { PasswordAdmin };
