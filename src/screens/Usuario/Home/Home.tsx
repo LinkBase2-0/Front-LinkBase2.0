@@ -96,7 +96,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
                     height="70%"
                     justifyContent="center"
                     alignItems="center"
-                    onPress={()=> navigation.navigate("CategoryDetail", {categoryName:category.name})}
+                    onPress={()=> navigation.navigate("Category Detail", {categoryName:category.name})}
                   >
                     <Image
                       source={category.icon}

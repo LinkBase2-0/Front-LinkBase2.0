@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { Alert, Text, TouchableOpacity } from "react-native";
-import { AddphotoSvg } from "../../../assets";
+import { AddphotoSvg } from "../../../assets/svgImages/Usuario/Profile";
 import { ArrowLeftIcon }from "react-native-heroicons/solid";
 import { Container, ProfilePic, EditText, EditInput, Button} from "./styles";
 

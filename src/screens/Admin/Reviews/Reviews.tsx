@@ -16,7 +16,7 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import COLORS from "../../../styles/theme";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { EditSvgAdmin, TrashIcon2 } from "../../../assets/svgImages/Admin/Intro/index";
+import { EditSvgAdmin, TrashIcon2 } from "../../../assets/svgImages/Admin/Intro";
 import FiltroPositivos from "./FiltroPositivos/Filtro";
 
 const reviews = [

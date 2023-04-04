@@ -19,7 +19,7 @@ import COLORS from "../../../styles/theme";
 import Filtro from "./FiltroRating/Filtro";
 import { SearchIcon } from "../../Usuario/Home/styles";
 import { ScrollView } from "react-native-gesture-handler";
-import { TrashSvg, UsersAdminSvg, YelpAdminSvg } from "../../../assets/svgImages/Admin/Intro/index";
+import { TrashSvg, UsersAdminSvg, YelpAdminSvg } from "../../../assets/svgImages/Admin/Intro";
 
 const proveedores = [
   {
