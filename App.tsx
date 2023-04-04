@@ -25,14 +25,15 @@ import Main from "./src/screens/Usuario/Main/Main";
 
 type RootStackParamList = {
   "Intro": undefined;
-  "Log In": { isAdmin?: boolean };
+  "Log In": { isAdmin: boolean };
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
-};
+}
 
 const App = () => {
+
   const Stack = createStackNavigator<RootStackParamList>();
 
   const [fontsLoaded] = useFonts({
@@ -50,8 +51,7 @@ const App = () => {
   return (
     <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
-        <StatusBar/>
-        {/* <StatusBar barStyle="dark-content"/> */}
+        <StatusBar barStyle="dark-content" />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* User */}
@@ -59,8 +59,6 @@ const App = () => {
             <Stack.Screen name="Log In" component={LogInScreen} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Main" component={Main} />
-
-
             {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
             <Stack.Screen name="Home Admin" component={HomeAdmin} />
@@ -69,24 +67,12 @@ const App = () => {
       </ThemeProvider>
     </NativeBaseProvider>
   );
-};
-
+}
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
 export type MainProps = NativeStackScreenProps<RootStackParamList, "Main">;
-export type RegisterProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Register"
->;
-export type IntroAdminProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Intro Admin"
->;
-
-export type HomeAdminProps = NativeStackScreenProps<
-  RootStackParamList,
-  "Home Admin"
->;
+export type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">;
+export type IntroAdminProps = NativeStackScreenProps<RootStackParamList, "Intro Admin">;
+export type HomeAdminProps = NativeStackScreenProps<RootStackParamList, "Home Admin">;
 export default App;
-

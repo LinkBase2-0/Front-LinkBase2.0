@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Button, Image, Pressable, Text, VStack } from "native-base";
 import { IntroAdminProps } from "../../../App";
-import IntroSvg from "../../assets/svg/IntroSvg";
 import { IntroAdminSvg } from "../../assets";
 
 const IntroAdmin: React.FC<IntroAdminProps> = ({ navigation }) => {
