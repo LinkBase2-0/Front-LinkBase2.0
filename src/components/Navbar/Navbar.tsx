@@ -22,9 +22,10 @@ import { UserSvg } from "../../assets/svgImages/Usuario/Home";
 
 //COLORS
 import COLORS from "../../styles/theme";
+import HomeNavigator from "../Navigators/HomeNavigator";
 
 const ICONS_MAP = {
-  [ROUTES.HOME_TAB]: {
+  "Home": {
     iconNameFocused: "search",
     iconNameUnfocused: "search-outline",
   },
@@ -62,7 +63,7 @@ function MyTabs() {
         },
       })}
     >
-      <Tab.Screen name={ROUTES.HOME_TAB} component={Home} />
+      <Tab.Screen name={"Home"} component={HomeNavigator} />
       <Tab.Screen name={ROUTES.PROFILE} component={Profile} />
       <Tab.Screen name={ROUTES.MAS} component={Mas} />
     </Tab.Navigator>
