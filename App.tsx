@@ -35,6 +35,7 @@ type RootStackParamList = {
 };
 
 const App = () => {
+
   const Stack = createStackNavigator<RootStackParamList>();
 
   const [fontsLoaded] = useFonts({
@@ -52,8 +53,7 @@ const App = () => {
   return (
     <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
-        <StatusBar/>
-        {/* <StatusBar barStyle="dark-content"/> */}
+        <StatusBar barStyle="dark-content" />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* User */}
@@ -61,8 +61,6 @@ const App = () => {
             <Stack.Screen name="Log In" component={LogInScreen} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Main" component={Main} />
-
-
             {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
             <Stack.Screen name="Home Admin" component={HomeAdmin} />
@@ -72,8 +70,7 @@ const App = () => {
       </ThemeProvider>
     </NativeBaseProvider>
   );
-};
-
+}
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
@@ -86,7 +83,6 @@ export type IntroAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Intro Admin"
 >;
-
 export type HomeAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Home Admin"
@@ -95,5 +91,5 @@ export type ReviewsAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Reviews Admin"
 >;
-export default App;
 
+export default App;
