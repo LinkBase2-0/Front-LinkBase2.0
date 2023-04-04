@@ -24,8 +24,8 @@ import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
 
 type RootStackParamList = {
-  "Intro": undefined
-  "Log In": undefined
+  "Intro": undefined;
+  "Log In": { isAdmin?: boolean };
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
@@ -50,7 +50,8 @@ const App = () => {
   return (
     <NativeBaseProvider theme={nativeBaseExtendTheme}>
       <ThemeProvider theme={COLORS}>
-        <StatusBar barStyle="dark-content"/>
+        <StatusBar/>
+        {/* <StatusBar barStyle="dark-content"/> */}
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* User */}
