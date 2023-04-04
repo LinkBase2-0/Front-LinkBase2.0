@@ -18,7 +18,7 @@ const HomeNavigator: React.FC = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Overview" component={Home}/>
-      <Stack.Screen name="Provider" component={ProviderScreen}/>
+      <Stack.Screen name="Provider" component={ProviderScreen}/
       <Stack.Screen name="Category Detail" component={CategoryDetail}/>
     </Stack.Navigator>
   );

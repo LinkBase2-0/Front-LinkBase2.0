@@ -251,7 +251,11 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                 >
                   <YelpAdminSvg />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate({ name: "Employees", params: { isAdmin: true } })
+                }
+                >
                   <UsersAdminSvg />
                 </TouchableOpacity>
               </View>
