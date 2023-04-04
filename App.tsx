@@ -22,14 +22,16 @@ import HomeAdmin from "./src/screens/Admin/Home/HomeAdmin";
 import LogInScreen from "./src/components/LogInScreen";
 import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
+import ReviewsAdmin from "./src/screens/Admin/Reviews/Reviews";
 
 type RootStackParamList = {
-  "Intro": undefined;
+  "Intro": { isAdmin?: boolean };
   "Log In": { isAdmin?: boolean };
   "Register": undefined;
   "Main": undefined;
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
+  "Reviews Admin": { isAdmin?: boolean };
 };
 
 const App = () => {
@@ -64,6 +66,7 @@ const App = () => {
             {/* Admin */}
             <Stack.Screen name="Intro Admin" component={IntroAdmin} />
             <Stack.Screen name="Home Admin" component={HomeAdmin} />
+            <Stack.Screen name="Reviews Admin" component={ReviewsAdmin} />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
@@ -87,6 +90,10 @@ export type IntroAdminProps = NativeStackScreenProps<
 export type HomeAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Home Admin"
+>;
+export type ReviewsAdminProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Reviews Admin"
 >;
 export default App;
 
