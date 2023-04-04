@@ -65,6 +65,7 @@ const categories: Category[] = [
   },
 ];
 
+
 const Home: React.FC<OverviewProps> = ({ navigation }) => {
   return (
     <SafeAreaView>
@@ -87,7 +88,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
             <GridContainer>
               {categories.map((category) => (
                 <CategoriaCard key={category.id}>
-                  <Box
+                  <Pressable
                     bg="#FFFFFF"
                     rounded="lg"
                     p={0}
@@ -95,13 +96,14 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
                     height="70%"
                     justifyContent="center"
                     alignItems="center"
+                    onPress={()=> navigate("CategoryDetail", {categoryName:category.name})}
                   >
                     <Image
                       source={category.icon}
                       style={{ width: "33%", height: "55%" }}
                     />
                     <CategoriaCardText style={{ width: "65%", height: "30%" , fontSize: 10}}>{category.name}</CategoriaCardText>
-                  </Box>
+                  </Pressable>
                 </CategoriaCard>
               ))}
             </GridContainer>

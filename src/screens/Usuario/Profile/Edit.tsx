@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { Alert, Text, TouchableOpacity } from "react-native";
 import { AddphotoSvg } from "../../../assets";
-import { ArrowLeftIcon, UserCircleIcon }from "react-native-heroicons/solid";
+import { ArrowLeftIcon }from "react-native-heroicons/solid";
 import { Container, ProfilePic, EditText, EditInput, Button} from "./styles";
 
 const Edit: React.FC = ({navigation}) => {

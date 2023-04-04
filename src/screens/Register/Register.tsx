@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import {
-  Alert,
-  Keyboard,
-  TouchableWithoutFeedback,
-  View,
-  Text,
-} from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback,View,Text,TouchableOpacity } from "react-native";
 import { ArrowLeftIcon, UserCircleIcon } from "react-native-heroicons/solid";
 import DropdownComponent from "../../components/Dropdown";
 
