@@ -1,61 +1,47 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import { DropdownOptions, Form } from '../screens/Register/Register';
 
-// const data = [
-//   { label: 'Item 1', value: '1' },
-//   { label: 'Item 2', value: '2' },
-//   { label: 'Item 3', value: '3' },
-//   { label: 'Item 4', value: '4' },
-//   { label: 'Item 5', value: '5' },
-//   { label: 'Item 6', value: '6' },
-//   { label: 'Item 7', value: '7' },
-//   { label: 'Item 8', value: '8' },
-// ];
 type Props = {
-    data:
-        {
-            label:string;
-            value:string;
-        }[];
-    
-    placeholderName:string;
-  }
+  data: DropdownOptions[];
+  placeholderName: string;
+  onSelect: (key: keyof Form, value: string) => void;
+  formInput: keyof Form;
+}
 
-const DropdownComponent: React.FC<Props> = ({data,placeholderName})=>{
-  const [value, setValue] = useState("");
-  const [isFocus, setIsFocus] = useState(false);
+const DropdownComponent: React.FC<Props> = ({ data, placeholderName, formInput, onSelect }) => {
 
-  
+  const [value, setValue] = useState<number>(0);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
-  return (<>
-      <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        itemTextStyle={styles.itemTextStyle}
-        mode={"modal"}
-        data={data}
-        search
-        maxHeight={200}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? `${placeholderName}` : '...'}
-        searchPlaceholder="Search..."
-        value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={item => {
-          setValue(item.value);
-          setIsFocus(false);
-        }}
-       
-      />
-      </>
+  return (
+    <Dropdown
+      style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+      placeholderStyle={styles.placeholderStyle}
+      selectedTextStyle={styles.selectedTextStyle}
+      inputSearchStyle={styles.inputSearchStyle}
+      iconStyle={styles.iconStyle}
+      itemTextStyle={styles.itemTextStyle}
+      mode={"modal"}
+      data={data}
+      search
+      maxHeight={200}
+      labelField="name"
+      valueField="id"
+      placeholder={!isFocus ? `${placeholderName}` : '...'}
+      searchPlaceholder="Search..."
+      value={value}
+      onFocus={() => setIsFocus(true)}
+      onBlur={() => setIsFocus(false)}
+      onChange={item => {
+        setValue(item.id);
+        setIsFocus(false);
+        onSelect(formInput, item.name)
+      }}
+    />
   );
-};
+}
 
 export default DropdownComponent;
 
