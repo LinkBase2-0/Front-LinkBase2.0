@@ -108,7 +108,7 @@ const Employees: React.FC<EmployeesProps> = () => {
        <SearchIcon color="black"/>
       </View>       
        <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
-        {empleados.map(empleado=><EmployeeInfo id={empleado.id} fullName={empleado.fullName} company={empleado.company} role={empleado.role} email={empleado.email}onDelete={handleDelete}/>)}
+        {empleados.map(empleado=><EmployeeInfo key={empleado.id} id={empleado.id} fullName={empleado.fullName} company={empleado.company} role={empleado.role} email={empleado.email}onDelete={handleDelete}/>)}
        </ScrollView>
 
     </Container>

@@ -44,7 +44,6 @@ export const SearchIcon = styled(Icon).attrs({
     size: 13,
     color: "black",
   })`
-    transform-origin: center;
     position: absolute;
     right:20px;
     top:30px;

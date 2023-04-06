@@ -22,9 +22,10 @@ type Props = {
     placeholderName:string;
     search:boolean;
     handleSort:Function;
+    handleFilter: Function;
   }
 
-const DropdownComponent: React.FC<Props> = ({data,placeholderName,search,handleSort})=>{
+const DropdownComponent: React.FC<Props> = ({data,placeholderName,search,handleSort, handleFilter})=>{
   const [value, setValue] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   
@@ -52,6 +53,7 @@ const DropdownComponent: React.FC<Props> = ({data,placeholderName,search,handleS
           setValue(item.value);
           setIsFocus(false);
           handleSort(item.value);
+          handleFilter(item.label);
         }}
        
       />
