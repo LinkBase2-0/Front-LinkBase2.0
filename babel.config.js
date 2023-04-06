@@ -22,5 +22,15 @@ module.exports = function (api) {
         },
       ],
     ],
+    env: {
+      production: {
+        plugins: ["react-native-dotenv"],
+      },
+      development: {
+        plugins: [
+          ["module:react-native-dotenv", { moduleName: "react-native-dotenv" }],
+        ],
+      },
+    },
   };
 };

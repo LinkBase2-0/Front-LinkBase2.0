@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -7,7 +7,7 @@ import {
   Input,
   HStack,
   Center,
-  Image,
+  //Image,
 } from "native-base";
 import { HomeAdminProps } from "../../../../App";
 import { TouchableOpacity, View } from "react-native";
@@ -19,43 +19,88 @@ import COLORS from "../../../styles/theme";
 import Filtro from "./FiltroRating/Filtro";
 import { SearchIcon } from "../../Usuario/Home/styles";
 import { ScrollView } from "react-native-gesture-handler";
-import { TrashSvg, UsersAdminSvg, YelpAdminSvg } from "../../../assets/svgImages/Admin/Intro";
+import {
+  TrashSvg,
+  UsersAdminSvg,
+  YelpAdminSvg,
+} from "../../../assets/svgImages/Admin/Intro";
 
-const proveedores = [
-  {
-    id: 1,
-    title: "Office Depot",
-    image: require("../../../assets/svgImages/Admin/Intro/img/proveedorr.png"),
-    promedio: 3.8,
-  },
-  {
-    id: 2,
-    title: "Proveedor 2",
-    image: require("../../../assets/svgImages/Admin/Intro/img/proveedorr.png"),
-    promedio: 4.5,
-  },
-  {
-    id: 3,
-    title: "Proveedor 3",
-    image: require("../../../assets/svgImages/Admin/Intro/img/proveedorr.png"),
-    promedio: 2.7,
-  },
-  {
-    id: 4,
-    title: "Proveedor 4",
-    image: require("../../../assets/svgImages/Admin/Intro/img/proveedorr.png"),
-    promedio: 3.9,
-  },
-  {
-    id: 5,
-    title: "Proveedor 5",
-    image: require("../../../assets/svgImages/Admin/Intro/img/proveedorr.png"),
-    promedio: 4.1,
-  },
-];
+//importar axios
+import axios from "axios";
+import { Image } from "react-native";
+
+interface Review {
+  id: number;
+  ProviderId: number;
+  stars: number;
+}
+
+interface Proveedor {
+  id: number;
+  UserId: number;
+  address: string;
+  createdAt: string;
+  email: string;
+  isPending: boolean;
+  latitude: string;
+  longitude: string;
+  name: string;
+  phone: string;
+  photoURL: string;
+  time: string;
+  updatedAt: string;
+  web: string;
+}
 
 const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
-  
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const [filtro, setFiltro] = useState<number>(0);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.IP_ADDRESS}/providers`)
+      .then((response) => {
+        setProveedores(response.data);
+        //console.log("PROVEEDORES", response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .get(`${process.env.IP_ADDRESS}/reviews`)
+      .then((response) => {
+        setReviews(response.data);
+        //console.log("REVIEWS", response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //sacar el promedio de las reviews
+  const getPromedio = (proveedorId: number): number => {
+    const providerReviews = reviews.filter(
+      (review) => review.ProviderId === proveedorId
+    );
+    const starsSum = providerReviews.reduce(
+      (acc, review) => acc + review.stars,
+      0
+    );
+    return starsSum / providerReviews.length;
+  };
+
+  //sacar la cantidad de reviews
+  const getCantidadReviews = (proveedorId: number): number => {
+    const providerReviews = reviews.filter(
+      (review) => review.ProviderId === proveedorId
+    );
+    return providerReviews.length;
+  };
+
   // Genera íconos de estrella
   const generarIconosEstrella = (num: number): JSX.Element[] => {
     const iconos = [];
@@ -82,6 +127,44 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
     return iconos;
   };
 
+  //Filtrar los proveedores en función del valor de buqueda y rating, y ordenar por promedio de reviews
+  const filteredProveedores = [...proveedores]
+    .sort((a, b) => {
+      if (filtro === 0) {
+        return getPromedio(b.id) - getPromedio(a.id);
+      } else {
+        return getPromedio(a.id) - getPromedio(b.id);
+      }
+    })
+    .filter((proveedor) => {
+      // Filtro por nombre del proveedor
+      const searchFilter = proveedor.name
+        .toLowerCase()
+        .includes(searchValue.toLowerCase());
+
+      // Filtro por rating del proveedor
+      let ratingFilter = false;
+      if (filtro === 0) {
+        ratingFilter = true;
+      } else {
+        ratingFilter = getPromedio(proveedor.id) >= filtro;
+      }
+
+      // Retorna verdadero si ambos filtros son verdaderos
+      return searchFilter && ratingFilter;
+    });
+
+  //filtrar por rating
+  const filtrarPorRating = (rating: number) => {
+    const nuevoFiltro = rating === filtro ? 0 : rating;
+    setFiltro(nuevoFiltro);
+  };
+
+  const handleYelpIconPress = (proveedorId: number) => {
+    navigation.navigate("Reviews Admin", { proveedorId });
+    //navigation.navigate('Reseñas', { proveedorId });
+  };
+
   return (
     <Box
       safeArea
@@ -106,7 +189,10 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
           </Center>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate({ name: "Profile Admin", params: { isAdmin: true } })
+              navigation.navigate({
+                name: "Profile Admin",
+                params: { isAdmin: true },
+              })
             }
           >
             <Ionicons
@@ -125,7 +211,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
         <Center>
           <HStack space={2} alignItems="center" px={4} py={2}>
             <Box width={100}>
-              <Filtro />
+              <Filtro filtrarPorRating={filtrarPorRating} />
             </Box>
             <Box width={200}>
               <Input
@@ -148,120 +234,128 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                     m={2}
                   />
                 }
+                onChangeText={setSearchValue}
+                value={searchValue}
               />
             </Box>
           </HStack>
         </Center>
       </Box>
       <ScrollView>
-        {proveedores.map((proveedor) => (
-          <Box
-            key={proveedor.id}
-            bg="#ffffff"
-            shadow={2}
-            borderRadius={20}
-            m={9}
-            position="relative"
-          >
-            <Image
-              source={proveedor.image}
-              alt={proveedor.title}
-              height={103}
-              width={321}
-              borderRadius={20}
-              resizeMode="contain"
-              marginBottom={4}
-              //opacity={0.9}
-            />
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              bg="rgba(0, 0, 0, 0.6)"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height={103}
-              width="100%"
-              borderRadius={20}
-            >
-              <Text
-                fontFamily={COLORS.FONTS.OUTFITBOLD}
-                fontWeight="700"
-                fontSize={25}
-                color="#FFFFFF"
-              >
-                {proveedor.title}
-              </Text>
-              <View style={{ display: "flex", flexDirection: "row" }}>
-                {generarIconosEstrella(proveedor.promedio)}
-                {/* <YelpAdminSvg />
-                <YelpAdminSvg />
-                <YelpAdminSvg />
-                <YelpAdminSvg />
-                <YelpAdminSvg /> */}
-                <Text style={{ color: "white", marginLeft: "2%" }}>20</Text>
-              </View>
-            </Box>
-            <TouchableOpacity
-              onPress={() => {
-                // Lógica para eliminar la imagen aquí
-              }}
-              style={{
-                position: "absolute",
-                top: 5,
-                right: 5,
-                //backgroundColor: "rgba(0,0,0,0.5)",
-                borderRadius: 20,
-                padding: 13,
-              }}
-            >
-              <TrashSvg />
-            </TouchableOpacity>
+        {filteredProveedores.length > 0 &&
+          filteredProveedores.map((proveedor) => {
+            //console.log("PROVEEDOR INDIVIDUAL", proveedor);
 
-            <Center>
-              <View
-                style={{
-                  width: "70%",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingBottom: "5%",
-                }}
+            return (
+              <Box
+                key={proveedor.id}
+                bg="#ffffff"
+                shadow={2}
+                borderRadius={20}
+                m={9}
+                position="relative"
               >
-                {/* <TouchableOpacity> */}
-                  <Text>Administrar</Text>
-                {/* </TouchableOpacity> */}
-                <View
-                  style={{
-                    borderLeftWidth: 2,
-                    paddingLeft: 18,
-                    borderColor: "rgba(0,0,0,0.1)",
-                    height: "250%",
-                    marginTop: "-8%",
+                <Image
+                  source={{ uri: proveedor.photoURL }}
+                  alt={proveedor.name}
+                  style={{ height: 103, width: 321, marginBottom: 4 }}
+                  //height={103}
+                  //width={321}
+                  borderRadius={20}
+                  resizeMode="contain"
+                  //marginBottom={4}
+                />
+                <Box
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  right={0}
+                  bottom={0}
+                  bg="rgba(0, 0, 0, 0.6)"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height={103}
+                  width="100%"
+                  borderRadius={20}
+                >
+                  <Text
+                    fontFamily={COLORS.FONTS.OUTFITBOLD}
+                    fontWeight="700"
+                    fontSize={18}
+                    color="#FFFFFF"
+                  >
+                    {proveedor.name}
+                  </Text>
+                  <View style={{ display: "flex", flexDirection: "row" }}>
+                    {generarIconosEstrella(getPromedio(proveedor.id))}
+                    <Text style={{ color: "white", marginLeft: "2%" }}>
+                      {getPromedio(proveedor.id)
+                        ? getPromedio(proveedor.id)
+                        : 0}
+                      {" de (" + getCantidadReviews(proveedor.id) + " reviews)"}
+                    </Text>
+                  </View>
+                </Box>
+                <TouchableOpacity
+                  onPress={() => {
+                    // Lógica para eliminar la imagen aquí
                   }}
-                ></View>
+                  style={{
+                    position: "absolute",
+                    top: 5,
+                    right: 5,
+                    //backgroundColor: "rgba(0,0,0,0.5)",
+                    borderRadius: 20,
+                    padding: 13,
+                  }}
+                >
+                  <TrashSvg />
+                </TouchableOpacity>
 
-                <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate({ name: "Reviews Admin", params: { isAdmin: true } })
-                }
-                >
-                  <YelpAdminSvg />
-                </TouchableOpacity>
-                <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate({ name: "Employees", params: { isAdmin: true } })
-                }
-                >
-                  <UsersAdminSvg />
-                </TouchableOpacity>
-              </View>
-            </Center>
-          </Box>
-        ))}
+                <Center>
+                  <View
+                    style={{
+                      width: "70%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      paddingBottom: "5%",
+                    }}
+                  >
+                    {/* <TouchableOpacity> */}
+                    <Text>Administrar</Text>
+                    {/* </TouchableOpacity> */}
+                    <View
+                      style={{
+                        borderLeftWidth: 2,
+                        paddingLeft: 18,
+                        borderColor: "rgba(0,0,0,0.1)",
+                        height: "250%",
+                        marginTop: "-8%",
+                      }}
+                    ></View>
+
+                    <TouchableOpacity
+                      onPress={() => handleYelpIconPress(proveedor.id)}
+                    >
+                      <YelpAdminSvg />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate({
+                          name: "Employees",
+                          params: { isAdmin: true },
+                        })
+                      }
+                    >
+                      <UsersAdminSvg />
+                    </TouchableOpacity>
+                  </View>
+                </Center>
+              </Box>
+            );
+          })}
       </ScrollView>
     </Box>
   );

@@ -105,7 +105,7 @@ const Employees: React.FC<EmployeesProps> = () => {
       <Description>Ve y administra a los empleados de Office Depot</Description>
       <View>
       <EmployeeSearch placeholder="Busca Colaboradores" placeholderTextColor={"#666161"} value={search} onChangeText={(query)=>handleSearch(query)}/>
-       <SearchIcon/>
+       <SearchIcon color="black"/>
       </View>       
        <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
         {empleados.map(empleado=><EmployeeInfo id={empleado.id} fullName={empleado.fullName} company={empleado.company} role={empleado.role} email={empleado.email}onDelete={handleDelete}/>)}
