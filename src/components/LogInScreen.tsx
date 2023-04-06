@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ArrowBackIcon,
   Box,
   Button,
   Input,
+  Modal,
   Pressable,
   Stack,
   Text,
@@ -11,14 +14,51 @@ import {
 } from "native-base";
 import { LogInProps } from "../../App";
 
+type HandleInput = (
+  value: string, 
+  input: React.Dispatch<React.SetStateAction<string>>
+) => void;
+
+type LogInRequestBody = {
+  email: string,
+  password: string
+}
+
 const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
-
 	const isAdmin: boolean = route.params.isAdmin;
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true)
+  const [showModalWrongCredentials, setShowModalWrongCredentials] = useState(false);
+  const [logInError, setLogInError] = useState("");
 
-  const handlePress = ():void => {
+  useEffect(() => {
+    setIsSubmitDisabled(true);
+
+    if (emailInput && passwordInput) setIsSubmitDisabled(false);
+  },[emailInput, passwordInput]);
+
+  const handleInput: HandleInput = (value, input) => {
+    input(value);
+  }
+
+  const handleSubmit = async (): Promise<void> => {
+    const logInRequestBody: LogInRequestBody = {
+      email: emailInput,
+      password: passwordInput
+    }
     
-    if (isAdmin) navigation.navigate({ name: "Home Admin", params: { isAdmin: true }});
-    else navigation.navigate("Main");
+    try {
+      const user = await axios.post(`${process.env.IP_ADDRESS}/users/login`, logInRequestBody);
+
+      if (isAdmin) navigation.navigate({ name: "Home Admin", params: { isAdmin: true }});
+      else navigation.navigate("Main");
+    } catch (error: any) {
+      const errorMessage = error.response.data;
+      const formattedErrorMessage = errorMessage.charAt(0).toUpperCase() + errorMessage.slice(1);
+      setLogInError(formattedErrorMessage);
+      setShowModalWrongCredentials(true);
+    }
   }
 
   return (
@@ -64,6 +104,8 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
             isFocused={false}
             focusOutlineColor="none"
             _focus={{bg:"none"}}
+            onChangeText={value => handleInput(value, setEmailInput)}
+            value={emailInput}
           />
           <Input 
             size="md" 
@@ -77,6 +119,8 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
             focusOutlineColor="none"
             _focus={{bg:"none"}}
             type="password"
+            onChangeText={value => handleInput(value, setPasswordInput)}
+            value={passwordInput}
           />
         </Stack>
         <Pressable onPress={() => navigation.navigate("Intro")}>
@@ -97,11 +141,12 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
         </Pressable>	
         <Box display="flex" flexDirection="row">
           <Button
-            onPress={handlePress}
+            disabled={isSubmitDisabled}
+            onPress={handleSubmit}
             width="320"
             height="60"
             borderRadius="15"
-            bg="#981D9A"
+            bg={isSubmitDisabled ? "#808080" : "#981D9A" }
             _pressed={{ bg: "#6f1570" }}
             shadow="9"
           >
@@ -114,6 +159,22 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
           </Button>
         </Box>
       </VStack>
+      <Modal 
+        isOpen={showModalWrongCredentials} 
+        onClose={() => setShowModalWrongCredentials(false)}
+      >
+        <Modal.Content maxWidth="400">
+          <Modal.Header>Algo no anda bien...</Modal.Header>
+          <Modal.Body>
+            <Text>{logInError}, please try again.</Text>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+              setShowModalWrongCredentials(false);
+            }}>Regresar</Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 }
