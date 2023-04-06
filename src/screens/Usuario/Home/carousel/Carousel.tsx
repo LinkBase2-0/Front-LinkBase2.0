@@ -6,9 +6,11 @@ import {
   ImageBackground,
   Animated,
   useWindowDimensions,
+  Pressable,
 } from "react-native";
 import styled from "styled-components/native";
 import { StarSvg } from "../../../../assets/svgImages/Usuario/Home";
+import { OverviewProps } from "../../../../components/Navigators/HomeNavigator";
 
 interface Proveedor {
   id: string;
@@ -17,6 +19,7 @@ interface Proveedor {
   review: number;
   distance: string;
 }
+
 
 const proveedores: Proveedor[] = [
   {
@@ -87,7 +90,8 @@ const StarText = styled.Text`
   font-family: ${(props) => props.theme.FONTS.OUTFITLIGHT};
 `;
 
-const Carousel = () => {
+const Carousel: React.FC<OverviewProps> = ({ navigation, route }) => {
+
   const scrollX = useRef(new Animated.Value(0)).current;
 
   const scrollViewRef = useRef(null);
@@ -143,6 +147,9 @@ const Carousel = () => {
         >
           {proveedores.map((proveedor, proveedorIndex) => {
             return (
+              <Pressable onPress={() => navigation.navigate("Provider")} key={proveedor.id}>
+            
+          
               <View
                 style={{ width: windowWidth - 20, height: 200, }}
                 key={proveedor.id}
@@ -164,6 +171,7 @@ const Carousel = () => {
                   </View>
                 </TextContainer>
               </View>
+              </Pressable>
             );
           })}
         </ScrollView>

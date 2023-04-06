@@ -13,6 +13,8 @@ import {
   CategoriaCardText,
 } from "./styles";
 
+import { RouteProp } from "@react-navigation/native";
+
 import { Box, Pressable } from "native-base";
 import { Carousel } from "./carousel/Carousel";
 import { OverviewProps } from "../../../components/Navigators/HomeNavigator";
@@ -31,6 +33,14 @@ interface Proveedor {
   review: number;
   distance: string;
 }
+
+type RootStackParamList = {
+  "Overview": { navigate: any };
+  "Provider": undefined; 
+  "CategoryDetail": { categoryName: string };
+}
+
+
 
 const categories: Category[] = [
   {
@@ -65,8 +75,7 @@ const categories: Category[] = [
   },
 ];
 
-
-const Home: React.FC<OverviewProps> = ({ navigation }) => {
+const Home: React.FC<OverviewProps> = ({ navigation, route }) => {
   return (
     <SafeAreaView>
       <Container>
@@ -85,38 +94,51 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
             scrollEnabled={false}
           >
             <Box padding={1} borderRadius={8} margin={1}>
-            <GridContainer>
-              {categories.map((category) => (
-                <CategoriaCard key={category.id}>
-                  <Pressable
-                    bg="#FFFFFF"
-                    rounded="lg"
-                    p={0}
-                    width="100%"
-                    height="70%"
-                    justifyContent="center"
-                    alignItems="center"
-                    onPress={()=> navigation.navigate("CategoryDetail", {categoryName:category.name})}
-                  >
-                    <Image
-                      source={category.icon}
-                      style={{ width: "33%", height: "55%" }}
-                    />
-                    <CategoriaCardText style={{ width: "65%", height: "30%" , fontSize: 10}}>{category.name}</CategoriaCardText>
-                  </Pressable>
-                </CategoriaCard>
-              ))}
-            </GridContainer>
+              <GridContainer>
+                {categories.map((category) => (
+                  <CategoriaCard key={category.id}>
+                    <Pressable
+                      bg="#FFFFFF"
+                      rounded="lg"
+                      p={0}
+                      width="100%"
+                      height="70%"
+                      justifyContent="center"
+                      alignItems="center"
+                      onPress={() =>
+                        navigation.navigate("CategoryDetail", {
+                          categoryName: category.name,
+                        })
+                      }
+                    >
+                      <Image
+                        source={category.icon}
+                        style={{ width: "33%", height: "55%" }}
+                      />
+                      <CategoriaCardText
+                        style={{ width: "65%", height: "30%", fontSize: 10 }}
+                      >
+                        {category.name}
+                      </CategoriaCardText>
+                    </Pressable>
+                  </CategoriaCard>
+                ))}
+              </GridContainer>
             </Box>
           </ScrollViewCategory>
         </ContainerCategory>
         <TextProveedor>Proveedores Destacados</TextProveedor>
         <ProveedorContainer
-          style={{ display: "flex", justifyContent: "center", height: "90%", width: "100%", elevation: 1 }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            height: "90%",
+            width: "100%",
+            elevation: 1,
+          }}
         >
-          <Pressable onPress={() => navigation.navigate("Provider")}>
-            <Carousel />
-          </Pressable>
+          
+          <Carousel navigation={navigation} route={route} />
         </ProveedorContainer>
       </Container>
     </SafeAreaView>
