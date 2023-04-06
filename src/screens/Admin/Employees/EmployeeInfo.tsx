@@ -1,5 +1,5 @@
 import React from "react";
-import {TouchableOpacity, View } from "react-native";
+import {Alert,TouchableOpacity, View } from "react-native";
 import {EmployeeContainer,FullName, BusinessName, Role, Mail, Trash} from "./styles"
 
 interface Empleado {
@@ -14,7 +14,14 @@ interface Empleado {
 const EmployeeInfo: React.FC<Empleado> = ({id,fullName,company, role, email, onDelete}) => {
 
     const handleDelete = () => {
-        onDelete(id);
+      const title = "Alerta"
+      const message = "¿Eliminar usuario?"
+      Alert.alert(title,message,[{
+          text:"Confirmar",
+          onPress: ()=>  onDelete(id),
+      },{
+          text:"Cancelar",
+          onPress: ()=>console.log("Eliminación Cancelada")}])
       };
 
     return(

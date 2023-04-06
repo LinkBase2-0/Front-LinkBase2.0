@@ -58,7 +58,7 @@ font-family: "Outfit_500Medium";
 font-size: 15px;
 color: #000000;
 align-self:flex-start;
-margin: 21px 0 0 39px;
+margin-top: 21px;
 `;
 
 export const CardText = styled.Text`

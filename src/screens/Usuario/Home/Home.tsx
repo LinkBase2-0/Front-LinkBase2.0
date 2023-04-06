@@ -35,32 +35,32 @@ interface Proveedor {
 const categories: Category[] = [
   {
     id: "1",
-    name: "Category 1",
+    name: "Insumos",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category1.png"),
   },
   {
     id: "2",
-    name: "Category 2",
+    name: "Maquinaria",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category2.png"),
   },
   {
     id: "3",
-    name: "Category 3",
+    name: "Repuestos",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png"),
   },
   {
     id: "4",
-    name: "Category 4",
+    name: "Material de construccion",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png"),
   },
   {
     id: "5",
-    name: "Category 5",
+    name: "Servicios",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png"),
   },
   {
     id: "6",
-    name: "Category 6",
+    name: "Profesionales",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png"),
   },
 ];
