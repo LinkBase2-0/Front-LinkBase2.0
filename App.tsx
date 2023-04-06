@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import type { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { createStackNavigator } from '@react-navigation/stack';
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { NativeBaseProvider, StatusBar } from "native-base";
 import { ThemeProvider } from "styled-components/native";
 import {
@@ -15,13 +15,13 @@ import {
 } from "@expo-google-fonts/outfit";
 import { DMSans_400Regular } from "@expo-google-fonts/dm-sans";
 import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";
-import {OpenSans_300Light} from "@expo-google-fonts/open-sans"
+import { OpenSans_300Light } from "@expo-google-fonts/open-sans";
 import nativeBaseExtendTheme from "./src/styles/nativeBaseExtendTheme";
 import COLORS from "./src/styles/theme";
 import Intro from "./src/components/Intro";
 import IntroAdmin from "./src/screens/Admin/Intro";
 import HomeAdmin from "./src/screens/Admin/Home/HomeAdmin";
-import {Employees} from "./src/screens/Admin/Employees/Employees"
+import { Employees } from "./src/screens/Admin/Employees/Employees";
 import LogInScreen from "./src/components/LogInScreen";
 import Register from "./src/screens/Register/Register";
 import Main from "./src/screens/Usuario/Main/Main";
@@ -30,21 +30,22 @@ import { ProfileAdmin } from "./src/screens/Admin/Profile/Profile";
 import { PasswordAdmin } from "./src/screens/Admin/Profile/Password";
 
 type RootStackParamList = {
-  "Intro": undefined;
+  Intro: undefined;
   "Log In": { isAdmin: boolean };
-  "Register": undefined;
-  "Main": undefined;
-  "CategoryDetails": undefined;
+  Register: undefined;
+  Main: undefined;
+  CategoryDetails: undefined;
   "Intro Admin": { isAdmin?: boolean };
   "Home Admin": { isAdmin?: boolean };
-  "Reviews Admin": { isAdmin?: boolean };
+  "Reviews Admin": {
+    proveedorId: number;
+  };
   "Profile Admin": { isAdmin?: boolean };
   "Password Admin": { isAdmin?: boolean };
-  "Employees": {isAdmin?: boolean}
+  Employees: { isAdmin?: boolean };
 };
 
 const App = () => {
-
   const Stack = createStackNavigator<RootStackParamList>();
 
   const [fontsLoaded] = useFonts({
@@ -56,7 +57,7 @@ const App = () => {
     Outfit_800ExtraBold,
     DMSans_400Regular,
     DMSerifDisplay_400Regular,
-    OpenSans_300Light
+    OpenSans_300Light,
   });
 
   if (!fontsLoaded) return null;
@@ -84,7 +85,7 @@ const App = () => {
       </ThemeProvider>
     </NativeBaseProvider>
   );
-}
+};
 
 export type IntroProps = NativeStackScreenProps<RootStackParamList, "Intro">;
 export type LogInProps = NativeStackScreenProps<RootStackParamList, "Log In">;
@@ -110,8 +111,14 @@ export type ProfileAdminProps = NativeStackScreenProps<
   RootStackParamList,
   "Profile Admin"
 >;
-export type CategoryDetailProps = NativeStackScreenProps<RootStackParamList, "CategoryDetails">;
-export type EmployeesProps = NativeStackScreenProps<RootStackParamList, "Employees">;
+export type CategoryDetailProps = NativeStackScreenProps<
+  RootStackParamList,
+  "CategoryDetails"
+>;
+export type EmployeesProps = NativeStackScreenProps<
+  RootStackParamList,
+  "Employees"
+>;
 
 export type PasswordAdminProps = NativeStackScreenProps<
   RootStackParamList,

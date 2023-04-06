@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -16,77 +16,81 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import COLORS from "../../../styles/theme";
 
 import { ScrollView } from "react-native-gesture-handler";
-import { EditSvgAdmin, TrashIcon2 } from "../../../assets/svgImages/Admin/Intro";
+import {
+  EditSvgAdmin,
+  TrashIcon2,
+} from "../../../assets/svgImages/Admin/Intro";
 import FiltroPositivos from "./FiltroPositivos/Filtro";
+import { Route, useRoute } from "@react-navigation/native";
+import axios from "axios";
 
-const reviews = [
-  {
-    id: 1,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 4,
-    description: "Excelente servicio al cliente y productos de alta calidad.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 2,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 5,
-    description: "Increíble experiencia de compra. Recomendado totalmente.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 3,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 4,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 5,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 6,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 7,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-  {
-    id: 8,
-    nombre: "Bob Johnson",
-    image: require("./img/user.png"),
-    puntuacion: 3,
-    description: "Buenos precios, pero el envío tardó más de lo esperado.",
-    fecha: "7/12/2023",
-  },
-];
+interface ProviderReviews {
+  id: number;
+  UserId: number;
+  createdAt: string;
+  text: string;
+  stars: number;
+}
+
+interface UserReviews {
+  id: number;
+  fullName: string;
+  photoURL: string;
+}
 
 const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
+  const { params } =
+    useRoute<Route<"Reviews Admin", { proveedorId: number }>>();
+  const proveedorIdSelected = params.proveedorId;
+  //console.log("PROVEEDORID", proveedorIdSelected);
+
+  const [providerReviews, setProviderReviews] = useState<ProviderReviews[]>([]);
+  const [userReviews, setUserReviews] = useState<UserReviews[]>([]);
+
+  const [hasReviews, setHasReviews] = useState(false);
+
+  useEffect(() => {
+    if (proveedorIdSelected) {
+      axios
+        .get(
+          `${process.env.IP_ADDRESS}/reviews/providerReviews/${proveedorIdSelected}`
+        )
+        .then((response) => {
+          setProviderReviews(response.data.reviews);
+          if (response.data.reviews.length > 0) {
+            setHasReviews(true);
+          }
+          //console.log("PROVIDER REVIEWS", response.data.reviews);
+
+          // Hacer otra petición utilizando la propiedad UserId de cada review
+          response.data.reviews.forEach((review: { UserId: number }) => {
+            const userId = review.UserId;
+            axios
+              .get(`${process.env.IP_ADDRESS}/users/${userId}`)
+              .then((userResponse) => {
+                setUserReviews((prevReviews) => [
+                  ...prevReviews,
+                  userResponse.data,
+                ]);
+                //console.log("USER INFO", response.data);
+
+                // Hacer algo con la respuesta aquí
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [proveedorIdSelected]);
+
+  //console.log("USERSREVIEWLEGAGAGAA", userReviews);
+
+  //console.log("PROVIDERS REVIEW FINAL", providerReviews);
+
   // Genera íconos de estrella
   const generarIconosEstrella = (num: number): JSX.Element[] => {
     const iconos = [];
@@ -148,11 +152,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
               Reseñas
             </Text>
           </Center>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({ name: "Intro", params: { isAdmin: true } })
-            }
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Intro")}>
             <Ionicons
               name="person-circle-outline"
               size={24}
@@ -175,127 +175,146 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
         </Center>
       </Box>
       <ScrollView>
-        {reviews.map((review) => (
-          <Box
-            key={review.id}
-            bg="#ffffff"
-            shadow={2}
-            borderRadius={20}
-            m={5}
-            position="relative"
-          >
-            <Image
-              marginTop={10}
-              marginLeft={5}
-              source={review.image}
-              alt={review.nombre}
-              height={36}
-              width={45}
-              resizeMode="contain"
-              marginBottom={4}
-            />
-            <Box
-              position="absolute"
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="65%"
-              width="100%"
-              marginRight="58%"
-              borderRadius={20}
-            >
-              <View style={{ display: "flex" }}>
-                <Text
-                  fontFamily={COLORS.FONTS.OUTFITBOLD}
-                  fontWeight="700"
-                  fontSize={12}
-                  color="#000000"
-                >
-                  {review.nombre}
-                </Text>
-              </View>
-            </Box>
-            <Box
-              position="absolute"
-              top={3}
-              left={0}
-              right={0}
-              bottom={0}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              height="75%"
-              width="100%"
-              borderRadius={20}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  marginLeft: "-9%",
-                }}
-              >
-                {generarIconosEstrella(review.puntuacion)}
+        {providerReviews.length > 0 ? (
+          providerReviews.map((review) => {
+            //console.log("REVIEW", review);
+            //console.log("PROVIDER", provider);
 
-                <Text
-                  style={{ color: "black", marginLeft: "3%", marginBottom: 1 }}
-                >
-                  {review.fecha}
-                </Text>
-              </View>
-            </Box>
-            <TouchableOpacity
-              onPress={() => {
-                // Lógica para eliminar la imagen aquí
-              }}
-              style={{
-                position: "absolute",
-                top: 12,
-                right: "10%",
-                height: "15%",
-                width: "8%",
-                borderRadius: 5,
-                padding: 4,
-              }}
-            >
-              <EditSvgAdmin />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                // Lógica para eliminar la imagen aquí
-              }}
-              style={{
-                position: "absolute",
-                top: 12,
-                right: "2%",
-                height: "15%",
-                width: "8%",
-                borderRadius: 5,
-                padding: 4,
-              }}
-            >
-              <TrashIcon2 />
-            </TouchableOpacity>
+            const user = userReviews.find((user) => user.id === review.UserId);
 
-            <Center>
-              <View
-                style={{
-                  width: "90%",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingBottom: "5%",
-                }}
-              >
-                <Text>{review.description}</Text>
-              </View>
-            </Center>
-          </Box>
-        ))}
+            if (user) {
+              return (
+                <Box
+                  key={review.id}
+                  bg="#ffffff"
+                  shadow={2}
+                  borderRadius={20}
+                  m={5}
+                  position="relative"
+                >
+                  <Image
+                    key={user.id}
+                    alt={user.fullName}
+                    marginTop={10}
+                    marginLeft={5}
+                    source={{ uri: user.photoURL }}
+                    height={36}
+                    width={45}
+                    resizeMode="contain"
+                    marginBottom={4}
+                  />
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="65%"
+                    width="100%"
+                    marginRight="58%"
+                    borderRadius={20}
+                  >
+                    <View style={{ display: "flex" }}>
+                      <Text
+                        fontFamily={COLORS.FONTS.OUTFITBOLD}
+                        fontWeight="700"
+                        fontSize={12}
+                        color="#000000"
+                      >
+                        {user.fullName}
+                      </Text>
+                    </View>
+                  </Box>
+                  <Box
+                    position="absolute"
+                    top={3}
+                    left={0}
+                    right={0}
+                    bottom={0}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="75%"
+                    width="100%"
+                    borderRadius={20}
+                  >
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        marginLeft: "-9%",
+                      }}
+                    >
+                      {generarIconosEstrella(review.stars)}
+
+                      <Text
+                        style={{
+                          color: "black",
+                          marginLeft: "3%",
+                          marginBottom: 1,
+                        }}
+                      >
+                        {review.createdAt.slice(0, 10)}
+                      </Text>
+                    </View>
+                  </Box>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Lógica para eliminar la imagen aquí
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      right: "10%",
+                      height: "15%",
+                      width: "8%",
+                      borderRadius: 5,
+                      padding: 4,
+                    }}
+                  >
+                    <EditSvgAdmin />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Lógica para eliminar la imagen aquí
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 12,
+                      right: "2%",
+                      height: "15%",
+                      width: "8%",
+                      borderRadius: 5,
+                      padding: 4,
+                    }}
+                  >
+                    <TrashIcon2 />
+                  </TouchableOpacity>
+                  <Center>
+                    <View
+                      style={{
+                        width: "90%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        paddingBottom: "5%",
+                      }}
+                    >
+                      <Text>{review.text}</Text>
+                    </View>
+                  </Center>
+                </Box>
+              );
+            }
+          })
+        ) : (
+          <Center>
+            <Text>No hay reseñas 🤯 </Text>
+          </Center>
+        )}
       </ScrollView>
     </Box>
   );
