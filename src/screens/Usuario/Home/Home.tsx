@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, Image } from "react-native";
+import { SafeAreaView, Image, TouchableOpacity } from "react-native";
 import {
   TextProveedor,
   Container,
@@ -50,7 +50,7 @@ const categories: Category[] = [
   },
   {
     id: "4",
-    name: "Material de construccion",
+    name: "Construccion",
     icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png"),
   },
   {
@@ -67,6 +67,11 @@ const categories: Category[] = [
 
 
 const Home: React.FC<OverviewProps> = ({ navigation }) => {
+
+  const handleNavigate = ()=>{
+    navigation.navigate("Provider");
+  }
+
   return (
     <SafeAreaView>
       <Container>
@@ -114,9 +119,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
         <ProveedorContainer
           style={{ display: "flex", justifyContent: "center", height: "90%", width: "100%", elevation: 1 }}
         >
-          <Pressable onPress={() => navigation.navigate("Provider")}>
-            <Carousel />
-          </Pressable>
+            <Carousel handleNavigate={handleNavigate}/>
         </ProveedorContainer>
       </Container>
     </SafeAreaView>

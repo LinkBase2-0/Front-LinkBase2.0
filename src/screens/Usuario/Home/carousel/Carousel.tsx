@@ -6,6 +6,7 @@ import {
   ImageBackground,
   Animated,
   useWindowDimensions,
+  TouchableOpacity,
 } from "react-native";
 import styled from "styled-components/native";
 import { StarSvg } from "../../../../assets/svgImages/Usuario/Home";
@@ -87,7 +88,7 @@ const StarText = styled.Text`
   font-family: ${(props) => props.theme.FONTS.OUTFITLIGHT};
 `;
 
-const Carousel = () => {
+const Carousel = ({handleNavigate}) => {
   const scrollX = useRef(new Animated.Value(0)).current;
 
   const scrollViewRef = useRef(null);
@@ -143,9 +144,10 @@ const Carousel = () => {
         >
           {proveedores.map((proveedor, proveedorIndex) => {
             return (
-              <View
+              <TouchableOpacity
                 style={{ width: windowWidth - 20, height: 200, }}
                 key={proveedor.id}
+                onPress={handleNavigate}
               >
                 <Card
                   key={proveedor.id}
@@ -163,7 +165,7 @@ const Carousel = () => {
                     </StarContainer>
                   </View>
                 </TextContainer>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
