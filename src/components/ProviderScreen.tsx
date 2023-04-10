@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState } from "react"; 
-import { ImageBackground, PixelRatio } from "react-native";
+import { ImageBackground, PixelRatio, Linking } from "react-native";
 import axios, { AxiosResponse } from "axios";
-import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
+import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack, Pressable } from "native-base";
 import StarSvg from "../assets/svg/StarSvg";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
 import MapSvg from "../assets/svg/MapSvg";
@@ -12,6 +12,7 @@ import SimpleStarSvg from "../assets/svg/SimpleStarSvg";
 import { ProviderProps } from "./Navigators/HomeNavigator";
 import { Provider } from "../screens/Usuario/Home/Home";
 import calculateReviewAverage from "../utils/calculateReviewAverage";
+import { parseDMS } from "../utils/utils";
 
 type responsiveFontSize = (size: number) => number;
 export type Review = {
@@ -53,6 +54,18 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
   }, []);
 
   if (!provider.name) return null;
+
+  
+
+  const handleGetDirections = () => {
+    const latitude = parseDMS(provider.latitude)
+    const longitude =  parseDMS(provider.longitude)
+    const url = `comgooglemaps://?q=${latitude},${longitude}`;
+
+  Linking.openURL(url).catch((err) => {
+    console.error('Failed to open Google Maps: ', err);
+  });
+};
 
   return (
     <Box 
