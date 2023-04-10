@@ -3,10 +3,10 @@ import { View, TouchableOpacity, ScrollView, ActivityIndicator } from "react-nat
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import Filter from "./Filter"
 import { Container, Category, CategoryText, Line, CardImage, CardTitle, CardText } from "./styles";
-import { CategoryDetailProps } from "../../../../App";
 import { StarSvg } from "../../../assets/svgImages/Usuario/Home";
 import { calculateDistance, parseDMS, calculateReview } from "../../../utils/utils";
 import axios from "axios";
+import { CategoryProps } from "../../../components/Navigators/HomeNavigator";
 
 interface Proveedor {
   id: string;
@@ -69,7 +69,7 @@ const rating = [
 const latitude:number = -34.96121822927283
 const longitude:number = -60.03239215916995
 
-const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => {
+const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
 
   const [proveedores, setProveedores] = useState<{id: number, title: string, image: string, review: number, distance: number, count: number}[]>([]);
   const [services, setServices] = useState<{label:string, value:string}[]>([]);
@@ -171,7 +171,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       </View> 
       <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
       {proveedores.map((proveedor, i) => {
-            return (<TouchableOpacity key={proveedor.id} onPress={()=> navigation.navigate("Provider")}>
+            return (<TouchableOpacity key={proveedor.id} onPress={()=> navigation.navigate("Provider", { name: proveedor.title })}>
               <CardImage source={{uri: proveedor.image}}/>
               <CardTitle>{proveedor.title}</CardTitle>
               <View style={{flexDirection:"row",alignSelf:"flex-start"}}>
