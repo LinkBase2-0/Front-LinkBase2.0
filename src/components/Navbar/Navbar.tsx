@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 //screens
-import { Home } from "../../screens/Usuario/Home/Home";
+//import { Home } from "../../screens/Usuario/Home/Home";
 import { IntroScreen } from "../../screens/Usuario/IntroScreen/Intro";
 import { Mas } from "../../screens/Usuario/Mas/Mas";
 import { Profile } from "../../screens/Usuario/Profile/Profile";
@@ -65,7 +65,7 @@ function MyTabs() {
     >
       <Tab.Screen name={"Home"} component={HomeNavigator} />
       <Tab.Screen name={ROUTES.PROFILE} component={Profile} />
-      <Tab.Screen name={ROUTES.MAS} component={Mas} />
+      {/* <Tab.Screen name={ROUTES.MAS} component={Mas} /> */}
     </Tab.Navigator>
   );
 }
