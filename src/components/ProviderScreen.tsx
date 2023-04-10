@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react"; 
 import { ImageBackground, PixelRatio } from "react-native";
 import axios, { AxiosResponse } from "axios";
@@ -214,7 +215,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           >Rating</Text>
         </Box>
         {/*Map Button*/}
-        <Box 
+        <Pressable 
           display="flex" 
           flexDirection="column"
           width="10"
@@ -222,6 +223,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
+          onPress={handleGetDirections}
         >
           <MapSvg />
           <Text
@@ -230,7 +232,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
             fontWeight="500"
             color="black"
           >Mapa</Text>
-        </Box>
+        </Pressable>
         {/*Page Button*/}
         <Box 
           display="flex" 
