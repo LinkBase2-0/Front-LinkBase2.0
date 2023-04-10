@@ -37,16 +37,16 @@ export const SearchIcon = styled(Icon).attrs({
   position: absolute;
   left: 81.28%;
   right: 13.59%;
-  top: 160px;
-  bottom: 74.05%;
+  top: 23.05%;
+  
 `;
 
 export const ScrollViewCategory = styled(ScrollView)`
   position: absolute;
-  width: 92%;
-  height: 152px;
-  left: 8%;
-  top: 20px;
+  width: 90%;
+  //height: 180%;
+  left: 10%;
+  top: 20%;
   border-radius: 15px;
   background: ${(props) => props.theme.COLORS.WHITE};
 `;
@@ -55,7 +55,7 @@ export const ContainerCategory = styled.View`
   position: relative;
   margin-top: 20px;
   width: 90%;
-  height: 84px;
+  //height: 10%;
   background: ${(props) => props.theme.COLORS.WHITE};
   border-radius: 50px;
 `;
@@ -66,7 +66,7 @@ export const TextProveedor = styled.Text`
 
   width: 100%;
   height: 25px;
-  top: 399px;
+  top: 415px;
 
   font-family: ${(props) => props.theme.FONTS.OUTFITEXTRABOLD};
   font-style: normal;
@@ -80,7 +80,7 @@ export const TextProveedor = styled.Text`
 `;
 export const ProveedorContainer = styled.View`
   display: flex;
-  width: 100%;
+  //width: 250%;
   margin-left: 4%;
   
 `;
@@ -107,7 +107,7 @@ export const GridContainer = styled.View`
 `;
 
 export const CategoriaCard = styled.View`
-  width: 32%;
+  //width: 32%;
   margin-bottom: 10px;
   aspect-ratio: 1;
 `;
