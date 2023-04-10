@@ -4,12 +4,13 @@ import { ArrowLeftIcon,MapIcon } from "react-native-heroicons/outline";
 import Filter from "./Filter"
 import MapModal from "./MapModal";
 import { Container, Category, CategoryText, Line, CardImage, CardTitle, CardText } from "./styles";
-import { CategoryDetailProps } from "../../../../App";
 import { StarSvg } from "../../../assets/svgImages/Usuario/Home";
 import { calculateDistance, parseDMS, calculateReview } from "../../../utils/utils";
 import * as Location from 'expo-location';
 import axios from "axios";
 import MapView from "react-native-maps";
+import { CategoryProps } from "../../../components/Navigators/HomeNavigator";
+
 
 const rating = [
   { label: 'Calificación', value: '1' },
@@ -165,9 +166,9 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       <MapModal origin={{latitude:location.latitude, longitude:location.longitude}} modalVisible={modalVisible} proveedores={proveedores} handleNavigate={handleNavigate}/>
       )}     
                   
-          </>)}
-           
+          </>)}           
     </Container>    
+
   );
 };
 

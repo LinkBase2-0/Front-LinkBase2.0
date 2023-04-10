@@ -1,30 +1,58 @@
-import React from "react"; 
-import { ImageBackground, PixelRatio, Linking } from "react-native";
-import { ArrowBackIcon, Box, Center, HStack, Image, Pressable, ShareIcon, Text, VStack } from "native-base";
+
+import React, { useEffect, useState } from "react"; 
+import { ImageBackground, PixelRatio } from "react-native";
+import axios, { AxiosResponse } from "axios";
+import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
 import StarSvg from "../assets/svg/StarSvg";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
 import MapSvg from "../assets/svg/MapSvg";
 import PageSvg from "../assets/svg/PageSvg";
 import PhoneSvg from "../assets/svg/PhoneSvg";
 import SimpleStarSvg from "../assets/svg/SimpleStarSvg";
+import { ProviderProps } from "./Navigators/HomeNavigator";
+import { Provider } from "../screens/Usuario/Home/Home";
+import calculateReviewAverage from "../utils/calculateReviewAverage";
 
-const ProviderScreen: React.FC = () => {
+type responsiveFontSize = (size: number) => number;
+export type Review = {
+  id: number,
+  text: string,
+  stars: number,
+  createdAt: string,
+  updatedAt: string,
+  ProviderId: number,
+  UserId: number
+}
 
-  type responsiveFontSize = (size: number) => number;
-
+const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
+  const [provider, setProvider] = useState<Provider>({} as Provider);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewAverage, setReviewAverage] = useState<number>(0);
 	const fontScale: number = PixelRatio.getFontScale();
 	const getFontSize: responsiveFontSize = size => size / fontScale;
 
-  const latitude = 25.77777208501996; // Example latitude
-  const longitude = -100.10796103647445; // Example longitude
+  useEffect(() => {
+    async function requestProviderData(): Promise<void> {
+      try {
+        const providerResponse: AxiosResponse<Provider> = await axios.get(
+          `${process.env.IP_ADDRESS}/providers/find/${route.params.name}`
+        );
+        const reviewResponse: AxiosResponse = await axios.get(
+          `${process.env.IP_ADDRESS}/reviews/providerReviews/${providerResponse.data.id}`
+        );
+        const reviews = reviewResponse.data.reviews;
+        setReviewAverage(calculateReviewAverage(reviews))
+        setProvider(providerResponse.data);
+        setReviews(reviews);
+      } catch (error: any) {
+        console.error(error.response.data);
+      }
+    }
 
-  const handleGetDirections = () => {
-  const url = `comgooglemaps://?q=${latitude},${longitude}`;
+    requestProviderData();
+  }, []);
 
-  Linking.openURL(url).catch((err) => {
-    console.error('Failed to open Google Maps: ', err);
-  });
-};
+  if (!provider.name) return null;
 
   return (
     <Box 
@@ -34,10 +62,18 @@ const ProviderScreen: React.FC = () => {
       bg="white"
     > 
       {/*Banner*/}
-      <ImageBackground 
-        source={require("../assets/images/officeDepot.png")} 
+      <ImageBackground
+        source={{ uri: `${provider.photoURL}`}} 
         resizeMode="cover"
       >
+        <Box 
+        position="absolute"
+        top="0"
+        left="0"
+        bottom="0"
+        right= "0"
+        bg="rgba(0, 0, 0, 0.6)"
+        />
         <Box 
           display="flex" 
           flexDirection="column"
@@ -67,23 +103,23 @@ const ProviderScreen: React.FC = () => {
             <Text
               mb="1"
               fontFamily="body"
-              fontSize="30"
+              fontSize={getFontSize(22)}
               fontWeight="700"
               color="white"
-            >Office Depot</Text>
+            >{provider.name}</Text>
             <HStack mt="1" alignItems="center">
-              <StarSvg size={19} fill="#981D9A"/>
-              <StarSvg size={19} fill="#981D9A"/>
-              <StarSvg size={19} fill="#981D9A"/>
-              <StarSvg size={19} fill="#981D9A"/>
-              <StarSvg size={19} fill="#BAB1B1"/>
+              <StarSvg size={19} fill={reviewAverage > 0 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage > 1 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage > 2 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage > 3 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage > 4 ? "#981D9A" : "#BAB1B1"}/>
               <Text
                 ml="2"
                 fontFamily="body"
                 fontSize="15"
                 fontWeight="500"
                 color="white"
-              >20</Text> 
+              >{reviews.length}</Text> 
             </HStack>
           </Box>
         </Box>
@@ -102,7 +138,7 @@ const ProviderScreen: React.FC = () => {
           fontSize="20"
           fontWeight="700"
           color="black"
-        >Office Depot</Text> 
+        >{provider.name}</Text> 
         <Box 
           display="flex" 
           flexDirection="row"
@@ -280,10 +316,10 @@ const ProviderScreen: React.FC = () => {
         </VStack>
         <Center flex="1" flexDirection="column" pb="3">
           <Box flexDirection="row" alignItems="center">
-            <Text fontSize="40" mr="2">4</Text>
+            <Text fontSize="40" mr="2">{reviewAverage}</Text>
             <SimpleStarSvg />
           </Box> 
-          <Text>20 Reseñas</Text>
+          <Text>{reviews.length} {reviews.length === 1 ? "Reseña" : "Reseñas"}</Text>
         </Center>
       </Box>
       {/*Review Details*/}
