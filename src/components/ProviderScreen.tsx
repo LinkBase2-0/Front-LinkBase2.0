@@ -1,6 +1,6 @@
 import React from "react"; 
-import { ImageBackground, PixelRatio } from "react-native";
-import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
+import { ImageBackground, PixelRatio, Linking } from "react-native";
+import { ArrowBackIcon, Box, Center, HStack, Image, Pressable, ShareIcon, Text, VStack } from "native-base";
 import StarSvg from "../assets/svg/StarSvg";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
 import MapSvg from "../assets/svg/MapSvg";
@@ -14,6 +14,17 @@ const ProviderScreen: React.FC = () => {
 
 	const fontScale: number = PixelRatio.getFontScale();
 	const getFontSize: responsiveFontSize = size => size / fontScale;
+
+  const latitude = 25.77777208501996; // Example latitude
+  const longitude = -100.10796103647445; // Example longitude
+
+  const handleGetDirections = () => {
+  const url = `comgooglemaps://?q=${latitude},${longitude}`;
+
+  Linking.openURL(url).catch((err) => {
+    console.error('Failed to open Google Maps: ', err);
+  });
+};
 
   return (
     <Box 
@@ -168,7 +179,7 @@ const ProviderScreen: React.FC = () => {
           >Rating</Text>
         </Box>
         {/*Map Button*/}
-        <Box 
+        <Pressable 
           display="flex" 
           flexDirection="column"
           width="10"
@@ -176,6 +187,7 @@ const ProviderScreen: React.FC = () => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
+          onPress={handleGetDirections}
         >
           <MapSvg />
           <Text
@@ -184,7 +196,7 @@ const ProviderScreen: React.FC = () => {
             fontWeight="500"
             color="black"
           >Mapa</Text>
-        </Box>
+        </Pressable>
         {/*Page Button*/}
         <Box 
           display="flex" 
