@@ -15,7 +15,7 @@ const MapModal: React.FC = ({ origin,proveedores,handleNavigate }) => {
                 return(
                     <Marker key={i}coordinate={{latitude:each.latitude, longitude:each.longitude}}>
                         <MapPinIcon color={"red"}/>
-                        <Callout  style={{width:200,height:50}} onPress={handleNavigate}>
+                        <Callout  style={{width:200,height:50}} onPress={()=>handleNavigate(each.title)}>
                             <View>
                             <Text style={{fontWeight:'bold'}}>{each.title}</Text>
                             <Text>{each.review}&#11088;</Text>

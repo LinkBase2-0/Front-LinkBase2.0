@@ -122,11 +122,10 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       setProveedores(filteredProviders)
     }
 
-    const handleNavigate = ()=>{
-      navigation.navigate("Provider")
+    const handleNavigate = (name:string)=>{
+      navigation.navigate("Provider", { name: name });
     }
 
-    
    return (
     <Container>
       {isLoading ? (
@@ -150,7 +149,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       {!modalVisible ? (
          <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
          {proveedores.map((proveedor, i) => {
-               return (<TouchableOpacity key={proveedor.id} onPress={()=> navigation.navigate("Provider")}>
+               return (<TouchableOpacity key={proveedor.id} onPress={()=>  navigation.navigate("Provider", { name: proveedor.title })}>
                  <CardImage source={{uri: proveedor.image}}/>
                  <CardTitle>{proveedor.title}</CardTitle>
                  <View style={{flexDirection:"row",alignSelf:"flex-start"}}>
