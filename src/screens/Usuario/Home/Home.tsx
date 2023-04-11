@@ -50,67 +50,24 @@ export type Provider = {
   UserId: number;
 };
 
-const categories: Category[] = [
-  {
-    id: "1",
-    name: "Insumos",
-    iconURL: "https://i.postimg.cc/SKNLzk85/Insumos.png",
-  },
-  {
-    id: "2",
-    name: "Maquinaria",
-    iconURL: "https://i.postimg.cc/qqn2dRVt/Maquinaria.png",
-  },
-  {
-    id: "3",
-    name: "Repuestos",
-    iconURL: "https://i.postimg.cc/15GDCfr2/Repuestos.png",
-  },
-  {
-    id: "4",
-    name: "Material de construccion",
-    iconURL: "https://i.postimg.cc/8krRvyJ1/Material-de-construccion.png",
-  },
-  {
-    id: "5",
-    name: "Servicios",
-    iconURL:
-      "https://img.freepik.com/vector-premium/vector-icono-servicio-al-cliente-servicio-integral-atencion-al-cliente-mano-personas-ilustracion-vectorial_399089-2810.jpg",
-  },
-  {
-    id: "6",
-    name: "Profesionales",
-    iconURL: "https://i.postimg.cc/3J5gFgm2/Profesionales.png",
-  },
-];
-
 const Home: React.FC<OverviewProps> = ({ navigation }) => {
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [categoriess, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function requestProviders(): Promise<void> {
+    async function requestHomeData(): Promise<void> {
       try {
-        const { data } = await axios.get(`${process.env.IP_ADDRESS}/providers`);
-        setProviders(data);
+        const providersResponse = await axios.get(`${process.env.IP_ADDRESS}/providers`);
+        const categoriesResponse = await axios.get(`${process.env.IP_ADDRESS}/categories`);
+
+        setProviders(providersResponse.data);
+        setCategories(categoriesResponse.data);
       } catch (error: any) {
         console.error(error.response.data);
       }
     }
 
-    async function requestCategories(): Promise<void> {
-      try {
-        const { data } = await axios.get(
-          `${process.env.IP_ADDRESS}/categories`
-        );
-        setCategories(data);
-      } catch (error: any) {
-        console.error(error.response.data);
-      }
-    }
-
-    requestProviders();
-    requestCategories();
+    requestHomeData();
   }, []);
 
   return (

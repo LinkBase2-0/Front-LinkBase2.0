@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react"; 
 import { ImageBackground, PixelRatio, Linking } from "react-native";
 import axios, { AxiosResponse } from "axios";
@@ -75,17 +74,15 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
 
   if (!provider.name) return null;
 
-  
-
   const handleGetDirections = () => {
     const latitude = parseDMS(provider.latitude)
     const longitude =  parseDMS(provider.longitude)
     const url = `comgooglemaps://?q=${latitude},${longitude}`;
 
-  Linking.openURL(url).catch((err) => {
-    console.error('Failed to open Google Maps: ', err);
-  });
-};
+    Linking.openURL(url).catch(err => {
+      console.error('Failed to open Google Maps: ', err);
+    });
+}
 
   return (
     <Box 
