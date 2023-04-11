@@ -16,6 +16,8 @@ import { ProfileAdminProps } from "../../../../App";
 import { ArrowBackIcon } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
 
+import COLORS from "../../../styles/theme";
+
 const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
   return (
     <ScrollView style={{backgroundColor: "white"}}>
@@ -61,7 +63,7 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
         <Logout>
           <Text
             style={{
-              fontFamily: "Outfit_700Bold",
+              fontFamily:  `${COLORS.FONTS.OUTFITLIGHT}`,
               color: "#fff",
               fontSize: 9,
               alignSelf: "center",
