@@ -72,8 +72,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
     requestProviderData();
   }, []);
 
-  if (!provider.name) return null;
-
   const handleGetDirections = () => {
     const latitude = parseDMS(provider.latitude)
     const longitude =  parseDMS(provider.longitude)
@@ -82,7 +80,9 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
     Linking.openURL(url).catch(err => {
       console.error('Failed to open Google Maps: ', err);
     });
-}
+  }
+
+  if (!provider.name) return null;
 
   return (
     <Box 

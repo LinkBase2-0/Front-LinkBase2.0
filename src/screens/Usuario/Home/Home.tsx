@@ -69,6 +69,8 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
 
     requestHomeData();
   }, []);
+  
+  if (!providers.length && !categories.length) return null;
 
   return (
     <SafeAreaView>
