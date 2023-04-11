@@ -2,7 +2,17 @@
 import React, { useEffect, useState } from "react"; 
 import { ImageBackground, PixelRatio, Linking } from "react-native";
 import axios, { AxiosResponse } from "axios";
-import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
+import { 
+  ArrowBackIcon, 
+  Box, 
+  Center, 
+  HStack, 
+  Image, 
+  Pressable, 
+  ShareIcon, 
+  Text, 
+  VStack 
+} from "native-base";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
 import StarSvg from "../assets/svg/StarSvg";
 import MapSvg from "../assets/svg/MapSvg";
@@ -14,6 +24,7 @@ import { Provider } from "../screens/Usuario/Home/Home";
 import calculateReviewAverage from "../utils/calculateReviewAverage";
 import ReviewGraphRow from "../commons/ReviewGraphRow";
 import reviewsToGraph from "../utils/reviewsToGraph";
+import { parseDMS } from "../utils/utils";
 
 type responsiveFontSize = (size: number) => number;
 export type Review = {
@@ -237,7 +248,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           >Rating</Text>
         </Box>
         {/*Map Button*/}
-        <Pressable 
+        <Pressable
           display="flex" 
           flexDirection="column"
           width="10"
