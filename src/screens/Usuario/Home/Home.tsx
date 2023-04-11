@@ -5,6 +5,7 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  SectionList,
 } from "react-native";
 import axios from "axios";
 import { Box, Pressable } from "native-base";
@@ -18,6 +19,9 @@ import {
   ScrollViewCategory,
   ContainerCategory,
   ProveedorContainer,
+  SearchContainer,
+  SearchTitle,
+  SearchItem
 } from "./styles";
 import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -50,79 +54,84 @@ export type Provider = {
   UserId: number;
 };
 
-const categories: Category[] = [
-  {
-    id: "1",
-    name: "Insumos",
-    iconURL: "https://i.postimg.cc/SKNLzk85/Insumos.png",
-  },
-  {
-    id: "2",
-    name: "Maquinaria",
-    iconURL: "https://i.postimg.cc/qqn2dRVt/Maquinaria.png",
-  },
-  {
-    id: "3",
-    name: "Repuestos",
-    iconURL: "https://i.postimg.cc/15GDCfr2/Repuestos.png",
-  },
-  {
-    id: "4",
-    name: "Material de construccion",
-    iconURL: "https://i.postimg.cc/8krRvyJ1/Material-de-construccion.png",
-  },
-  {
-    id: "5",
-    name: "Servicios",
-    iconURL:
-      "https://img.freepik.com/vector-premium/vector-icono-servicio-al-cliente-servicio-integral-atencion-al-cliente-mano-personas-ilustracion-vectorial_399089-2810.jpg",
-  },
-  {
-    id: "6",
-    name: "Profesionales",
-    iconURL: "https://i.postimg.cc/3J5gFgm2/Profesionales.png",
-  },
-];
+type Services = {
+  id: number;
+  name:string;
+}
+
+type Results = {
+  title:string;
+  data:any[];
+}
 
 const Home: React.FC<OverviewProps> = ({ navigation }) => {
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [categoriess, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [services, setServices] = useState<Services[]>([]);
+  const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Results[]>([])
+
+  const handleSearch = (text:string) => {
+    if (text =="") return setSearchResults([])
+    const filteredServices:any = services.filter(item => item.name.toLowerCase().includes(text.toLowerCase()))
+    const listServices:any = filteredServices.map(item=>item.name)
+    const filteredProviders:any = providers.filter(item => item.name.toLowerCase().includes(text.toLowerCase()))
+    const listProviders:any = filteredProviders.map(item=>item.name)
+    const filter:any = [{title:'Proveedores', data:listProviders},
+    {title:'Servicios', data:listServices}]
+
+    setQuery(text);
+    setSearchResults(filter);
+  };
+
+  const handleNavigate = (title,item)=>{
+    if(title==="Proveedores") return navigation.navigate("Provider",{name:item})
+    navigation.navigate("CategoryDetail",{categoryName:"Todos", serviceFilter:item})
+  }
 
   useEffect(() => {
-    async function requestProviders(): Promise<void> {
+    async function requestHomeData(): Promise<void> {
       try {
-        const { data } = await axios.get(`${process.env.IP_ADDRESS}/providers`);
-        setProviders(data);
+        const providersResponse = await axios.get(`${process.env.IP_ADDRESS}/providers`);
+        const categoriesResponse = await axios.get(`${process.env.IP_ADDRESS}/categories`);
+        const servicesResponse = await axios.get(`${process.env.IP_ADDRESS}/services`);
+
+        setProviders(providersResponse.data);
+        setCategories(categoriesResponse.data);
+        setServices(servicesResponse.data);
       } catch (error: any) {
         console.error(error.response.data);
       }
     }
-
-    async function requestCategories(): Promise<void> {
-      try {
-        const { data } = await axios.get(
-          `${process.env.IP_ADDRESS}/categories`
-        );
-        setCategories(data);
-      } catch (error: any) {
-        console.error(error.response.data);
-      }
-    }
-
-    requestProviders();
-    requestCategories();
+    requestHomeData();
   }, []);
+  
+  if (!providers.length && !categories.length) return null;  
 
   return (
     <SafeAreaView>
-      <ScrollView>
         <Container>
           <Image
             style={{ height: 155, width: "100%" }}
             source={require("../../../assets/svgImages/Usuario/Home/imgs/slider1.png")}
             resizeMode="cover"
           />
-          <SearchBar style={{ elevation: 3 }} />
+          <SearchBar style={{ elevation: 3 }} onChangeText={handleSearch}/>
+          {searchResults.length === 0 ? <></> :<SearchContainer >
+          <SectionList style={{padding:10, zIndex:5}}
+      sections={searchResults}
+      keyExtractor={(item, index) => item + index}
+      renderItem={({item,section}) => (
+        <TouchableOpacity onPress={()=>handleNavigate(section.title,item)}>
+          <SearchItem>{item}</SearchItem>
+        </TouchableOpacity>
+      )}
+      renderSectionHeader={({section: {title}}) => (
+        <SearchTitle style={{marginTop:10}}>{title}</SearchTitle>
+      )}
+    />
+          </SearchContainer>}
+                    
           <SearchIcon style={{ elevation: 3 }} />
           <ContainerCategory style={{ height: 200 }}>
             <ScrollViewCategory style={{ elevation: 4 }}>
@@ -147,7 +156,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
                           }}
                           onPress={() => {
                             navigation.navigate("CategoryDetail", {
-                              categoryName: category.name,
+                              categoryName: category.name, serviceFilter:"",
                             });
                           }}
                           key={category.id}
@@ -186,7 +195,6 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
             <Carousel providers={providers} />
           </ProveedorContainer>
         </Container>
-      </ScrollView>
     </SafeAreaView>
   );
 };
