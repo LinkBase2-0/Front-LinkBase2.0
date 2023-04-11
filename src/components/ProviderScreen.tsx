@@ -51,7 +51,7 @@ export type Review = {
   UserId: number
 }
 
-const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
+const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
   const [provider, setProvider] = useState<Provider>({} as Provider);
   const [reviews, setReviews] = useState<Review[]>([{
     id: 0,
@@ -154,8 +154,8 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
             height="auto" 
             mt="12" 
             justifyContent="space-between" 
-          >
-            <ArrowBackIcon size="6" color="white" />
+          ><Pressable onPress={() => navigation.goBack()}><ArrowBackIcon size="6" color="white" /></Pressable>
+            
             <ShareIcon size="6" color="white" />
           </Box>
           <Box
@@ -300,7 +300,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           >Mapa</Text>
         </Pressable>
         {/*Page Button*/}
-        <Box 
+        <Pressable 
           display="flex" 
           flexDirection="column"
           width="10"
@@ -308,6 +308,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
+          onPress={()=>Linking.openURL(provider.web)}
         >
           <PageSvg />
           <Text
@@ -316,9 +317,9 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
             fontWeight="500"
             color="black"
           >Página</Text>
-        </Box>
+        </Pressable>
         {/*Call Button*/}
-        <Box 
+        <Pressable 
           display="flex" 
           flexDirection="column"
           width="10"
@@ -326,6 +327,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
+          onPress={()=>Linking.openURL(`tel:${provider.phone}`)}
         >
           <PhoneSvg />
           <Text
@@ -335,7 +337,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
             fontWeight="500"
             color="black"
           >Llama</Text>
-        </Box>
+        </Pressable>
       </Box>
       {/*Review Section*/}
       <Box
