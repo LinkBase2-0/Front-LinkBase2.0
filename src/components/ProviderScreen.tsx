@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground, PixelRatio, Linking } from "react-native";
 import axios, { AxiosResponse } from "axios";
 import { 
+  Alert,
   ArrowBackIcon, 
   Box, 
   Button, 
   Center,
+  CloseIcon,
   HStack, 
+  IconButton, 
   Image,  
   Modal, 
   Pressable, 
@@ -64,6 +67,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
   }]);
   const [reviewAverage, setReviewAverage] = useState<number>(0);
   const [showWriteReview, setShowWriteReview] = useState<boolean>(false);
+  const [showPageAlert, setShowPageAlert] = useState<boolean>(false)
   const [newReviewText, setNewReviewText] = useState<string>("");
   const [starRating, setStarRating] = useState(0);
 	const fontScale: number = PixelRatio.getFontScale();
@@ -93,7 +97,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
   const handleGetDirections = () => {
     const latitude = parseDMS(provider.latitude)
     const longitude =  parseDMS(provider.longitude)
-    const url = `comgooglemaps://?q=${latitude},${longitude}`;
+    const url = `https://maps.google.com/maps?origin=My_Location&daddr=${latitude},${longitude}`;
 
     Linking.openURL(url).catch(err => {
       console.error('Failed to open Google Maps: ', err);
@@ -154,8 +158,10 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
             height="auto" 
             mt="12" 
             justifyContent="space-between" 
-          ><Pressable onPress={() => navigation.goBack()}><ArrowBackIcon size="6" color="white" /></Pressable>
-            
+          >
+            <Pressable onPress={() => navigation.goBack()}>
+              <ArrowBackIcon size="6" color="white" />
+            </Pressable>
             <ShareIcon size="6" color="white" />
           </Box>
           <Box
@@ -308,7 +314,11 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
-          onPress={()=>Linking.openURL(provider.web)}
+          onPress={
+            provider.web ? 
+              () => Linking.openURL(provider.web) : 
+              () => setShowPageAlert(true)
+          }
         >
           <PageSvg />
           <Text
@@ -317,6 +327,31 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
             fontWeight="500"
             color="black"
           >Página</Text>
+          <Modal isOpen={showPageAlert} >
+            <Modal.Content maxWidth="400">
+              <Alert w="100%" status="error">
+                <VStack space={2} flexShrink={1} w="100%">
+                  <HStack flexShrink={1} space={2} alignItems="center" justifyContent="center">
+                    <HStack space={2} flexShrink={1} >
+                      <Alert.Icon mt="0.5" ml="2"/>
+                      <Text 
+                        fontSize="sm" 
+                        color="coolGray.800"
+                        alignSelf="center"
+                      >Este proveedor no tiene página web. </Text>
+                    </HStack>
+                    <IconButton 
+                      onPress={() => setShowPageAlert(false)}
+                      variant="unstyled" 
+                      _focus={{borderWidth: 0}} 
+                      icon={<CloseIcon size="3" />} 
+                      _icon={{color: "coolGray.600"}} 
+                    />
+                  </HStack>
+                </VStack>
+              </Alert>
+            </Modal.Content>
+          </Modal>
         </Pressable>
         {/*Call Button*/}
         <Pressable 
@@ -484,7 +519,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
               >Cancel</Button>
               <Button 
                 variant="outline"
-                colorScheme="grey"
+                colorScheme="gray"
                 onPress={handleSubmitReview}
               >Save</Button>
             </Button.Group>
