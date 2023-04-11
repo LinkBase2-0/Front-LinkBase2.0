@@ -111,6 +111,7 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
               _focus={{ bg: "none" }}
               onChangeText={(value) => handleInput(value, setEmailInput)}
               value={emailInput}
+              autoCapitalize={"none"}
             />
             <Input
               size="md"
