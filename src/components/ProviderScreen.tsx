@@ -9,10 +9,10 @@ import {
   Center,
   CloseIcon,
   HStack, 
-  IconButton, 
-  Image,  
+  IconButton,
   Modal, 
   Pressable, 
+  ScrollView, 
   ShareIcon, 
   Text, 
   TextArea, 
@@ -30,16 +30,31 @@ import calculateReviewAverage from "../utils/calculateReviewAverage";
 import ReviewGraphRow from "../commons/ReviewGraphRow";
 import reviewsToGraph from "../utils/reviewsToGraph";
 import { parseDMS } from "../utils/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ReviewCard from "../commons/ReviewCard";
 
 type responsiveFontSize = (size: number) => number;
+type User = {
+  fullName: string,
+  id: number,
+  email: string,
+  password: string,
+  salt: string,
+  rol: string,
+  charge: string,
+  isPending: boolean,
+  photoURL: string,
+  createdAt: string,
+  updatedAt: string,
+  CompanyId: number,
+  ProviderId: null
+}
 type ReviewBody = {
   review: {
     text: string,
     stars: number
   },
-  user: {
-    email: string
-  },
+  token: string,
   provider: {
     name: string
   }
@@ -51,10 +66,12 @@ export type Review = {
   createdAt: string,
   updatedAt: string,
   ProviderId: number,
-  UserId: number
+  UserId: number,
+  User: User
 }
 
 const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
+  const [token, setToken] = useState<string>("");
   const [provider, setProvider] = useState<Provider>({} as Provider);
   const [reviews, setReviews] = useState<Review[]>([{
     id: 0,
@@ -63,7 +80,8 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
     createdAt: "",
     updatedAt: "",
     ProviderId: 0,
-    UserId: 0
+    UserId: 0,
+    User: {} as User
   }]);
   const [reviewAverage, setReviewAverage] = useState<number>(0);
   const [showWriteReview, setShowWriteReview] = useState<boolean>(false);
@@ -76,6 +94,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
   useEffect(() => {
     async function requestProviderData(): Promise<void> {
       try {
+        const token: string | null = await AsyncStorage.getItem('token');
         const providerResponse: AxiosResponse<Provider> = await axios.get(
           `${process.env.IP_ADDRESS}/providers/find/${route.params.name}`
         );
@@ -83,6 +102,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
           `${process.env.IP_ADDRESS}/reviews/providerReviews/${providerResponse.data.id}`
         );
         const reviews = reviewResponse.data.reviews;
+        if (token) setToken(token);
         setReviewAverage(calculateReviewAverage(reviews))
         setProvider(providerResponse.data);
         setReviews(reviews);
@@ -110,15 +130,16 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
         text: newReviewText,
         stars: starRating
       },
-      user: {
-        email: "fabioalessandrotr@gmail.com"
-      },
+      token: token,
       provider: {
         name: provider.name
       }
     }
-
-    await axios.post(`${process.env.IP_ADDRESS}/reviews`, reviewBody);
+    try {
+      await axios.post(`${process.env.IP_ADDRESS}/reviews`, reviewBody);
+    } catch (error: any) {
+      console.error(error.response.data);
+    }
     setShowWriteReview(false);
   }
 
@@ -375,94 +396,46 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
         </Pressable>
       </Box>
       {/*Review Section*/}
-      <Box
-        display="flex"
-        flexDirection="row"
-        width="320"
-        height="150"
-        mt="1"
-        alignSelf="center"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <VStack flex="3">
-        {reviewsToGraph(reviews).reverse().map((average, index, array) => (
-          <ReviewGraphRow key={index} stars={array.length - index} average={average} />
-        ))}
-        </VStack>
-        <Center flex="1" flexDirection="column" pb="3">
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Text fontSize="40" mr="2">{reviewAverage}</Text>
-            <SimpleStarSvg />
-          </Box> 
-          <Text>{reviews.length} {reviews.length !== 1 ? "Reseñas" : "Reseña"}</Text>
-        </Center>
-      </Box>
-      {/*Review Details*/}
-      <Box 
-        display="flex"
-        flexDirection="column"
-        width="320"
-        height="115"
-        mt="1"
-        alignSelf="center"
-        borderWidth="2"
-        borderRadius="15"
-        borderColor="#EAE8E8"
-      >
-        <Box 
-          display="flex" 
-          flexDirection="row"
-          mx="6"
-          mt="3"
-          alignItems="flex-start"
-          justifyContent="center"
-        >
-          <Image 
-            width="50"
-            height="50"
-            borderRadius="10"
-            source={require("../assets/images/userImage.png")} 
-            alt="User's Profile Picture" 
-          />
-          <Box 
-            display="flex" 
-            flexDirection="column"
-            mx="4"
+      <Box alignSelf="center" width="320" height={reviews.length ? "275" : "140"}>
+        <ScrollView>
+          <Box
+            display="flex"
+            flexDirection="row"
+            mt="6"
+            mb="5"
+            width="100%"
+            height="auto"
+            alignSelf="center"
+            justifyContent="center"
+            alignItems="center"
           >
-            <Text 
-              mt="1" 
-              fontFamily="body" 
-              fontSize={getFontSize(18)}
-              fontWeight="700" 
-              color="#2B273C"
-            >Juan Pérez</Text>
-            <Text fontSize={getFontSize(12)} color="#757280">7/21/2020</Text>
+            <VStack flex="3" space={1}>
+          {reviewsToGraph(reviews).reverse().map(
+            (average, index, array) => (
+              <ReviewGraphRow 
+                key={index} 
+                stars={array.length - index} 
+                average={average} 
+              />
+            )
+          )}
+            </VStack>
+            <Center flex="1" pb="3">
+              <Box flexDirection="row" alignItems="center">
+                <Text fontSize="40" pr="2">{reviewAverage}</Text>
+                <SimpleStarSvg />
+              </Box> 
+              <Text>
+                {reviews.length} {reviews.length !== 1 ? "Reseñas" : "Reseña"}
+              </Text>
+            </Center>
           </Box>
-          <HStack mt="2" alignItems="center">
-            <StarSvg size={19} fill="#981D9A"/>
-            <StarSvg size={19} fill="#981D9A"/>
-            <StarSvg size={19} fill="#981D9A"/>
-            <StarSvg size={19} fill="#BAB1B1"/>
-            <StarSvg size={19} fill="#BAB1B1"/> 
-          </HStack>
-        </Box>
-        <Box
-          display="flex" 
-          flexDirection="row"
-          mx="6"
-          mt="2"
-          mb="3"
-          justifyContent="flex-start"
-        >
-          <Text
-            fontFamily="body"
-            fontSize={getFontSize(9.5)}
-            fontWeight="400"
-            color="#2A363D"
-          >Excelente lugar. Pude encontrar todo lo que 
-          buscaba a un muy buen precio, recomendable.</Text>
-        </Box>
+      {reviews.length ?
+        reviews.map((review, index) => (
+          <ReviewCard key={index} review={review} />
+        ))
+        : null} 
+        </ScrollView>
       </Box>
       {/*Create Review Button*/}
       <Center 
