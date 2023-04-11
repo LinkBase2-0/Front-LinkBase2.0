@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ArrowBackIcon,
   Box,
@@ -51,13 +51,10 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
     };
 
     try {
-      const user = await axios.post(
-        `${process.env.IP_ADDRESS}/users/login`,
-        logInRequestBody
-      );
+      const user = await axios.post(`${process.env.IP_ADDRESS}/users/login`, logInRequestBody);
+      await AsyncStorage.setItem('token', user.data.token);
 
-      if (isAdmin)
-        navigation.navigate({ name: "Home Admin", params: { isAdmin: true } });
+      if (isAdmin) navigation.navigate({ name: "Home Admin", params: { isAdmin: true } });
       else navigation.navigate("Main");
     } catch (error: any) {
       const errorMessage = error.response.data;
