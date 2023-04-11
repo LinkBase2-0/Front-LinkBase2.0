@@ -18,6 +18,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { PasswordAdminProps } from "../../../../App";
 import { Input } from "native-base";
 
+import COLORS from "../../../styles/theme";
+
 const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
   const handleSubmit = () => {
     const title = "Aviso";
@@ -45,7 +47,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
         >
           <TouchableOpacity
             style={{ alignSelf: "flex-start", position: "absolute", left: 32 }}
-            //onPress={() => navigation.navigate("ProfileDetail")}
+            onPress={() => navigation.navigate("Profile Admin", {isAdmin: true})}
           >
             <ArrowLeftIcon color="black" size={30} />
           </TouchableOpacity>
@@ -54,7 +56,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
             style={{ marginTop: 41 }}
           />
           <Text
-            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
+            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 , fontFamily:  `${COLORS.FONTS.OUTFITMEDIUM}`}}
           >
             Contraseña Actual:
           </Text>
@@ -65,7 +67,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
             style={{ alignSelf: "center", marginTop: 2 }}
           />
           <Text
-            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
+            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 , fontFamily:  `${COLORS.FONTS.OUTFITMEDIUM}`}}
           >
             Nueva Contraseña:
           </Text>
@@ -77,7 +79,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
             style={{ alignSelf: "center", marginTop: 2, width: "80%" }}
           />
           <Text
-            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
+            style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62, fontFamily:  `${COLORS.FONTS.OUTFITMEDIUM}` }}
           >
             Confirmar Contraseña:
           </Text>
@@ -91,7 +93,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
           <Button onPress={handleSubmit}>
             <Text
               style={{
-                fontFamily: "Outfit_700Bold",
+                fontFamily:  `${COLORS.FONTS.OUTFITBOLD}`,
                 color: "#fff",
                 fontSize: 17,
                 alignSelf: "center",

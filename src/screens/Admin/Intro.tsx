@@ -59,7 +59,7 @@ return(
           </Text>
         </Button>
       </Box>
-      <Pressable onPress={() => navigation.navigate("Intro", { isAdmin: false })}>
+      <Pressable onPress={() => navigation.navigate("Intro")}>
         <Text fontFamily="body" fontWeight="300" color="#981D9A">
           Eres Cliente?
         </Text>

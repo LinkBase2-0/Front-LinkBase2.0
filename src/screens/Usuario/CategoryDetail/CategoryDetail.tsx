@@ -1,63 +1,16 @@
 import React,{useState,useEffect} from "react";
-import { View, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
+import { View, TouchableOpacity, ScrollView, ActivityIndicator,TouchableWithoutFeedback } from "react-native";
+import { ArrowLeftIcon,MapIcon } from "react-native-heroicons/outline";
 import Filter from "./Filter"
+import MapModal from "./MapModal";
 import { Container, Category, CategoryText, Line, CardImage, CardTitle, CardText } from "./styles";
 import { StarSvg } from "../../../assets/svgImages/Usuario/Home";
 import { calculateDistance, parseDMS, calculateReview } from "../../../utils/utils";
+import * as Location from 'expo-location';
 import axios from "axios";
+import MapView from "react-native-maps";
 import { CategoryProps } from "../../../components/Navigators/HomeNavigator";
 
-interface Proveedor {
-  id: string;
-  title: string;
-  image: any;
-  review: number;
-  distance: number;
-  count: number;
-}
-
-const proveedoresInit: Proveedor[] = [
-  {
-    id: "1",
-    title: "Office Depot",
-    image: require("../../../assets/svgImages/Usuario/Home/imgs/Slider11.png"),
-    review: 4.5,
-    distance: 3,
-    count:20,
-  },
-  {
-    id: "2",
-    title: "Plomería García",
-    image: require("../../../assets/svgImages/Usuario/Home/imgs/slider2.jpg"),
-    review: 3.2,
-    distance: 5,
-    count:3,
-  },
-  {
-    id: "3",
-    title: "Ferreteria Centenario",
-    image: require("../../../assets/svgImages/Usuario/Home/imgs/ferreteria.jpg"),
-    review: 3.9,
-    distance: 1.5,
-    count:8,
-  },
-  {
-    id: "4",
-    title: "Construrama",
-    image: require("../../../assets/svgImages/Usuario/Home/imgs/construrama.jpeg"),
-    review: 4.1,
-    distance: 6.8,
-    count:29,
-  },
-];
-
-const servicesInit = [
-  { label: 'Construcción', value: '1' },
-  { label: 'Productos Limpieza', value: '2' },
-  { label: 'Material Oficina', value: '3' },
-  { label: 'Refacciones', value: '4' },
-];
 
 const rating = [
   { label: 'Calificación', value: '1' },
@@ -66,17 +19,25 @@ const rating = [
 ];
 
 
-const latitude:number = -34.96121822927283
-const longitude:number = -60.03239215916995
+const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => {
 
-const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
-
-  const [proveedores, setProveedores] = useState<{id: number, title: string, image: string, review: number, distance: number, count: number}[]>([]);
+  const [proveedores, setProveedores] = useState<{id: number, title: string, image: string, review: number, latitude:number,longitude:number, distance: number, count: number}[]>([]);
   const [services, setServices] = useState<{label:string, value:string}[]>([]);
+  const [location, setLocation] = useState<{latitude:number, longitude:number}>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const fetchData = async () => {
     try {
+      let { status } = await Location. requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.log("Please grant location permissions");
+      return;
+  }
+    
+    let currentLocation:any = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation.coords)
+
       const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/${route.params.categoryName}`);
       // const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/Profesionales`);
       const promises = result.data.map(async (provider: any) => {
@@ -90,7 +51,9 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
           title: provider.name,
           image: provider.photoURL,
           review: calculateReview(reviewsRes.data.reviews),
-          distance: calculateDistance(latitude, longitude, lat, lon),
+          latitude:lat,
+          longitude:lon,
+          distance: calculateDistance(currentLocation.coords.latitude, currentLocation.coords.longitude, lat, lon),
           count: reviewsRes.data.reviews.length,
         };
       });        
@@ -98,9 +61,7 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
       return data
     } catch (error: any) {
       console.log(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
   const fetchServices = async () => {
     try{
@@ -110,23 +71,32 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
           value:service.id.toString(),
           label: service.name
         }})
+      allServices.unshift({value:"0", label:"borrar"})
       setServices(allServices)}
     catch (error:any){
       console.log(error.message)
     }
     };
-  
+   
 
-  useEffect(() => {   
-    const renderData = async()=>{
-      const data:any = await fetchData()
-      setProveedores(data)
-    }
-    renderData();
-    fetchServices();
+  useEffect(() => {
+    const fetchAndRenderData = async () => {
+      try {
+        const data:any = await fetchData();
+        setProveedores(data);
+        
+        await fetchServices();        
+       
+      } catch (error) {
+        console.error(error);
+      }finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchAndRenderData();
   }, []);
  
-
     const handleSort = (value:string)=>{
     
       if (value ==="1" || "0"){
@@ -145,13 +115,17 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
 
     const handleFilter = async(value:string)=>{
       const allProviders:any = await fetchData();
+      if(value==="borrar") return setProveedores(allProviders)
       const getByService:any = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByService/${value}`)
       const providersWithService = getByService.data.map((each:any)=>each.name)
       const filteredProviders = allProviders.filter((proveedor:any)=>providersWithService.includes(proveedor.title))
       setProveedores(filteredProviders)
     }
 
-    
+    const handleNavigate = (name:string)=>{
+      navigation.navigate("Provider", { name: name });
+    }
+
    return (
     <Container>
       {isLoading ? (
@@ -160,7 +134,10 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
       <View style={{flexDirection:"row", width:"100%", justifyContent:"center", position:"relative", marginTop:89}}>
         <TouchableOpacity  style={{alignSelf:"flex-start", position:"absolute", left:32}} onPress={()=> navigation.goBack()}>
           <ArrowLeftIcon color ="black" size={30}/>
-        </TouchableOpacity> 
+        </TouchableOpacity>
+        <TouchableOpacity  style={{alignSelf:"flex-start", position:"absolute", right:32}} onPress={()=> modalVisible ? setModalVisible(false): setModalVisible(true)}>
+          <MapIcon color={modalVisible ? "#a0279e" : "#000000"}size={30}/>
+        </TouchableOpacity>  
       <Category>
         <CategoryText>{route.params.categoryName}</CategoryText>
       </Category>
@@ -168,24 +145,29 @@ const CategoryDetail: React.FC<CategoryProps> = ({ navigation, route }) => {
       <View style={{flexDirection:"row", width:"100%", justifyContent:"space-around", position:"relative", marginTop:20}}>
       <Filter data={services} search={true} placeholderName={"Sub-Categoría"}  handleSort={()=>{}} handleFilter={handleFilter}/>
       <Filter data={rating} search={false} placeholderName={"Ordenar por..."} handleSort={handleSort} handleFilter={()=>{}}/>
-      </View> 
-      <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
-      {proveedores.map((proveedor, i) => {
-            return (<TouchableOpacity key={proveedor.id} onPress={()=> navigation.navigate("Provider", { name: proveedor.title })}>
-              <CardImage source={{uri: proveedor.image}}/>
-              <CardTitle>{proveedor.title}</CardTitle>
-              <View style={{flexDirection:"row",alignSelf:"flex-start"}}>
-              <StarSvg/>
-              <CardText>{`${proveedor.review} (${proveedor.count} calificaciones) a ${proveedor.distance} km`}</CardText>
-              </View>              
-              <Line/>
-              </TouchableOpacity>
-            );
-          })}
-          </ScrollView>    
-      </>)}
-       
-    </Container>       
+      </View>
+      {!modalVisible ? (
+         <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
+         {proveedores.map((proveedor, i) => {
+               return (<TouchableOpacity key={proveedor.id} onPress={()=>  navigation.navigate("Provider", { name: proveedor.title })}>
+                 <CardImage source={{uri: proveedor.image}}/>
+                 <CardTitle>{proveedor.title}</CardTitle>
+                 <View style={{flexDirection:"row",alignSelf:"flex-start"}}>
+                 <StarSvg/>
+                 <CardText>{`${proveedor.review} (${proveedor.count} calificaciones) a ${proveedor.distance} km`}</CardText>
+                 </View>              
+                 <Line/>
+                 </TouchableOpacity>
+               );
+             })}
+             </ScrollView>
+      ): (
+      <MapModal origin={{latitude:location.latitude, longitude:location.longitude}} modalVisible={modalVisible} proveedores={proveedores} handleNavigate={handleNavigate}/>
+      )}     
+                  
+          </>)}           
+    </Container>    
+
   );
 };
 

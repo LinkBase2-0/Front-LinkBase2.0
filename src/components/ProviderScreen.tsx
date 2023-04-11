@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from "react"; 
-import { ImageBackground, PixelRatio } from "react-native";
+import { ImageBackground, PixelRatio, Linking } from "react-native";
 import axios, { AxiosResponse } from "axios";
 import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
@@ -62,6 +63,18 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
   }, []);
 
   if (!provider.name) return null;
+
+  
+
+  const handleGetDirections = () => {
+    const latitude = parseDMS(provider.latitude)
+    const longitude =  parseDMS(provider.longitude)
+    const url = `comgooglemaps://?q=${latitude},${longitude}`;
+
+  Linking.openURL(url).catch((err) => {
+    console.error('Failed to open Google Maps: ', err);
+  });
+};
 
   return (
     <Box 
@@ -224,7 +237,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           >Rating</Text>
         </Box>
         {/*Map Button*/}
-        <Box 
+        <Pressable 
           display="flex" 
           flexDirection="column"
           width="10"
@@ -232,6 +245,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
           pt="1" 
           alignItems="center" 
           justifyContent="center"
+          onPress={handleGetDirections}
         >
           <MapSvg />
           <Text
@@ -240,7 +254,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
             fontWeight="500"
             color="black"
           >Mapa</Text>
-        </Box>
+        </Pressable>
         {/*Page Button*/}
         <Box 
           display="flex" 

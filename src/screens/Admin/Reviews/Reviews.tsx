@@ -38,16 +38,25 @@ interface UserReviews {
   photoURL: string;
 }
 
+interface ProviderInfo {
+  id: number;
+  name: string;
+}
+
 const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
   const { params } =
     useRoute<Route<"Reviews Admin", { proveedorId: number }>>();
   const proveedorIdSelected = params.proveedorId;
-  //console.log("PROVEEDORID", proveedorIdSelected);
 
   const [providerReviews, setProviderReviews] = useState<ProviderReviews[]>([]);
   const [userReviews, setUserReviews] = useState<UserReviews[]>([]);
 
   const [hasReviews, setHasReviews] = useState(false);
+
+  const [providerInfo, setProviderInfo] = useState<ProviderInfo>({
+    id: 0,
+    name: "",
+  });
 
   useEffect(() => {
     if (proveedorIdSelected) {
@@ -57,10 +66,10 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
         )
         .then((response) => {
           setProviderReviews(response.data.reviews);
+          //console.log("PROVEEDORID", response.data.reviews);
           if (response.data.reviews.length > 0) {
             setHasReviews(true);
           }
-          //console.log("PROVIDER REVIEWS", response.data.reviews);
 
           // Hacer otra petición utilizando la propiedad UserId de cada review
           response.data.reviews.forEach((review: { UserId: number }) => {
@@ -72,14 +81,23 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
                   ...prevReviews,
                   userResponse.data,
                 ]);
-                //console.log("USER INFO", response.data);
-
-                // Hacer algo con la respuesta aquí
               })
               .catch((error) => {
                 console.log(error);
               });
           });
+
+          // Hacer otra petición utilizando el ID del proveedor seleccionado
+          axios
+            .get(
+              `${process.env.IP_ADDRESS}/reviews/providerReviews/${proveedorIdSelected}`
+            )
+            .then((userResponse) => {
+              setProviderInfo(userResponse.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
@@ -163,7 +181,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
         </Box>
         <VStack space={2} alignItems="center">
           <Text px="16" fontFamily="body" fontWeight="400" textAlign="center">
-            Ve y administra reseñas de Office Depot
+            Ve y administra reseñas de {providerInfo.name}
           </Text>
         </VStack>
         <Center>
@@ -261,7 +279,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
                       </Text>
                     </View>
                   </Box>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       // Lógica para eliminar la imagen aquí
                     }}
@@ -276,7 +294,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
                     }}
                   >
                     <EditSvgAdmin />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
                       // Lógica para eliminar la imagen aquí

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Image } from "react-native";
+import {
+  SafeAreaView,
+  Image,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import { Box, Pressable } from "native-base";
 import { OverviewProps } from "../../../components/Navigators/HomeNavigator";
@@ -12,142 +18,177 @@ import {
   ScrollViewCategory,
   ContainerCategory,
   ProveedorContainer,
-  GridContainer,
-  CategoriaCard,
-  CategoriaCardText,
 } from "./styles";
+import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+
+const { width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
+const CARD_WIDTH = width / 3 - 25; // espacio entre las tarjetas
+const CARD_HEIGHT = height / 10; // espacio entre las tarjetas
 
 type Category = {
-  id: string,
-  name: string,
-  icon: any
-}
+  id: string;
+  name: string;
+  iconURL: any;
+};
 
 export type Provider = {
-  name: string,
-  id: number,
-  email: string,
-  phone: string,
-  web: string,
-  photoURL: string,
-  isPending: boolean,
-  time: string,
-  address: string,
-  latitude: string,
-  longitude: string,
-  createdAt: string,
-  updatedAt: string,
-  UserId: number
-}
+  name: string;
+  id: number;
+  email: string;
+  phone: string;
+  web: string;
+  photoURL: string;
+  isPending: boolean;
+  time: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  createdAt: string;
+  updatedAt: string;
+  UserId: number;
+};
 
 const categories: Category[] = [
   {
     id: "1",
     name: "Insumos",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category1.png")
+    iconURL: "https://i.postimg.cc/SKNLzk85/Insumos.png",
   },
   {
     id: "2",
     name: "Maquinaria",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category2.png")
+    iconURL: "https://i.postimg.cc/qqn2dRVt/Maquinaria.png",
   },
   {
     id: "3",
     name: "Repuestos",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png")
+    iconURL: "https://i.postimg.cc/15GDCfr2/Repuestos.png",
   },
   {
     id: "4",
     name: "Material de construccion",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png")
+    iconURL: "https://i.postimg.cc/8krRvyJ1/Material-de-construccion.png",
   },
   {
     id: "5",
     name: "Servicios",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png")
+    iconURL:
+      "https://img.freepik.com/vector-premium/vector-icono-servicio-al-cliente-servicio-integral-atencion-al-cliente-mano-personas-ilustracion-vectorial_399089-2810.jpg",
   },
   {
     id: "6",
     name: "Profesionales",
-    icon: require("../../../assets/svgImages/Usuario/Home/imgs/categories/category3.png")
-  }
+    iconURL: "https://i.postimg.cc/3J5gFgm2/Profesionales.png",
+  },
 ];
 
 const Home: React.FC<OverviewProps> = ({ navigation }) => {
   const [providers, setProviders] = useState<Provider[]>([]);
+  const [categoriess, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function requestProviders (): Promise<void> {
+    async function requestProviders(): Promise<void> {
       try {
-        const {data} = await axios.get(`${process.env.IP_ADDRESS}/providers`);
+        const { data } = await axios.get(`${process.env.IP_ADDRESS}/providers`);
         setProviders(data);
       } catch (error: any) {
         console.error(error.response.data);
       }
     }
 
+    async function requestCategories(): Promise<void> {
+      try {
+        const { data } = await axios.get(
+          `${process.env.IP_ADDRESS}/categories`
+        );
+        setCategories(data);
+      } catch (error: any) {
+        console.error(error.response.data);
+      }
+    }
+
     requestProviders();
+    requestCategories();
   }, []);
 
   return (
     <SafeAreaView>
-      <Container>
-        <Image
-          style={{ height: 155, marginTop: 22, width: "100%" }}
-          source={require("../../../assets/svgImages/Usuario/Home/imgs/slider1.png")}
-          resizeMode="cover"
-        />
-        <SearchBar style={{ elevation: 3 }} />
-        <SearchIcon style={{ elevation: 3 }} />
-        <ContainerCategory>
-          <ScrollViewCategory
-            horizontal={true}
-            style={{ elevation: 3 }}
-            scrollEnabled={false}
+      <ScrollView>
+        <Container>
+          <Image
+            style={{ height: 155, width: "100%" }}
+            source={require("../../../assets/svgImages/Usuario/Home/imgs/slider1.png")}
+            resizeMode="cover"
+          />
+          <SearchBar style={{ elevation: 3 }} />
+          <SearchIcon style={{ elevation: 3 }} />
+          <ContainerCategory style={{ height: 200 }}>
+            <ScrollViewCategory style={{ elevation: 4 }}>
+              <Box>
+                {categories.map((category, rowIndex) => (
+                  <View style={{ flexDirection: "row" }} key={rowIndex}>
+                    {[0, 1, 2].map((colIndex) => {
+                      const categoryIndex = rowIndex * 3 + colIndex;
+                      if (!categories[categoryIndex]) {
+                        return null;
+                      }
+                      const category = categories[categoryIndex];
+                      return (
+                        <TouchableOpacity
+                          style={{
+                            height: CARD_HEIGHT,
+                            width: CARD_WIDTH,
+                            borderRadius: 8,
+                            backgroundColor: "#ffffff",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                          onPress={() => {
+                            navigation.navigate("CategoryDetail", {
+                              categoryName: category.name,
+                            });
+                          }}
+                          key={category.id}
+                        >
+                          <Image
+                            source={{ uri: category.iconURL }}
+                            style={{ width: "25%", height: "25%" }}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              textAlign: "center",
+                              marginTop: 5,
+                            }}
+                          >
+                            {category.name}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                ))}
+              </Box>
+            </ScrollViewCategory>
+          </ContainerCategory>
+          <TextProveedor>Proveedores Destacados</TextProveedor>
+          <ProveedorContainer
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              height: "58%",
+              width: "100%",
+              elevation: 1,
+            }}
           >
-            <Box padding={1} borderRadius={8} margin={1}>
-              <GridContainer>
-              {categories.map(category => (
-                <CategoriaCard key={category.id}>
-                  <Pressable
-                    bg="#FFFFFF"
-                    rounded="lg"
-                    p={0}
-                    width="100%"
-                    height="70%"
-                    justifyContent="center"
-                    alignItems="center"
-                    onPress={() => {
-                      navigation.navigate("CategoryDetail", { categoryName: category.name });
-                    }}
-                  >
-                    <Image
-                      source={category.icon}
-                      style={{ width: "33%", height: "55%" }}
-                    />
-                    <CategoriaCardText
-                      style={{ width: "65%", height: "30%", fontSize: 10 }}
-                    >{category.name}</CategoriaCardText>
-                  </Pressable>
-                </CategoriaCard>
-              ))}
-              </GridContainer>
-            </Box>
-          </ScrollViewCategory>
-        </ContainerCategory>
-        <TextProveedor>Proveedores Destacados</TextProveedor>
-        <ProveedorContainer style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "90%",
-          width: "100%",
-          elevation: 1
-        }}>
-          <Carousel providers={providers}/>
-        </ProveedorContainer>
-      </Container>
+            <Carousel providers={providers} />
+          </ProveedorContainer>
+        </Container>
+      </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 export default Home;

@@ -11,7 +11,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { ProfilePic, EditText, EditInput, Button } from "./styles";
 import { ScrollView } from "react-native-gesture-handler";
 
-const Password: React.FC = ({ navigation }) => {
+type ProfileEditPasswordProps = {
+  navigation: any; // o cualquier otro tipo de objeto de navegación que estés usando
+};
+
+const Password: React.FC<ProfileEditPasswordProps> = ({ navigation }) => {
   const handleSubmit = () => {
     const title = "Aviso";
     const message = "Tu cambio ha sido realizado con éxito";
@@ -24,13 +28,13 @@ const Password: React.FC = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           scrollEnabled={true}
           contentContainerStyle={{
-            marginTop: 88,
+            marginTop: "8%",
             flex: 1,
             alignItems: "center",
             justifyContent: "flex-start",
