@@ -7,10 +7,21 @@ import {
   Input,
   HStack,
   Center,
+  Button,
+  Modal,
+  CloseIcon,
   //Image,
 } from "native-base";
+import { Chip } from "react-native-paper";
 import { HomeAdminProps } from "../../../../App";
-import { TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
@@ -28,6 +39,7 @@ import {
 //importar axios
 import axios from "axios";
 import { Image } from "react-native";
+
 
 interface Review {
   id: number;
@@ -59,6 +71,57 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
 
   const [filtro, setFiltro] = useState<number>(0);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  // Estados para los valores del formulario del modal
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [latitude, setLatitude] = useState<number>(0);
+  const [address, setAddress] = useState("");
+  const [longitude, setLongitude] = useState<number>(0);
+  const [phone, setPhone] = useState("");
+  const [web, setWeb] = useState("");
+  const [photoURL, setPhotoURL] = useState("");
+
+  const [newService, setNewService] = useState("");
+
+  const [newCategory, setNewCategory] = useState("");
+
+  const [services, setServices] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+
+  const addService = (service: string) => {
+    if (service.trim()) {
+      setServices([...services, service.trim()]);
+      setNewService("");
+    } else {
+      Alert.alert("Ingrese un servicio válido");
+    }
+  };
+
+  //remover services
+
+  const removeService = (index: number) => {
+    setServices((services) => services.filter((_, i) => i !== index));
+  };
+
+  const addCategory = (category: string) => {
+    if (category.trim()) {
+      setCategories([...categories, category.trim()]);
+      setNewCategory("");
+    } else {
+      Alert.alert("Ingrese una categoría válida");
+    }
+  };
+
+  // Remover categorías
+  const removeCategory = (index: number) => {
+    setCategories((categories) => categories.filter((_, i) => i !== index));
+  };
+
   useEffect(() => {
     axios
       .get(`${process.env.IP_ADDRESS}/providers`)
@@ -79,6 +142,29 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
       .catch((error) => {
         console.log(error);
       });
+  }, []);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      (event) => {
+        const keyboardHeight = event.endCoordinates.height;
+        setKeyboardVerticalOffset(keyboardHeight + 10);
+        //console.log("SHOW");
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      (event) => {
+        const keyboardHeight = event.endCoordinates.height;
+        setKeyboardVerticalOffset(keyboardHeight - 150);
+        //console.log("HIDDEN");
+      }
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, []);
 
   //sacar el promedio de las reviews
@@ -165,6 +251,122 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
     //navigation.navigate('Reseñas', { proveedorId });
   };
 
+  //eliminar proveedor
+  const handleDeleteProvider = (proveedorName: string) => {
+    const providerToDelete = proveedores.find((p) => p.name === proveedorName);
+
+    if (!providerToDelete) {
+      console.log(
+        `No se encontró ningún proveedor con el nombre ${proveedorName}`
+      );
+      return;
+    }
+
+    Alert.alert(
+      "¿Estás seguro de que deseas eliminar este proveedor?",
+      `Esto eliminará permanentemente el proveedor ${providerToDelete.name} y toda su información.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => {
+            axios
+              .delete(
+                `${process.env.IP_ADDRESS}/providers/${providerToDelete.name}`
+              )
+              .then(() => {
+                setProveedores(
+                  proveedores.filter((p) => p.id !== providerToDelete.id)
+                );
+                Alert.alert("Proveedor eliminado", "", [{ text: "OK" }], {
+                  cancelable: false,
+                });
+              })
+              .catch((error) => {
+                console.log(error);
+                Alert.alert("No se pudo eliminar el proveedor.");
+              });
+          },
+        },
+      ]
+    );
+  };
+
+  // Función para enviar la solicitud POST al servidor cuando se envía el formulario
+  const handleSubmit = () => {
+    // Verificar si los campos están vacíos
+    if (
+      name === "" ||
+      email === "" ||
+      //latitude === 0 ||
+      address === "" ||
+      //longitude === 0 ||
+      phone === "" ||
+      web === "" ||
+      photoURL === "" ||
+      services.length === 0 ||
+      categories.length === 0
+    ) {
+      // Mostrar alert indicando que los campos están vacíos
+      Alert.alert(
+        "Campos vacíos",
+        "Por favor complete todos los campos antes de enviar el formulario."
+      );
+      return;
+    }
+    const newProvider = {
+      provider: {
+        name,
+        email,
+        latitude: `${latitude}° N`,
+        address,
+        longitude: `${longitude}° W`,
+        phone,
+        web,
+        photoURL,
+        isPending: false,
+        time: new Date().toISOString(),
+      },
+      services,
+      categories,
+      user: {
+        email: "abacob@gmail.com",
+      },
+    };
+    //console.log("newProvider", newProvider);
+    axios
+      .post(`${process.env.IP_ADDRESS}/providers`, newProvider)
+      .then((response) => {
+        //console.log(response.data);
+        setProveedores([...proveedores, response.data]);
+        setIsOpen(false);
+        setName("");
+        setEmail("");
+        setLatitude(0);
+        setAddress("");
+        setLongitude(0);
+        setPhone("");
+        setWeb("");
+        setPhotoURL("");
+        setServices([]);
+        setCategories([]);
+        Alert.alert(
+          "Proveedor creado exitosamente",
+          "",
+          [
+            {
+              text: "OK",
+            },
+          ],
+          { cancelable: false }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Box
       safeArea
@@ -244,8 +446,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
       <ScrollView>
         {filteredProveedores.length > 0 &&
           filteredProveedores.map((proveedor) => {
-            //console.log("PROVEEDOR INDIVIDUAL", proveedor);
-
+            //console.log("PROVEEDOREEEE", proveedor);
             return (
               <Box
                 key={proveedor.id}
@@ -258,12 +459,9 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                 <Image
                   source={{ uri: proveedor.photoURL }}
                   alt={proveedor.name}
-                  style={{ height: 103, width: 321, marginBottom: 4 }}
-                  //height={103}
-                  //width={321}
+                  style={{ height: 103, width: "100%", marginBottom: 4 }}
                   borderRadius={20}
                   resizeMode="contain"
-                  //marginBottom={4}
                 />
                 <Box
                   position="absolute"
@@ -299,13 +497,13 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                 </Box>
                 <TouchableOpacity
                   onPress={() => {
+                    handleDeleteProvider(proveedor.name);
                     // Lógica para eliminar la imagen aquí
                   }}
                   style={{
                     position: "absolute",
                     top: 5,
                     right: 5,
-                    //backgroundColor: "rgba(0,0,0,0.5)",
                     borderRadius: 20,
                     padding: 13,
                   }}
@@ -323,9 +521,8 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                       paddingBottom: "5%",
                     }}
                   >
-                    {/* <TouchableOpacity> */}
                     <Text>Administrar</Text>
-                    {/* </TouchableOpacity> */}
+
                     <View
                       style={{
                         borderLeftWidth: 2,
@@ -341,7 +538,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                     >
                       <YelpAdminSvg />
                     </TouchableOpacity>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       onPress={() =>
                         navigation.navigate({
                           name: "Employees",
@@ -350,13 +547,191 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                       }
                     >
                       <UsersAdminSvg />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                   </View>
                 </Center>
               </Box>
             );
           })}
       </ScrollView>
+
+      <Button
+        style={{
+          backgroundColor: `${COLORS.COLORS.LINKBASECOLOR}`,
+          borderRadius: 50,
+          marginBottom: 20,
+          marginLeft: 70,
+          marginRight: 70,
+          height: 60,
+        }}
+        onPress={() => setIsOpen(true)}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Ionicons name="add" size={24} color="white" />
+          <Text style={{ color: "white", marginLeft: 8 }}>
+            Registrar nuevo proveedor
+          </Text>
+        </View>
+      </Button>
+      {/* Modal */}
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        animationPreset={"slide"}
+      >
+        <Modal.Content style={{ backgroundColor: "white" }}>
+          <Modal.CloseButton />
+          <Modal.Header style={{ backgroundColor: "white" }}>
+            <Text
+              textAlign={"center"}
+              fontFamily={COLORS.FONTS.OUTFITMEDIUM}
+              fontSize={17}
+            >
+              Registrar nuevo proveedor
+            </Text>
+          </Modal.Header>
+          <ScrollView>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={keyboardVerticalOffset}
+            >
+              <Modal.Body>
+                <VStack space={2} borderRadius={20}>
+                  <Input
+                    placeholder="Nombre"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={name}
+                    onChangeText={setName}
+                  />
+                  <Input
+                    placeholder="Correo electrónico"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={email}
+                    onChangeText={setEmail}
+                  />
+                  <Input
+                    placeholder="Dirección"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={address}
+                    onChangeText={setAddress}
+                  />
+                  <Input
+                    placeholder="Teléfono"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={phone}
+                    onChangeText={setPhone}
+                  />
+                  <Input
+                    placeholder="Web"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={web}
+                    onChangeText={setWeb}
+                  />
+                  <Input
+                    placeholder="Photo URL"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={photoURL}
+                    onChangeText={setPhotoURL}
+                  />
+                </VStack>
+                <VStack space={2} borderRadius={20}>
+                  <Text fontSize={13} fontWeight="bold">
+                    Servicios:
+                  </Text>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    {services.map((service, index) => (
+                      <HStack key={index} style={{ marginRight: 10 }}>
+                        <Chip
+                          key={index}
+                          style={{ marginRight: 10 }}
+                          onPress={() => {}}
+                        >
+                          {service}
+                        </Chip>
+                        <Button
+                          onPress={() => removeService(index)}
+                          ml={-4}
+                          bg="transparent"
+                          _pressed={{ bg: "transparent" }}
+                        >
+                          <CloseIcon size="xs" color="red.500" />
+                        </Button>
+                      </HStack>
+                    ))}
+                  </ScrollView>
+                  <Input
+                    placeholder="Agregar servicio"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={newService}
+                    onChangeText={setNewService}
+                    onSubmitEditing={() => addService(newService)}
+                  />
+                  <Text fontSize={13} fontWeight="bold">
+                    Categorías:
+                  </Text>
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                  >
+                    {categories.map((category, index) => (
+                      <HStack key={index} style={{ marginRight: 10 }}>
+                        <Chip
+                          key={index}
+                          style={{ marginRight: 10 }}
+                          onPress={() => {}}
+                        >
+                          {category}
+                        </Chip>
+                        <Button
+                          onPress={() => removeCategory(index)}
+                          ml={-4}
+                          bg="transparent"
+                          _pressed={{ bg: "transparent" }}
+                        >
+                          <CloseIcon size="xs" color="red.500" />
+                        </Button>
+                      </HStack>
+                    ))}
+                  </ScrollView>
+                  <Input
+                    placeholder="Agregar categoría"
+                    fontSize={13}
+                    borderRadius={20}
+                    value={newCategory}
+                    onChangeText={setNewCategory}
+                    onSubmitEditing={() => addCategory(newCategory)}
+                  />
+                </VStack>
+              </Modal.Body>
+              <Modal.Footer
+                style={{
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  bg={COLORS.COLORS.LINKBASECOLOR}
+                  borderRadius={20}
+                  onPress={handleSubmit}
+                >
+                  Aceptar
+                </Button>
+              </Modal.Footer>
+            </KeyboardAvoidingView>
+          </ScrollView>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 };

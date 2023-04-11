@@ -9,7 +9,7 @@ import {
   ArrowBackIcon,
 } from "native-base";
 import { ReviewsAdminProps } from "../../../../App";
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 
 //colors
@@ -58,6 +58,10 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
     name: "",
   });
 
+  //console.log("USERSREVIEWLEGAGAGAA", userReviews);
+
+  //console.log("PROVIDERS REVIEW FINAL", providerReviews);
+
   useEffect(() => {
     if (proveedorIdSelected) {
       axios
@@ -66,12 +70,10 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
         )
         .then((response) => {
           setProviderReviews(response.data.reviews);
-          //console.log("PROVEEDORID", response.data.reviews);
           if (response.data.reviews.length > 0) {
             setHasReviews(true);
           }
 
-          // Hacer otra petición utilizando la propiedad UserId de cada review
           response.data.reviews.forEach((review: { UserId: number }) => {
             const userId = review.UserId;
             axios
@@ -87,7 +89,6 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
               });
           });
 
-          // Hacer otra petición utilizando el ID del proveedor seleccionado
           axios
             .get(
               `${process.env.IP_ADDRESS}/reviews/providerReviews/${proveedorIdSelected}`
@@ -103,11 +104,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
           console.log(error);
         });
     }
-  }, [proveedorIdSelected]);
-
-  //console.log("USERSREVIEWLEGAGAGAA", userReviews);
-
-  //console.log("PROVIDERS REVIEW FINAL", providerReviews);
+  }, [proveedorIdSelected]); // Agregamos providerReviews como dependencia de useEffect
 
   // Genera íconos de estrella
   const generarIconosEstrella = (num: number): JSX.Element[] => {
@@ -133,6 +130,35 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
       );
     }
     return iconos;
+  };
+
+  //eliminar reviews por reviewId
+  const handleDeleteReview = (reviewId: number) => {
+    Alert.alert(
+      "¿Estás seguro de que deseas eliminar esta reseña?",
+      "Esto eliminará permanentemente la reseña.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => {
+            axios
+              .delete(`${process.env.IP_ADDRESS}/reviews/${reviewId}`)
+              .then(() => {
+                //Alert.alert("Se eliminó la reseña.");
+                setProviderReviews((prevReviews) =>
+                  prevReviews.filter((r) => r.id !== reviewId)
+                );
+              })
+              .catch((error) => {
+                console.log(error);
+                Alert.alert("No se pudo eliminar la reseña.");
+              });
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -297,7 +323,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
                   </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
-                      // Lógica para eliminar la imagen aquí
+                      handleDeleteReview(review.id);
                     }}
                     style={{
                       position: "absolute",
