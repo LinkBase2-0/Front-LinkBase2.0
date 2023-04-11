@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground, PixelRatio } from "react-native";
 import axios, { AxiosResponse } from "axios";
 import { ArrowBackIcon, Box, Center, HStack, Image, ShareIcon, Text, VStack } from "native-base";
-import StarSvg from "../assets/svg/StarSvg";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
+import StarSvg from "../assets/svg/StarSvg";
 import MapSvg from "../assets/svg/MapSvg";
 import PageSvg from "../assets/svg/PageSvg";
 import PhoneSvg from "../assets/svg/PhoneSvg";
@@ -11,6 +11,8 @@ import SimpleStarSvg from "../assets/svg/SimpleStarSvg";
 import { ProviderProps } from "./Navigators/HomeNavigator";
 import { Provider } from "../screens/Usuario/Home/Home";
 import calculateReviewAverage from "../utils/calculateReviewAverage";
+import ReviewGraphRow from "../commons/ReviewGraphRow";
+import reviewsToGraph from "../utils/reviewsToGraph";
 
 type responsiveFontSize = (size: number) => number;
 export type Review = {
@@ -23,9 +25,17 @@ export type Review = {
   UserId: number
 }
 
-const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
+const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
   const [provider, setProvider] = useState<Provider>({} as Provider);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([{
+    id: 0,
+    text: "",
+    stars: 0,
+    createdAt: "",
+    updatedAt: "",
+    ProviderId: 0,
+    UserId: 0
+  }]);
   const [reviewAverage, setReviewAverage] = useState<number>(0);
 	const fontScale: number = PixelRatio.getFontScale();
 	const getFontSize: responsiveFontSize = size => size / fontScale;
@@ -275,49 +285,22 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         flexDirection="row"
         width="320"
         height="150"
-        mt="1"
+        mt="2"
         alignSelf="center"
         justifyContent="center"
         alignItems="center"
       >
         <VStack flex="3">
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Center width="5" height="5"><Text>5</Text></Center>
-            <Box width="210" height="2" my="2" borderRadius="10" bg="#dbdad7">
-              <Box width="180" height="2" borderRadius="10" bg="#981D9A" />
-            </Box>
-          </Box>
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Center width="5" height="5"><Text>4</Text></Center>
-            <Box width="210" height="2" my="2" borderRadius="10" bg="#dbdad7">
-              <Box width="130" height="2" borderRadius="10" bg="#981D9A" />
-            </Box>
-          </Box>
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Center width="5" height="5"><Text>3</Text></Center>
-            <Box width="210" height="2" my="2" borderRadius="10" bg="#dbdad7">
-              <Box width="100" height="2" borderRadius="10" bg="#981D9A" />
-            </Box>
-          </Box>
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Center width="5" height="5"><Text>2</Text></Center>
-            <Box width="210" height="2" my="2" borderRadius="10" bg="#dbdad7">
-              <Box width="60" height="2" borderRadius="10" bg="#981D9A" />
-            </Box>
-          </Box>
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <Center width="5" height="5"><Text>1</Text></Center>
-            <Box width="210" height="2" my="2" borderRadius="10" bg="#dbdad7">
-              <Box width="30" height="2" borderRadius="10" bg="#981D9A" />
-            </Box>
-          </Box>
+        {reviewsToGraph(reviews).reverse().map((average, index, array) => (
+          <ReviewGraphRow key={index} stars={array.length - index} average={average} />
+        ))}
         </VStack>
         <Center flex="1" flexDirection="column" pb="3">
-          <Box flexDirection="row" alignItems="center">
+          <Box display="flex" flexDirection="row" alignItems="center">
             <Text fontSize="40" mr="2">{reviewAverage}</Text>
             <SimpleStarSvg />
           </Box> 
-          <Text>{reviews.length} {reviews.length === 1 ? "Reseña" : "Reseñas"}</Text>
+          <Text>{reviews.length} {reviews.length !== 1 ? "Reseñas" : "Reseña"}</Text>
         </Center>
       </Box>
       {/*Review Details*/}
@@ -385,14 +368,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           >Excelente lugar. Pude encontrar todo lo que 
           buscaba a un muy buen precio, recomendable.</Text>
         </Box>
-        <Text 
-          mt="2"
-          alignSelf="flex-end"
-          fontFamily="body"
-          fontSize="15"
-          fontWeight="400"
-          color="#981D9A"
-        >Ver Más</Text>
       </Box>
       {/*Create Review Button*/}
       <Box
