@@ -46,16 +46,13 @@ function FiltroPositivos() {
               }
               {...triggerProps}
             >
-              <Text >Positivos</Text>
+              <Text >Filtrar</Text>
             </Button>
           );
         }}
       >
-        <Menu.Item>1</Menu.Item>
-        <Menu.Item>2</Menu.Item>
-        <Menu.Item>3</Menu.Item>
-        <Menu.Item>4</Menu.Item>
-        <Menu.Item>5</Menu.Item>
+        <Menu.Item>Positivos</Menu.Item>
+        <Menu.Item>Negativos</Menu.Item>
       </Menu>
     </VStack>
   );
