@@ -4,12 +4,15 @@ import axios, { AxiosResponse } from "axios";
 import { 
   ArrowBackIcon, 
   Box, 
-  Center, 
+  Button, 
+  Center,
   HStack, 
-  Image, 
+  Image,  
+  Modal, 
   Pressable, 
   ShareIcon, 
   Text, 
+  TextArea, 
   VStack 
 } from "native-base";
 import { ArrowRightIcon } from "react-native-heroicons/solid";
@@ -26,6 +29,18 @@ import reviewsToGraph from "../utils/reviewsToGraph";
 import { parseDMS } from "../utils/utils";
 
 type responsiveFontSize = (size: number) => number;
+type ReviewBody = {
+  review: {
+    text: string,
+    stars: number
+  },
+  user: {
+    email: string
+  },
+  provider: {
+    name: string
+  }
+}
 export type Review = {
   id: number,
   text: string,
@@ -48,6 +63,9 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
     UserId: 0
   }]);
   const [reviewAverage, setReviewAverage] = useState<number>(0);
+  const [showWriteReview, setShowWriteReview] = useState<boolean>(false);
+  const [newReviewText, setNewReviewText] = useState<string>("");
+  const [starRating, setStarRating] = useState(0);
 	const fontScale: number = PixelRatio.getFontScale();
 	const getFontSize: responsiveFontSize = size => size / fontScale;
 
@@ -80,6 +98,24 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
     Linking.openURL(url).catch(err => {
       console.error('Failed to open Google Maps: ', err);
     });
+  }
+
+  const handleSubmitReview = async (): Promise<void> => {
+    const reviewBody: ReviewBody = {
+      review: {
+        text: newReviewText,
+        stars: starRating
+      },
+      user: {
+        email: "fabioalessandrotr@gmail.com"
+      },
+      provider: {
+        name: provider.name
+      }
+    }
+
+    await axios.post(`${process.env.IP_ADDRESS}/reviews`, reviewBody);
+    setShowWriteReview(false);
   }
 
   if (!provider.name) return null;
@@ -138,11 +174,11 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
               color="white"
             >{provider.name}</Text>
             <HStack mt="1" alignItems="center">
-              <StarSvg size={19} fill={reviewAverage > 0 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage > 1 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage > 2 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage > 3 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage > 4 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage >= 1 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage >= 2 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage >= 3 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage >= 4 ? "#981D9A" : "#BAB1B1"}/>
+              <StarSvg size={19} fill={reviewAverage === 5 ? "#981D9A" : "#BAB1B1"}/>
               <Text
                 ml="2"
                 fontFamily="body"
@@ -307,7 +343,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
         flexDirection="row"
         width="320"
         height="150"
-        mt="2"
+        mt="1"
         alignSelf="center"
         justifyContent="center"
         alignItems="center"
@@ -392,28 +428,68 @@ const ProviderScreen: React.FC<ProviderProps> = ({ route }) => {
         </Box>
       </Box>
       {/*Create Review Button*/}
-      <Box
-        display="flex"
-        flexDirection="row"
-        width="320"
-        height="30"
-        mt="8"
-        alignSelf="center"
-        alignItems="center"
-        justifyContent="center"
-        borderWidth="1"
-        borderRadius="15"
-        borderColor="#EAE8E8"
-        bg="white"
-        shadow="1"
+      <Center 
+        mt="7"
       >
-        <Text 
-          fontFamily="body"
-          fontSize={getFontSize(9.5)}
-          fontWeight="400"
-          color="#2A363D"
-        >Escribe Tu Reseña</Text>
-      </Box>
+        <Button 
+          width="320" 
+          borderRadius="10"
+          onPress={() => setShowWriteReview(true)}
+          variant="outline" 
+          colorScheme="gray"
+        >Escribe Tu Reseña</Button>
+        <Modal isOpen={showWriteReview}>
+          <Modal.Content maxWidth="400">
+            <Modal.Header>Nueva Reseña</Modal.Header>
+            <Modal.Body>
+              <Center>
+                <TextArea 
+                  value={newReviewText}
+                  onChangeText={setNewReviewText}
+                  h={20} 
+                  placeholder="¿Que te pareció este proveedor?" 
+                  w="100%" 
+                  maxW="350" 
+                  autoCompleteType={undefined} 
+                />
+                <HStack width="100%" mt="4" justifyContent="center" space={1}>
+                  <Pressable onPress={() => setStarRating(1)}>
+                    <StarSvg size={25} fill={starRating >= 1 ? "#981D9A" : "#BAB1B1"} />
+                  </Pressable>
+                  <Pressable onPress={() => setStarRating(2)}>
+                    <StarSvg size={25} fill={starRating >= 2 ? "#981D9A" : "#BAB1B1"} />
+                  </Pressable>
+                  <Pressable onPress={() => setStarRating(3)}>
+                    <StarSvg size={25} fill={starRating >= 3 ? "#981D9A" : "#BAB1B1"} />
+                  </Pressable>
+                  <Pressable onPress={() => setStarRating(4)}>
+                    <StarSvg size={25} fill={starRating >= 4 ? "#981D9A" : "#BAB1B1"} />
+                  </Pressable>
+                  <Pressable onPress={() => setStarRating(5)}>
+                    <StarSvg size={25} fill={starRating >= 5 ? "#981D9A" : "#BAB1B1"} />
+                  </Pressable>
+                </HStack>
+              </Center>
+            </Modal.Body>
+            <Modal.Footer>
+            <Button.Group space={2}>
+              <Button 
+                variant="ghost" 
+                colorScheme="blueGray" 
+                onPress={() => {
+                  setShowWriteReview(false);
+                }}
+              >Cancel</Button>
+              <Button 
+                variant="outline"
+                colorScheme="grey"
+                onPress={handleSubmitReview}
+              >Save</Button>
+            </Button.Group>
+          </Modal.Footer>
+          </Modal.Content>
+        </Modal>
+      </Center>
     </Box>
   );
 }
