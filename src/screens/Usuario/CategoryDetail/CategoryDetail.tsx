@@ -27,18 +27,22 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const fetchData = async () => {
-    try {
-      let { status } = await Location. requestForegroundPermissionsAsync();
+  const fetchLocation = async()=>{
+    let { status } = await Location. requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       console.log("Please grant location permissions");
       return;
-  }
     
+    }
     let currentLocation:any = await Location.getCurrentPositionAsync({});
     setLocation(currentLocation.coords)
+  }
+    
+    
 
-      const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/${route.params.categoryName}`);
+  const fetchData = async (filter) => {
+      try{
+      const result = route.params.categoryName == "Todos" ? await axios.get(`${process.env.IP_ADDRESS}/providers`) : await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/${route.params.categoryName}`);
       // const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/Profesionales`);
       const promises = result.data.map(async (provider: any) => {
         const lat: number = parseDMS(provider.latitude);
@@ -53,12 +57,17 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
           review: calculateReview(reviewsRes.data.reviews),
           latitude:lat,
           longitude:lon,
-          distance: calculateDistance(currentLocation.coords.latitude, currentLocation.coords.longitude, lat, lon),
+          distance: calculateDistance(location.latitude, location.longitude, lat, lon),
           count: reviewsRes.data.reviews.length,
         };
       });        
       const data = await Promise.all(promises);
-      return data
+     try{
+        const getByService:any = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByService/${filter}`)
+        const providersWithService = getByService.data.map((each:any)=>each.name)
+        const filteredProviders = data.filter((proveedor:any)=>providersWithService.includes(proveedor.title))
+        return filteredProviders
+      }catch{return data}
     } catch (error: any) {
       console.log(error.message);
     } 
@@ -82,7 +91,8 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
   useEffect(() => {
     const fetchAndRenderData = async () => {
       try {
-        const data:any = await fetchData();
+        await fetchLocation()
+        const data:any = await fetchData(route.params.serviceFilter);
         setProveedores(data);
         
         await fetchServices();        
@@ -113,13 +123,14 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       }
     }
 
-    const handleFilter = async(value:string)=>{
-      const allProviders:any = await fetchData();
-      if(value==="borrar") return setProveedores(allProviders)
-      const getByService:any = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByService/${value}`)
-      const providersWithService = getByService.data.map((each:any)=>each.name)
-      const filteredProviders = allProviders.filter((proveedor:any)=>providersWithService.includes(proveedor.title))
-      setProveedores(filteredProviders)
+    const handleFilter = async(value:string)=>{      
+      if(value=="borrar" || value =="") {
+        const res = await fetchData()
+        console.log(res)
+        setProveedores(res)
+      }
+      const res = await fetchData(value)
+      setProveedores(res)
     }
 
     const handleNavigate = (name:string)=>{
@@ -148,7 +159,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       </View>
       {!modalVisible ? (
          <ScrollView style={{width:"100%"}} contentContainerStyle={{alignItems:"center"}}>
-         {proveedores.map((proveedor, i) => {
+         {proveedores ? proveedores.map((proveedor, i) => {
                return (<TouchableOpacity key={proveedor.id} onPress={()=>  navigation.navigate("Provider", { name: proveedor.title })}>
                  <CardImage source={{uri: proveedor.image}}/>
                  <CardTitle>{proveedor.title}</CardTitle>
@@ -159,7 +170,7 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
                  <Line/>
                  </TouchableOpacity>
                );
-             })}
+             }):<></>}
              </ScrollView>
       ): (
       <MapModal origin={{latitude:location.latitude, longitude:location.longitude}} modalVisible={modalVisible} proveedores={proveedores} handleNavigate={handleNavigate}/>

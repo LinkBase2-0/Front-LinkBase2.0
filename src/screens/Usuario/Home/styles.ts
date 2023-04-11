@@ -104,3 +104,22 @@ export const CategoriaCardText = styled.Text`
   margin-top: 5px;
   font-size: 14px;
 `;
+
+export const SearchContainer = styled.View`
+background: #FFFFFF;
+box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.12);
+border-radius: 15px;
+width: 84%;
+align-self:center;
+margin-top:20px;
+padding-bottom:10px;
+`;
+
+export const SearchTitle = styled.Text`
+font-family:"Outfit_700Bold";
+`;
+
+export const SearchItem = styled.Text`
+font-family:"Outfit_300Light";
+margin-left:10px;
+`;
