@@ -19,6 +19,7 @@ import {
 } from "./styles";
 import { ScrollView } from "react-native-gesture-handler";
 import { useIsFocused } from '@react-navigation/native';
+import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
@@ -61,7 +62,12 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ navigation }) => {
         text: "OK",
         onPress: async() => {
           await AsyncStorage.removeItem('token')
-          navigation.navigate('Intro')
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: "Intro" }],
+            })
+          );
         }
       }
     ])
