@@ -71,3 +71,38 @@ export const Logout = styled.TouchableOpacity`
   margin-top: 40px;
   justify-content: center;
 `;
+
+export const ModalContainer = styled.View`
+width:322px;
+height:200px;
+background-color: #ffffff;
+box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.12);
+border-radius: 15px;
+justify-content: flex-start;
+align-self:center;
+margin:auto;
+`;
+
+export const URLInput = styled.TextInput`
+  width: 256px;
+  height: 59px;
+  font-family: "Outfit_500Medium";
+  font-size: 15px;
+  color: #666161;
+  background: #f3f3f3;
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.12);
+  border-radius: 15px;
+  margin-bottom: 12px;
+  padding: 20px;
+  align-self:center;
+`;
+export const URLSubmit = styled.TouchableOpacity`
+  width: 137px;
+  height: 22px;
+  background-color: #a0279e;
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.12);
+  border-radius: 15px;
+  margin:20px;
+  justify-content: center;
+  align-self:flex-end;
+`;
