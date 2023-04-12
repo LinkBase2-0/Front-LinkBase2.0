@@ -22,6 +22,9 @@ type ProfileEditPasswordProps = {
 const Password: React.FC<ProfileEditPasswordProps> = ({ navigation }) => {
   const [user, setUser] = useState({});
   const[isLoading,setIsLoading] = useState(true)
+  const[currentPassword, setCurrentPassword] = useState("")
+  const[newPassword, setNewPassword] = useState("")
+  const[confirmPassword, setConfirmPassword] = useState("")
 
   const getToken = async () => {
     try {
@@ -41,9 +44,11 @@ const Password: React.FC<ProfileEditPasswordProps> = ({ navigation }) => {
     getToken();
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     const title = "Aviso";
     const message = "Tu cambio ha sido realizado con éxito";
+    const result = await axios.put(`${process.env.IP_ADDRESS}/users/password/${user.id}`, {oldPassword:currentPassword, newPassword:newPassword});
+    console.log(result.data)
     Alert.alert(title, message, [
       {
         text: "OK",
@@ -81,19 +86,19 @@ const Password: React.FC<ProfileEditPasswordProps> = ({ navigation }) => {
           >
             Contraseña Actual:
           </EditText>
-          <EditInput secureTextEntry={true} />
+          <EditInput secureTextEntry={true} value={currentPassword} onChangeText={setCurrentPassword}/>
           <EditText
             style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
           >
             Nueva Contraseña:
           </EditText>
-          <EditInput secureTextEntry={true} />
+          <EditInput secureTextEntry={true} value={newPassword} onChangeText={setNewPassword}/>
           <EditText
             style={{ alignSelf: "flex-start", marginTop: 43, marginLeft: 62 }}
           >
             Confirmar Contraseña:
           </EditText>
-          <EditInput secureTextEntry={true} />
+          <EditInput secureTextEntry={true} value={confirmPassword} onChangeText={setConfirmPassword}/>
           <Button onPress={handleSubmit}>
             <Text
               style={{
