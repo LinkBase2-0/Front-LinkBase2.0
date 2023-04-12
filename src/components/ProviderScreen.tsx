@@ -32,6 +32,8 @@ import reviewsToGraph from "../utils/reviewsToGraph";
 import { parseDMS } from "../utils/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ReviewCard from "../commons/ReviewCard";
+import CreateReviewModal from "./CreateReviewModal";
+import ViewReviewModal from "./ViewReviewModal";
 
 type responsiveFontSize = (size: number) => number;
 type User = {
@@ -85,9 +87,11 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
   }]);
   const [reviewAverage, setReviewAverage] = useState<number>(0);
   const [showWriteReview, setShowWriteReview] = useState<boolean>(false);
+  const [showViewReview, setShowViewReview] = useState<boolean>(false);
   const [showPageAlert, setShowPageAlert] = useState<boolean>(false)
   const [newReviewText, setNewReviewText] = useState<string>("");
-  const [starRating, setStarRating] = useState(0);
+  const [starRating, setStarRating] = useState<number>(5);
+  const [singleReview, setSingleReview] = useState<Review>({} as Review)
 	const fontScale: number = PixelRatio.getFontScale();
 	const getFontSize: responsiveFontSize = size => size / fontScale;
 
@@ -137,6 +141,13 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
     }
     try {
       await axios.post(`${process.env.IP_ADDRESS}/reviews`, reviewBody);
+      const {data}: AxiosResponse = await axios.get(
+        `${process.env.IP_ADDRESS}/reviews/providerReviews/${provider.id}`
+        );
+      setNewReviewText("");
+      setStarRating(5)
+      setReviews(data.reviews);
+      setReviewAverage(calculateReviewAverage(data.reviews))
     } catch (error: any) {
       console.error(error.response.data);
     }
@@ -145,10 +156,9 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
 
   if (!provider.name) return null;
 
-  return (
-    <Box 
-      display="flex"
-      flexDirection="column"
+  return (<>
+    {/*Main Screen*/}
+    <ScrollView 
       flex="1"
       bg="white"
     > 
@@ -166,32 +176,24 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
         bg="rgba(0, 0, 0, 0.6)"
         />
         <Box 
-          display="flex" 
-          flexDirection="column"
           width="100%" 
           height="199" 
           alignItems="center"
         >
-          <Box 
-            display="flex" 
-            flexDirection="row" 
+          <Box  
             width="320" 
             height="auto" 
             mt="12" 
-            justifyContent="space-between" 
+            justifyContent="flex-start" 
           >
             <Pressable onPress={() => navigation.goBack()}>
               <ArrowBackIcon size="6" color="white" />
             </Pressable>
-            <ShareIcon size="6" color="white" />
           </Box>
           <Box
-            display="flex"
-            flexDirection="column"
             width="320"
             height="auto"
             mt="6"
-            mb="10"
           >
             <Text
               mb="1"
@@ -200,12 +202,14 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
               fontWeight="700"
               color="white"
             >{provider.name}</Text>
-            <HStack mt="1" alignItems="center">
-              <StarSvg size={19} fill={reviewAverage >= 1 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage >= 2 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage >= 3 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage >= 4 ? "#981D9A" : "#BAB1B1"}/>
-              <StarSvg size={19} fill={reviewAverage === 5 ? "#981D9A" : "#BAB1B1"}/>
+            <HStack mt="1">
+            {[...Array(5)].map((element, index) => (
+              <StarSvg 
+                key={index}
+                size={19} 
+                fill={reviewAverage >= index + 1 ? "#981D9A" : "#BAB1B1"}
+              />
+            ))}
               <Text
                 ml="2"
                 fontFamily="body"
@@ -218,9 +222,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
         </Box>
       </ImageBackground>
       {/*Header*/}
-      <Box 
-        display="flex" 
-        flexDirection="column"
+      <Box
         width="320"
         height="auto"
         mt="6"
@@ -233,17 +235,12 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
           color="black"
         >{provider.name}</Text> 
         <Box 
-          display="flex" 
           flexDirection="row"
           width="320"
           height="auto"
           justifyContent="space-between"
         >
-          <Box 
-            display="flex" 
-            flexDirection="row"
-            alignItems="center"
-          >
+          <HStack>
             <Text
               mr="1"
               fontFamily="body"
@@ -258,12 +255,8 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
               fontWeight="500"
               color="black"
             >7:00 AM - 8:00 PM</Text>
-          </Box>
-          <Box
-            display="flex" 
-            flexDirection="row"
-            alignItems="center"
-          >
+          </HStack>
+          <HStack alignItems="center">
             <Text
               mr="1"
               fontFamily="body"
@@ -272,7 +265,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
               color="#31AE2E"
             >Ver Horario Completo</Text>
             <ArrowRightIcon size="12" color="#31AE2E"/>
-          </Box>
+          </HStack>
         </Box>
       </Box>
       {/*Navbar*/}
@@ -396,29 +389,26 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
         </Pressable>
       </Box>
       {/*Review Section*/}
-      <Box alignSelf="center" width="320" height={reviews.length ? "275" : "140"}>
+      <Box 
+        alignSelf="center" 
+        width="320" 
+        height={reviews.length ? "275" : "140"}
+      >
         <ScrollView>
           <Box
-            display="flex"
             flexDirection="row"
-            mt="6"
-            mb="5"
+            my="6"
             width="100%"
             height="auto"
-            alignSelf="center"
-            justifyContent="center"
-            alignItems="center"
           >
             <VStack flex="3" space={1}>
-          {reviewsToGraph(reviews).reverse().map(
-            (average, index, array) => (
+            {reviewsToGraph(reviews).reverse().map((average, index, array) => (
               <ReviewGraphRow 
                 key={index} 
                 stars={array.length - index} 
                 average={average} 
               />
-            )
-          )}
+            ))}
             </VStack>
             <Center flex="1" pb="3">
               <Box flexDirection="row" alignItems="center">
@@ -430,78 +420,45 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
               </Text>
             </Center>
           </Box>
-      {reviews.length ?
-        reviews.map((review, index) => (
-          <ReviewCard key={index} review={review} />
-        ))
-        : null} 
+          <VStack width="100%" height="auto" space={3}>
+          {reviews.length ? reviews.map((review, index) => (
+            <Pressable key={index} onPress={() => {
+              setSingleReview(review);
+              setShowViewReview(true);
+            }}>
+              <ReviewCard review={review} />
+            </Pressable>
+          )): null} 
+          </VStack>
         </ScrollView>
       </Box>
       {/*Create Review Button*/}
-      <Center 
+      <Button 
+        width="320" 
         mt="7"
-      >
-        <Button 
-          width="320" 
-          borderRadius="10"
-          onPress={() => setShowWriteReview(true)}
-          variant="outline" 
-          colorScheme="gray"
-        >Escribe Tu Reseña</Button>
-        <Modal isOpen={showWriteReview}>
-          <Modal.Content maxWidth="400">
-            <Modal.Header>Nueva Reseña</Modal.Header>
-            <Modal.Body>
-              <Center>
-                <TextArea 
-                  value={newReviewText}
-                  onChangeText={setNewReviewText}
-                  h={20} 
-                  placeholder="¿Que te pareció este proveedor?" 
-                  w="100%" 
-                  maxW="350" 
-                  autoCompleteType={undefined} 
-                />
-                <HStack width="100%" mt="4" justifyContent="center" space={1}>
-                  <Pressable onPress={() => setStarRating(1)}>
-                    <StarSvg size={25} fill={starRating >= 1 ? "#981D9A" : "#BAB1B1"} />
-                  </Pressable>
-                  <Pressable onPress={() => setStarRating(2)}>
-                    <StarSvg size={25} fill={starRating >= 2 ? "#981D9A" : "#BAB1B1"} />
-                  </Pressable>
-                  <Pressable onPress={() => setStarRating(3)}>
-                    <StarSvg size={25} fill={starRating >= 3 ? "#981D9A" : "#BAB1B1"} />
-                  </Pressable>
-                  <Pressable onPress={() => setStarRating(4)}>
-                    <StarSvg size={25} fill={starRating >= 4 ? "#981D9A" : "#BAB1B1"} />
-                  </Pressable>
-                  <Pressable onPress={() => setStarRating(5)}>
-                    <StarSvg size={25} fill={starRating >= 5 ? "#981D9A" : "#BAB1B1"} />
-                  </Pressable>
-                </HStack>
-              </Center>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button.Group space={2}>
-              <Button 
-                variant="ghost" 
-                colorScheme="blueGray" 
-                onPress={() => {
-                  setShowWriteReview(false);
-                }}
-              >Cancel</Button>
-              <Button 
-                variant="outline"
-                colorScheme="gray"
-                onPress={handleSubmitReview}
-              >Save</Button>
-            </Button.Group>
-          </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-      </Center>
-    </Box>
-  );
+        alignSelf="center"
+        borderRadius="10"
+        onPress={() => setShowWriteReview(true)}
+        variant="outline" 
+        colorScheme="gray"
+      >Escribe Tu Reseña</Button>
+    </ScrollView>
+    {/*Modals*/}
+    <CreateReviewModal 
+      setShowWriteReview={setShowWriteReview}
+      showWriteReview={showWriteReview}
+      setNewReviewText={setNewReviewText}
+      newReviewText={newReviewText}
+      setStarRating={setStarRating}
+      starRating={starRating}
+      handleSubmitReview={handleSubmitReview}
+    />
+    <ViewReviewModal 
+      setShowViewReview={setShowViewReview}
+      showViewReview={showViewReview}
+      singleReview={singleReview}
+    />
+  </>);
 }
 
 export default ProviderScreen;
