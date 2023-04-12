@@ -39,6 +39,12 @@ import {
 //importar axios
 import axios from "axios";
 import { Image } from "react-native";
+import Geocoding from "react-native-geocoding";
+
+import { debounce } from "lodash";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import jwtDecode from 'jwt-decode';
 
 
 interface Review {
@@ -63,6 +69,8 @@ interface Proveedor {
   updatedAt: string;
   web: string;
 }
+
+Geocoding.init(`${process.env.API_KEY_MAPS}`);
 
 const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
@@ -92,6 +100,37 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
   const [categories, setCategories] = useState<string[]>([]);
 
   const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
+
+  const [decodedEmail, setDecodedEmail] = useState<string>('');
+
+
+  // console.log("ADDRESS", address);
+
+  //console.log("LATITUD", latitude);
+  //console.log("LONGITUD", longitude);
+
+  const [isAddressNotFound, setIsAddressNotFound] = useState(false);
+
+  const handleGeocode = debounce((address: string) => {
+    Geocoding.from(address)
+      .then((response) => {
+        const { status, results } = response;
+
+        if (status === "OK") {
+          const { lat, lng } = results[0].geometry.location;
+          setLatitude(lat);
+          setLongitude(lng);
+          setIsAddressNotFound(false);
+        } else if (status === "ZERO_RESULTS") {
+          setIsAddressNotFound(true);
+        }
+      })
+      .catch((error) => {
+        if (error.origin.status === "ZERO_RESULTS") {
+          setIsAddressNotFound(true);
+        }
+      });
+  }, 1000); // El segundo parámetro es el tiempo de espera en milisegundos
 
   const addService = (service: string) => {
     if (service.trim()) {
@@ -293,6 +332,25 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
     );
   };
 
+  const [user, setUser] = useState(null);
+  const[isLoading,setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const value = await AsyncStorage.getItem('token');
+        if (value !== null) {
+          const decodedToken:any = jwtDecode(value);
+          setDecodedEmail(decodedToken.user.email);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      finally {setIsLoading(false)}
+    };
+    getToken();
+  }, []);
+
   // Función para enviar la solicitud POST al servidor cuando se envía el formulario
   const handleSubmit = () => {
     // Verificar si los campos están vacíos
@@ -331,7 +389,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
       services,
       categories,
       user: {
-        email: "abacob@gmail.com",
+        email: decodedEmail,
       },
     };
     //console.log("newProvider", newProvider);
@@ -612,12 +670,24 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                     value={email}
                     onChangeText={setEmail}
                   />
+                  {!isAddressNotFound ? (
+                    <Text style={{ color: "green" }}>
+                      La dirección se encontró en el mapa.
+                    </Text>
+                  ) : (
+                    <Text style={{ color: "red" }}>
+                      La dirección no se encontró en el mapa.
+                    </Text>
+                  )}
                   <Input
-                    placeholder="Dirección"
+                    placeholder="Dirección y país"
                     fontSize={13}
                     borderRadius={20}
                     value={address}
-                    onChangeText={setAddress}
+                    onChangeText={(text) => {
+                      setAddress(text);
+                      handleGeocode(text);
+                    }}
                   />
                   <Input
                     placeholder="Teléfono"
