@@ -105,13 +105,16 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
           />
         </TouchableOpacity>
         <ProfilePic
-          source={{ uri: user?.photoURL }}
+          source={{
+            uri: user?.photoURL
+              ? user?.photoURL
+              : "https://assets.stickpng.com/thumbs/585e4beacb11b227491c3399.png",
+          }}
           style={{
             justifyContent: "center",
             alignItems: "center",
           }}
         />
-
         <Title>{user?.fullName}</Title>
         <Description>{user?.email}</Description>
         {/* //onPress={() => navigation.navigate("Edit")} */}
@@ -119,9 +122,7 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
         <View style={{ marginTop: 54, alignSelf: "flex-start" }}>
           <TouchableOpacity
             style={styles.options}
-            onPress={() =>
-              navigation.navigate("Password Admin")
-            }
+            onPress={() => navigation.navigate("Password Admin")}
           >
             <PasswordSvg style={{ marginLeft: 41 }} />
             <Option>Cambiar contraseña</Option>
