@@ -75,7 +75,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
     const message = "Tu cambio ha sido realizado con éxito";
     const result = await axios.put(
       `${process.env.IP_ADDRESS}/users/password/${user?.id}`,
-      {oldPassword: currentPassword, newPassword: newPassword }
+      { oldPassword: currentPassword, newPassword: newPassword }
     );
     console.log(result.data);
     Alert.alert(title, message, [
@@ -101,14 +101,16 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
         >
           <TouchableOpacity
             style={{ alignSelf: "flex-start", position: "absolute", left: 32 }}
-            onPress={() =>
-              navigation.navigate("Profile Admin")
-            }
+            onPress={() => navigation.navigate("Profile Admin")}
           >
             <ArrowLeftIcon color="black" size={30} />
           </TouchableOpacity>
           <ProfilePic
-            source={{ uri: user?.photoURL }}
+            source={{
+              uri: user?.photoURL
+                ? user?.photoURL
+                : "https://assets.stickpng.com/thumbs/585e4beacb11b227491c3399.png",
+            }}
             style={{ marginTop: 41 }}
           />
           <Text

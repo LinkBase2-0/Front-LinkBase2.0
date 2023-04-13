@@ -8,6 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
+import { User } from "../../../components/ProviderScreen";
 
 type ProfileEditProps = {
   navigation: any; // o cualquier otro tipo de objeto de navegación que estés usando
@@ -17,7 +18,7 @@ const Edit: React.FC<ProfileEditProps> = ({ navigation }) => {
   const isFocused = useIsFocused();
   const[email,setEmail] = useState('email@email.com')
   const[url,setUrl] = useState("")
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<User>({} as User);
   const[isLoading,setIsLoading] = useState(true)
   const [modal,setModal] = useState(false)
 
@@ -75,7 +76,14 @@ const Edit: React.FC<ProfileEditProps> = ({ navigation }) => {
         >
           <ArrowLeftIcon color="black" size={30} />
         </TouchableOpacity>
-        <ProfilePic source={{uri:user.photoURL}} style={{ marginTop: 63 }} />
+        <ProfilePic
+          source={{
+            uri: user.photoURL
+              ? user.photoURL
+              : "https://assets.stickpng.com/thumbs/585e4beacb11b227491c3399.png",
+          }}
+          style={{ marginTop: 63 }}
+        />
         <TouchableOpacity style={{ marginLeft: 126 }} onPress={()=>setModal(true)}>
           <AddphotoSvg />
         </TouchableOpacity>
