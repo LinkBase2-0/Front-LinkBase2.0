@@ -128,18 +128,6 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ navigation }) => {
             <PasswordSvg style={{ marginLeft: 41 }} />
             <Option>Cambiar contraseña</Option>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.options}>
-          <BoardSvg style={{marginLeft:41}}/>
-          <Option>Registrar mi empresa</Option>          
-        </TouchableOpacity>  */}
-          <TouchableOpacity style={styles.options}>
-            <GearSvg style={{ marginLeft: 41 }} />
-            <Option>Ajustes</Option>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.options}>
-            <QmSvg style={{ marginLeft: 41 }} />
-            <Option>Centro de Ayuda</Option>
-          </TouchableOpacity>
         </View>
         <Logout onPress={handleLogout}>
           <Text
