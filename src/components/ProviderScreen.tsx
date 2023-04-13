@@ -158,286 +158,284 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
 
   if (!provider.name) return null;
 
-  return (
-    <>
-      {/*Main Screen*/}
-      <ScrollView flex="1" bg="white">
-        {/*Banner*/}
-        <ImageBackground
-          source={{ uri: `${provider.photoURL}` }}
-          resizeMode="cover"
-        >
-          <Box
-            position="absolute"
-            top="0"
-            left="0"
-            bottom="0"
-            right="0"
-            bg="rgba(0, 0, 0, 0.6)"
-          />
-          <Box width="100%" height="199" alignItems="center">
-            <Box width="320" height="auto" mt="12" justifyContent="flex-start">
-              <Pressable onPress={() => navigation.goBack()}>
-                <ArrowBackIcon size="6" color="white" />
-              </Pressable>
-            </Box>
-            <Box width="320" height="auto" mt="6">
+  return (<>
+    {/*Main Screen*/}
+    <Box flex="1" bg="white">
+      {/*Banner*/}
+      <ImageBackground
+        source={{ uri: `${provider.photoURL}` }}
+        resizeMode="cover"
+      >
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          bottom="0"
+          right="0"
+          bg="rgba(0, 0, 0, 0.6)"
+        />
+        <Box width="100%" height="199" alignItems="center">
+          <Box width="320" height="auto" mt="12" justifyContent="flex-start">
+            <Pressable onPress={() => navigation.goBack()}>
+              <ArrowBackIcon size="6" color="white" />
+            </Pressable>
+          </Box>
+          <Box width="320" height="auto" mt="6">
+            <Text
+              mb="1"
+              fontFamily="body"
+              fontSize={getFontSize(22)}
+              fontWeight="700"
+              color="white"
+            >
+              {provider.name}
+            </Text>
+            <HStack mt="1">
+              {[...Array(5)].map((element, index) => (
+                <StarSvg
+                  key={index}
+                  size={19}
+                  fill={reviewAverage >= index + 1 ? "#981D9A" : "#BAB1B1"}
+                />
+              ))}
               <Text
-                mb="1"
+                ml="2"
                 fontFamily="body"
-                fontSize={getFontSize(22)}
-                fontWeight="700"
+                fontSize="15"
+                fontWeight="500"
                 color="white"
               >
-                {provider.name}
+                {reviews.length}
               </Text>
-              <HStack mt="1">
-                {[...Array(5)].map((element, index) => (
-                  <StarSvg
-                    key={index}
-                    size={19}
-                    fill={reviewAverage >= index + 1 ? "#981D9A" : "#BAB1B1"}
-                  />
-                ))}
-                <Text
-                  ml="2"
-                  fontFamily="body"
-                  fontSize="15"
-                  fontWeight="500"
-                  color="white"
-                >
-                  {reviews.length}
-                </Text>
-              </HStack>
-            </Box>
+            </HStack>
           </Box>
-        </ImageBackground>
-        {/*Header*/}
-        <Text 
-          mt="8"
-          alignSelf="center"
-          fontFamily="body" 
-          fontSize="20" 
-          fontWeight="700" 
-          color="black"
-        >{provider.name}</Text>
-        {/*Navbar*/}
+        </Box>
+      </ImageBackground>
+      {/*Header*/}
+      <Text 
+        mt="8"
+        alignSelf="center"
+        fontFamily="body" 
+        fontSize="20" 
+        fontWeight="700" 
+        color="black"
+      >{provider.name}</Text>
+      {/*Navbar*/}
+      <Box
+        display="flex"
+        flexDirection="row"
+        width="320"
+        height="70"
+        mt="5"
+        alignSelf="center"
+        alignItems="center"
+        justifyContent="space-evenly"
+        borderWidth="2"
+        borderRadius="15"
+        borderColor="#EAE8E8"
+      >
+        {/*Reviews Button*/}
         <Box
           display="flex"
-          flexDirection="row"
-          width="320"
-          height="70"
-          mt="5"
-          alignSelf="center"
+          flexDirection="column"
+          width="10"
+          height="12"
+          pt="1"
           alignItems="center"
-          justifyContent="space-evenly"
-          borderWidth="2"
-          borderRadius="15"
-          borderColor="#EAE8E8"
+          justifyContent="center"
         >
-          {/*Reviews Button*/}
-          <Box
-            display="flex"
-            flexDirection="column"
-            width="10"
-            height="12"
-            pt="1"
-            alignItems="center"
-            justifyContent="center"
+          <StarSvg size={25} fill="#981D9A" />
+          <Text
+            fontFamily="body"
+            fontSize={getFontSize(12)}
+            fontWeight="500"
+            color="#981D9A"
           >
-            <StarSvg size={25} fill="#981D9A" />
-            <Text
-              fontFamily="body"
-              fontSize={getFontSize(12)}
-              fontWeight="500"
-              color="#981D9A"
-            >
-              Rating
-            </Text>
-          </Box>
-          {/*Map Button*/}
-          <Pressable
-            display="flex"
-            flexDirection="column"
-            width="10"
-            height="12"
-            pt="1"
-            alignItems="center"
-            justifyContent="center"
-            onPress={handleGetDirections}
-          >
-            <MapSvg />
-            <Text
-              fontFamily="body"
-              fontSize={getFontSize(12)}
-              fontWeight="500"
-              color="black"
-            >
-              Mapa
-            </Text>
-          </Pressable>
-          {/*Page Button*/}
-          <Pressable
-            display="flex"
-            flexDirection="column"
-            width="10"
-            height="12"
-            pt="1"
-            alignItems="center"
-            justifyContent="center"
-            onPress={
-              provider.web
-                ? () => Linking.openURL(provider.web)
-                : () => setShowPageAlert(true)
-            }
-          >
-            <PageSvg />
-            <Text
-              fontFamily="body"
-              fontSize={getFontSize(12)}
-              fontWeight="500"
-              color="black"
-            >
-              Página
-            </Text>
-            <Modal isOpen={showPageAlert}>
-              <Modal.Content maxWidth="400">
-                <Alert w="100%" status="error">
-                  <VStack space={2} flexShrink={1} w="100%">
-                    <HStack
-                      flexShrink={1}
-                      space={2}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <HStack space={2} flexShrink={1}>
-                        <Alert.Icon mt="0.5" ml="2" mr="1" />
-                        <Text
-                          fontSize="sm"
-                          color="coolGray.800"
-                          alignSelf="center"
-                        >
-                          Este proveedor no tiene página web.{" "}
-                        </Text>
-                      </HStack>
-                      <IconButton
-                        onPress={() => setShowPageAlert(false)}
-                        variant="unstyled"
-                        _focus={{ borderWidth: 0 }}
-                        icon={<CloseIcon size="3" />}
-                        _icon={{ color: "coolGray.600" }}
-                      />
-                    </HStack>
-                  </VStack>
-                </Alert>
-              </Modal.Content>
-            </Modal>
-          </Pressable>
-          {/*Call Button*/}
-          <Pressable
-            display="flex"
-            flexDirection="column"
-            width="10"
-            height="12"
-            pt="1"
-            alignItems="center"
-            justifyContent="center"
-            onPress={() => Linking.openURL(`tel:${provider.phone}`)}
-          >
-            <PhoneSvg />
-            <Text
-              mt="1"
-              fontFamily="body"
-              fontSize={getFontSize(12)}
-              fontWeight="500"
-              color="black"
-            >
-              Llama
-            </Text>
-          </Pressable>
+            Rating
+          </Text>
         </Box>
-        {/*Review Section*/}
-        <Box
-          alignSelf="center"
-          width="320"
-          height={reviews.length ? "275" : "140"}
+        {/*Map Button*/}
+        <Pressable
+          display="flex"
+          flexDirection="column"
+          width="10"
+          height="12"
+          pt="1"
+          alignItems="center"
+          justifyContent="center"
+          onPress={handleGetDirections}
         >
-          <ScrollView>
-            <Box flexDirection="row" my="6" width="100%" height="auto">
-              <VStack flex="3" space={1}>
-                {reviewsToGraph(reviews)
-                  .reverse()
-                  .map((average, index, array) => (
-                    <ReviewGraphRow
-                      key={index}
-                      stars={array.length - index}
-                      average={average}
-                    />
-                  ))}
-              </VStack>
-              <Center flex="1" pb="3">
-                <Box flexDirection="row" alignItems="center">
-                  <Text fontSize="40" pr="2">
-                    {reviewAverage}
-                  </Text>
-                  <SimpleStarSvg />
-                </Box>
-                <Text>
-                  {reviews.length} {reviews.length !== 1 ? "Reseñas" : "Reseña"}
-                </Text>
-              </Center>
-            </Box>
-            <VStack width="100%" height="auto" space={3}>
-              {reviews.length
-                ? reviews.map((review, index) => {
-                    return (
-                      <Pressable
-                        key={index}
-                        onPress={() => {
-                          setSingleReview(review);
-                          setShowViewReview(true);
-                        }}
+          <MapSvg />
+          <Text
+            fontFamily="body"
+            fontSize={getFontSize(12)}
+            fontWeight="500"
+            color="black"
+          >
+            Mapa
+          </Text>
+        </Pressable>
+        {/*Page Button*/}
+        <Pressable
+          display="flex"
+          flexDirection="column"
+          width="10"
+          height="12"
+          pt="1"
+          alignItems="center"
+          justifyContent="center"
+          onPress={
+            provider.web
+              ? () => Linking.openURL(provider.web)
+              : () => setShowPageAlert(true)
+          }
+        >
+          <PageSvg />
+          <Text
+            fontFamily="body"
+            fontSize={getFontSize(12)}
+            fontWeight="500"
+            color="black"
+          >
+            Página
+          </Text>
+          <Modal isOpen={showPageAlert}>
+            <Modal.Content maxWidth="400">
+              <Alert w="100%" status="error">
+                <VStack space={2} flexShrink={1} w="100%">
+                  <HStack
+                    flexShrink={1}
+                    space={2}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <HStack space={2} flexShrink={1}>
+                      <Alert.Icon mt="0.5" ml="2" mr="1" />
+                      <Text
+                        fontSize="sm"
+                        color="coolGray.800"
+                        alignSelf="center"
                       >
-                        <ReviewCard review={review} />
-                      </Pressable>
-                    )
-                  })
-                : null}
-            </VStack>
-          </ScrollView>
-        </Box>
-        {/*Create Review Button*/}
-        <Button
-          width="320"
-          mt="7"
-          alignSelf="center"
-          borderRadius="10"
-          onPress={() => setShowWriteReview(true)}
-          variant="outline"
-          colorScheme="gray"
+                        Este proveedor no tiene página web.{" "}
+                      </Text>
+                    </HStack>
+                    <IconButton
+                      onPress={() => setShowPageAlert(false)}
+                      variant="unstyled"
+                      _focus={{ borderWidth: 0 }}
+                      icon={<CloseIcon size="3" />}
+                      _icon={{ color: "coolGray.600" }}
+                    />
+                  </HStack>
+                </VStack>
+              </Alert>
+            </Modal.Content>
+          </Modal>
+        </Pressable>
+        {/*Call Button*/}
+        <Pressable
+          display="flex"
+          flexDirection="column"
+          width="10"
+          height="12"
+          pt="1"
+          alignItems="center"
+          justifyContent="center"
+          onPress={() => Linking.openURL(`tel:${provider.phone}`)}
         >
-          Escribe Tu Reseña
-        </Button>
-      </ScrollView>
-      {/*Modals*/}
-      <CreateReviewModal
-        setShowWriteReview={setShowWriteReview}
-        showWriteReview={showWriteReview}
-        setNewReviewText={setNewReviewText}
-        newReviewText={newReviewText}
-        setStarRating={setStarRating}
-        starRating={starRating}
-        handleSubmitReview={handleSubmitReview}
-      />
-    {singleReview.User
-    ? <ViewReviewModal
-        setShowViewReview={setShowViewReview}
-        showViewReview={showViewReview}
-        singleReview={singleReview}
-      />
-    : null}
-    </>
-  );
+          <PhoneSvg />
+          <Text
+            mt="1"
+            fontFamily="body"
+            fontSize={getFontSize(12)}
+            fontWeight="500"
+            color="black"
+          >
+            Llama
+          </Text>
+        </Pressable>
+      </Box>
+      {/*Review Section*/}
+      <Box
+        alignSelf="center"
+        width="320"
+        height={reviews.length ? "275" : "140"}
+      >
+        <ScrollView>
+          <Box flexDirection="row" my="6" width="100%" height="auto">
+            <VStack flex="3" space={1}>
+              {reviewsToGraph(reviews)
+                .reverse()
+                .map((average, index, array) => (
+                  <ReviewGraphRow
+                    key={index}
+                    stars={array.length - index}
+                    average={average}
+                  />
+                ))}
+            </VStack>
+            <Center flex="1" pb="3">
+              <Box flexDirection="row" alignItems="center">
+                <Text fontSize="40" pr="2">
+                  {reviewAverage}
+                </Text>
+                <SimpleStarSvg />
+              </Box>
+              <Text>
+                {reviews.length} {reviews.length !== 1 ? "Reseñas" : "Reseña"}
+              </Text>
+            </Center>
+          </Box>
+          <VStack width="100%" height="auto" space={3}>
+            {reviews.length
+              ? reviews.map((review, index) => {
+                  return (
+                    <Pressable
+                      key={index}
+                      onPress={() => {
+                        setSingleReview(review);
+                        setShowViewReview(true);
+                      }}
+                    >
+                      <ReviewCard review={review} />
+                    </Pressable>
+                  )
+                })
+              : null}
+          </VStack>
+        </ScrollView>
+      </Box>
+      {/*Create Review Button*/}
+      <Button
+        width="320"
+        mt="7"
+        alignSelf="center"
+        borderRadius="10"
+        onPress={() => setShowWriteReview(true)}
+        variant="outline"
+        colorScheme="gray"
+      >
+        Escribe Tu Reseña
+      </Button>
+    </Box>
+    {/*Modals*/}
+    <CreateReviewModal
+      setShowWriteReview={setShowWriteReview}
+      showWriteReview={showWriteReview}
+      setNewReviewText={setNewReviewText}
+      newReviewText={newReviewText}
+      setStarRating={setStarRating}
+      starRating={starRating}
+      handleSubmitReview={handleSubmitReview}
+    />
+  {singleReview.User
+  ? <ViewReviewModal
+      setShowViewReview={setShowViewReview}
+      showViewReview={showViewReview}
+      singleReview={singleReview}
+    />
+  : null}
+  </>);
 }
 
 export default ProviderScreen;
