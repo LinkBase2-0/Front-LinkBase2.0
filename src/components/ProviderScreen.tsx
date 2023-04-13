@@ -183,7 +183,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation,route }) => {
             <Pressable onPress={() => navigation.goBack()}>
               <ArrowBackIcon size="6" color="white" />
             </Pressable>
-            <ShareIcon size="6" color="white" />
+            {/* <ShareIcon size="6" color="white" /> */}
           </Box>
           <Box
             display="flex"

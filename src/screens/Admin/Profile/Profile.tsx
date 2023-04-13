@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { PasswordSvg, BoardSvg, GearSvg, QmSvg } from "../../../assets/svgImages/Usuario/Profile/";
+import {
+  PasswordSvg,
+  BoardSvg,
+  GearSvg,
+  QmSvg,
+} from "../../../assets/svgImages/Usuario/Profile/";
 
 import {
   Container,
@@ -17,10 +22,77 @@ import { ArrowBackIcon } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
 
 import COLORS from "../../../styles/theme";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwtDecode from "jwt-decode";
+import axios from "axios";
+import { CommonActions } from "@react-navigation/native";
+
 
 const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
+  interface User {
+    CompanyId: number | null;
+    ProviderId: number | null;
+    charge: string;
+    createdAt: string;
+    email: string;
+    fullName: string;
+    id: number;
+    isPending: boolean;
+    password: string;
+    photoURL: string;
+    rol: string;
+    salt: string;
+    updatedAt: string;
+  }
+
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const value = await AsyncStorage.getItem("token");
+        if (value !== null) {
+          const decodedToken: any = jwtDecode(value);
+          const response = await axios.get(
+            `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
+          );
+          //console.log("USERDATA", response.data);
+
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getToken();
+  }, []);
+
+
+
+  const handleLogout = async () => {
+    try {
+      // eliminar el token de la sesión
+      await AsyncStorage.removeItem("token");
+    } catch (error) {
+      console.error(error);
+    }
+  
+    // navegar al inicio de sesión y eliminar el historial de navegación
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Intro Admin"}],
+      })
+    );
+  };
+  
+
   return (
-    <ScrollView style={{backgroundColor: "white"}}>
+    <ScrollView style={{ backgroundColor: "white" }}>
       <Container
         style={{
           flex: 1,
@@ -44,9 +116,16 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
             style={{ marginRight: "75%" }}
           />
         </TouchableOpacity>
-        <ProfilePic source={require("../../Usuario/Profile/pic.jpeg")} />
-        <Title>Alexandra</Title>
-        <Description>alexandra@mail.com</Description>
+        <ProfilePic
+          source={{ uri: user?.photoURL }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        />
+
+        <Title>{user?.fullName}</Title>
+        <Description>{user?.email}</Description>
         {/* //onPress={() => navigation.navigate("Edit")} */}
         <Line />
         <View style={{ marginTop: 54, alignSelf: "flex-start" }}>
@@ -60,10 +139,10 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
             <Option>Cambiar contraseña</Option>
           </TouchableOpacity>
         </View>
-        <Logout>
+        <Logout onPress={() => handleLogout()}>
           <Text
             style={{
-              fontFamily:  `${COLORS.FONTS.OUTFITLIGHT}`,
+              fontFamily: `${COLORS.FONTS.OUTFITLIGHT}`,
               color: "#fff",
               fontSize: 9,
               alignSelf: "center",
