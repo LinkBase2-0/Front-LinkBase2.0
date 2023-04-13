@@ -9,7 +9,7 @@ type ResponsiveFontSize = (size: number) => number;
 
 const ReviewCard: React.FC<Props> = ({ review }) => {
 
-  let formattedFirstName ;
+  let formattedFirstName;
   const fontScale: number = PixelRatio.getFontScale();
   const getFontSize: ResponsiveFontSize = size => size / fontScale;
   
@@ -42,7 +42,10 @@ const ReviewCard: React.FC<Props> = ({ review }) => {
           <Image 
             size="47"
             borderRadius="10"
-            source={require("../assets/images/userImage.png")} 
+            source={review.User.photoURL 
+              ? { uri: `${review.User.photoURL}`}
+              : require("../assets/images/userImage.png")
+            } 
             alt="User's Profile Picture" 
           />
           <Box px="4">

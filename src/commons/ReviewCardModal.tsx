@@ -32,19 +32,22 @@ const ReviewCardModal: React.FC<Props> = ({ review }) => {
         <HStack>
           <Box 
             flexDirection="row"
-            width="50%"
+            width="50%" 
             height="100%"
-            px="3"
+            px="5"
             alignItems="center"
             justifyContent="flex-start"
           >
             <Image 
               size="47"
               borderRadius="10"
-              source={require("../assets/images/userImage.png")} 
+              source={review.User.photoURL 
+                ? { uri: `${review.User.photoURL}`}
+                : require("../assets/images/userImage.png")
+              } 
               alt="User's Profile Picture" 
             />
-            <Box px="4">
+            <Box pl="4">
               <Text
                 fontFamily="body" 
                 fontSize={getFontSize(18)}
@@ -77,13 +80,14 @@ const ReviewCardModal: React.FC<Props> = ({ review }) => {
           </Box>
         </HStack>
       </Box>
-  {review.text 
+    {review.text 
     ? <Box 
         width="100%"
         height="auto"
         padding="4"
-        borderTopWidth="2"
-        borderColor="#EAE8E8"
+        alignItems="center"
+        borderTopWidth="1"
+        borderColor="#d1d1d1"
       >
         <Text
           fontFamily="body"
