@@ -53,7 +53,7 @@ const DropdownComponent: React.FC<Props> = ({data,placeholderName,search,handleS
           setValue(item.value);
           setIsFocus(false);
           handleSort(item.value);
-          handleFilter(item.label);
+          handleFilter(item.value);
         }}
        
       />
