@@ -27,7 +27,6 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { CommonActions } from "@react-navigation/native";
 
-
 const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
   interface User {
     CompanyId: number | null;
@@ -47,7 +46,6 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
 
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
 
   useEffect(() => {
     const getToken = async () => {
@@ -71,8 +69,6 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
     getToken();
   }, []);
 
-
-
   const handleLogout = async () => {
     try {
       // eliminar el token de la sesión
@@ -80,16 +76,15 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
     } catch (error) {
       console.error(error);
     }
-  
+
     // navegar al inicio de sesión y eliminar el historial de navegación
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: "Intro Admin"}],
+        routes: [{ name: "Intro Admin" }],
       })
     );
   };
-  
 
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
@@ -102,14 +97,7 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
           backgroundColor: "white",
         }}
       >
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate({
-              name: "Home Admin",
-              params: { isAdmin: true },
-            })
-          }
-        >
+        <TouchableOpacity onPress={() => navigation.navigate("Home Admin")}>
           <ArrowBackIcon
             size="6"
             color="#464444"
@@ -120,7 +108,7 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
           source={{ uri: user?.photoURL }}
           style={{
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
         />
 
@@ -132,7 +120,7 @@ const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) => {
           <TouchableOpacity
             style={styles.options}
             onPress={() =>
-              navigation.navigate("Password Admin", { isAdmin: true })
+              navigation.navigate("Password Admin")
             }
           >
             <PasswordSvg style={{ marginLeft: 41 }} />

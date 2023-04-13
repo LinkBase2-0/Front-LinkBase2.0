@@ -31,18 +31,18 @@ import { PasswordAdmin } from "./src/screens/Admin/Profile/Password";
 
 type RootStackParamList = {
   Intro: undefined;
-  "Log In": { isAdmin: boolean };
+  "Log In": {isAdmin: boolean};
   Register: undefined;
   Main: undefined;
   CategoryDetails: undefined;
-  "Intro Admin": { isAdmin?: boolean };
-  "Home Admin": { isAdmin?: boolean };
+  "Intro Admin": undefined;
+  "Home Admin": undefined;
   "Reviews Admin": {
     proveedorId: number;
   };
-  "Profile Admin": { isAdmin?: boolean };
-  "Password Admin": { isAdmin?: boolean };
-  Employees: { isAdmin?: boolean };
+  "Profile Admin": undefined;
+  "Password Admin": undefined;
+  Employees: undefined;
 };
 
 const App = () => {
