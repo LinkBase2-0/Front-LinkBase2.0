@@ -109,9 +109,9 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         );
         const reviews = reviewResponse.data.reviews;
         if (token) setToken(token);
+        setReviews(reviews);
         setReviewAverage(calculateReviewAverage(reviews));
         setProvider(providerResponse.data);
-        setReviews(reviews);
       } catch (error: any) {
         console.error(error.response.data);
       }
@@ -119,8 +119,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
 
     requestProviderData();
   }, []);
-
-  //console.log("REVIEWS", reviews);
 
   const handleGetDirections = () => {
     const latitude = parseDMS(provider.latitude);
@@ -427,17 +425,19 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
             </Box>
             <VStack width="100%" height="auto" space={3}>
               {reviews.length
-                ? reviews.map((review, index) => (
-                    <Pressable
-                      key={index}
-                      onPress={() => {
-                        setSingleReview(review);
-                        setShowViewReview(true);
-                      }}
-                    >
-                      <ReviewCard review={review} />
-                    </Pressable>
-                  ))
+                ? reviews.map((review, index) => {
+                    return (
+                      <Pressable
+                        key={index}
+                        onPress={() => {
+                          setSingleReview(review);
+                          setShowViewReview(true);
+                        }}
+                      >
+                        <ReviewCard review={review} />
+                      </Pressable>
+                    )
+                  })
                 : null}
             </VStack>
           </ScrollView>
@@ -465,13 +465,15 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         starRating={starRating}
         handleSubmitReview={handleSubmitReview}
       />
-      <ViewReviewModal
+    {singleReview.User
+    ? <ViewReviewModal
         setShowViewReview={setShowViewReview}
         showViewReview={showViewReview}
         singleReview={singleReview}
       />
+    : null}
     </>
   );
-};
+}
 
 export default ProviderScreen;
