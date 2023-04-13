@@ -21,12 +21,43 @@ const rating = [
 
 const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => {
 
+  const [location, setLocation] = useState<{latitude:number, longitude:number}>({});
   const [proveedores, setProveedores] = useState<{id: number, title: string, image: string, review: number, latitude:number,longitude:number, distance: number, count: number}[]>([]);
   const [services, setServices] = useState<{label:string, value:string}[]>([]);
-  const [location, setLocation] = useState<{latitude:number, longitude:number}>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState(false);
 
+  useEffect(() => {
+    const fetchAndRenderData = async () => {
+      try {
+        const myLocation = await fetchLocation();
+        setLocation(myLocation);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchAndRenderData();
+  }, []);
+  
+  useEffect(() => {
+    const fetchDataAndServices = async () => {
+      try {
+        const data:any = await fetchData(route.params.serviceFilter, location);
+        setProveedores(data);
+  
+        await fetchServices();        
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    if (location.latitude && location.longitude) {
+      fetchDataAndServices();
+    }
+  }, [location]);
   const fetchLocation = async()=>{
     let { status } = await Location. requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -34,14 +65,15 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
       return;
     
     }
-    let currentLocation:any = await Location.getCurrentPositionAsync({});
-    setLocation(currentLocation.coords)
+    let currentLocation:any = await Location.getCurrentPositionAsync({});    
+    return currentLocation.coords
   }
     
     
 
   const fetchData = async (filter) => {
       try{
+        console.log(location)
       const result = route.params.categoryName == "Todos" ? await axios.get(`${process.env.IP_ADDRESS}/providers`) : await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/${route.params.categoryName}`);
       // const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/Profesionales`);
       const promises = result.data.map(async (provider: any) => {
@@ -85,27 +117,8 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
     catch (error:any){
       console.log(error.message)
     }
-    };
-   
+    };  
 
-  useEffect(() => {
-    const fetchAndRenderData = async () => {
-      try {
-        await fetchLocation()
-        const data:any = await fetchData(route.params.serviceFilter);
-        setProveedores(data);
-        
-        await fetchServices();        
-       
-      } catch (error) {
-        console.error(error);
-      }finally {
-        setIsLoading(false);
-      }
-    };
-  
-    fetchAndRenderData();
-  }, []);
  
     const handleSort = (value:string)=>{
     
@@ -126,7 +139,6 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
     const handleFilter = async(value:string)=>{      
       if(value=="borrar" || value =="") {
         const res = await fetchData()
-        console.log(res)
         setProveedores(res)
       }
       const res = await fetchData(value)

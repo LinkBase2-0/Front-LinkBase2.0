@@ -54,8 +54,13 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
       const user = await axios.post(`${process.env.IP_ADDRESS}/users/login`, logInRequestBody);
       await AsyncStorage.setItem('token', user.data.token);
 
-      if (isAdmin) navigation.navigate({ name: "Home Admin", params: { isAdmin: true } });
-      else navigation.navigate("Main");
+      if (isAdmin) {
+        navigation.reset({ 
+          index: 0, 
+          routes: [{ name: "Home Admin", params: { isAdmin: true } }]
+        });
+      }
+      else navigation.reset({ index: 0, routes: [{ name: "Main"}]});
     } catch (error: any) {
       const errorMessage = error.response.data;
       const formattedErrorMessage =

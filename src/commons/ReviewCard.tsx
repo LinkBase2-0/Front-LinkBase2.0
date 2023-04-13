@@ -24,7 +24,6 @@ const ReviewCard: React.FC<Props> = ({ review }) => {
     <Box
       width="320"
       height={review.text ? "110" : "78"}
-      my="1"
       alignSelf="center"
       alignItems="flex-start"
       borderWidth="2"
