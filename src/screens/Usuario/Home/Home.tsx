@@ -37,7 +37,7 @@ type Category = {
   iconURL: any;
 };
 
-export type Provider = {
+export type zzzProvider = {
   name: string;
   id: number;
   email: string;
@@ -90,11 +90,11 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
   };
 
   const handleNavigate = (title: string, item: string) => {
-    if (title === "Proveedores")
-      return navigation.navigate("Provider", { name: item });
+    if (title === "Proveedores") return navigation.navigate("Provider", { name: item });
+    const filterId:number = services.find(service=>service.name===item)?.id
     navigation.navigate("CategoryDetail", {
       categoryName: "Todos",
-      serviceFilter: item,
+      serviceFilter:  filterId
     });
   };
 
@@ -215,7 +215,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
             elevation: 1,
           }}
         >
-          <Carousel providers={providers} />
+          <Carousel providers={providers.slice(0,3)} />
         </ProveedorContainer>
       </Container>
     </SafeAreaView>
