@@ -44,8 +44,8 @@ import Geocoding from "react-native-geocoding";
 import { debounce } from "lodash";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import jwtDecode from 'jwt-decode';
-
+import jwtDecode from "jwt-decode";
+import { useIsFocused } from "@react-navigation/native";
 
 interface Review {
   id: number;
@@ -101,8 +101,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
 
   const [keyboardVerticalOffset, setKeyboardVerticalOffset] = useState(0);
 
-  const [decodedEmail, setDecodedEmail] = useState<string>('');
-
+  const [decodedEmail, setDecodedEmail] = useState<string>("");
 
   // console.log("ADDRESS", address);
 
@@ -161,27 +160,31 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
     setCategories((categories) => categories.filter((_, i) => i !== index));
   };
 
-  useEffect(() => {
-    axios
-      .get(`${process.env.IP_ADDRESS}/providers`)
-      .then((response) => {
-        setProveedores(response.data);
-        //console.log("PROVEEDORES", response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const isFocused = useIsFocused();
 
-    axios
-      .get(`${process.env.IP_ADDRESS}/reviews`)
-      .then((response) => {
-        setReviews(response.data);
-        //console.log("REVIEWS", response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  useEffect(() => {
+    if (isFocused) {
+      axios
+        .get(`${process.env.IP_ADDRESS}/providers`)
+        .then((response) => {
+          setProveedores(response.data);
+          //console.log("PROVEEDORES", response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios
+        .get(`${process.env.IP_ADDRESS}/reviews`)
+        .then((response) => {
+          setReviews(response.data);
+          //console.log("REVIEWS", response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -312,7 +315,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
           onPress: () => {
             axios
               .delete(
-                `${process.env.IP_ADDRESS}/providers/${providerToDelete.name}`
+                `${process.env.IP_ADDRESS}/providers/${providerToDelete.id}`
               )
               .then(() => {
                 setProveedores(
@@ -333,20 +336,21 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
   };
 
   const [user, setUser] = useState(null);
-  const[isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getToken = async () => {
       try {
-        const value = await AsyncStorage.getItem('token');
+        const value = await AsyncStorage.getItem("token");
         if (value !== null) {
-          const decodedToken:any = jwtDecode(value);
+          const decodedToken: any = jwtDecode(value);
           setDecodedEmail(decodedToken.user.email);
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
-      finally {setIsLoading(false)}
     };
     getToken();
   }, []);

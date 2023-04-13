@@ -23,15 +23,17 @@ import { CommonActions } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
+import { User } from "../../../components/ProviderScreen";
 
 type ProfileDetailProps = {
   navigation: any; // o cualquier otro tipo de objeto de navegación que estés usando
 }
 
 
+
 const ProfileDetail: React.FC<ProfileDetailProps> = ({ navigation }) => {
   const isFocused = useIsFocused();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User>({} as User);
   const[isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -88,7 +90,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ navigation }) => {
           backgroundColor: "white",
         }}
       >
-        <ProfilePic source={{uri:user.photoURL}} />
+        <ProfilePic source={{uri: user.photoURL}} />
         <Title>{user.fullName}</Title>
         <Description>{user.email}</Description>
         <Button onPress={() => navigation.navigate("Edit")}>
