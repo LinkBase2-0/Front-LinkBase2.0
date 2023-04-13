@@ -213,50 +213,14 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           </Box>
         </ImageBackground>
         {/*Header*/}
-        <Box width="320" height="auto" mt="6" alignSelf="center">
-          <Text fontFamily="body" fontSize="20" fontWeight="700" color="black">
-            {provider.name}
-          </Text>
-          <Box
-            flexDirection="row"
-            width="320"
-            height="auto"
-            justifyContent="space-between"
-          >
-            <HStack>
-              <Text
-                mr="1"
-                fontFamily="body"
-                fontSize={getFontSize(12)}
-                fontWeight="500"
-                color="#31AE2E"
-              >
-                Abierto
-              </Text>
-              <Text
-                ml="1"
-                fontFamily="body"
-                fontSize={getFontSize(12)}
-                fontWeight="500"
-                color="black"
-              >
-                7:00 AM - 8:00 PM
-              </Text>
-            </HStack>
-            <HStack alignItems="center">
-              <Text
-                mr="1"
-                fontFamily="body"
-                fontSize={getFontSize(12)}
-                fontWeight="500"
-                color="#31AE2E"
-              >
-                Ver Horario Completo
-              </Text>
-              <ArrowRightIcon size="12" color="#31AE2E" />
-            </HStack>
-          </Box>
-        </Box>
+        <Text 
+          mt="8"
+          alignSelf="center"
+          fontFamily="body" 
+          fontSize="20" 
+          fontWeight="700" 
+          color="black"
+        >{provider.name}</Text>
         {/*Navbar*/}
         <Box
           display="flex"
@@ -347,7 +311,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
                       justifyContent="center"
                     >
                       <HStack space={2} flexShrink={1}>
-                        <Alert.Icon mt="0.5" ml="2" />
+                        <Alert.Icon mt="0.5" ml="2" mr="1" />
                         <Text
                           fontSize="sm"
                           color="coolGray.800"
