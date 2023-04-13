@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -28,6 +28,7 @@ import Main from "./src/screens/Usuario/Main/Main";
 import ReviewsAdmin from "./src/screens/Admin/Reviews/Reviews";
 import { ProfileAdmin } from "./src/screens/Admin/Profile/Profile";
 import { PasswordAdmin } from "./src/screens/Admin/Profile/Password";
+import { Alert, BackHandler } from "react-native";
 
 type RootStackParamList = {
   Intro: undefined;
@@ -47,7 +48,6 @@ type RootStackParamList = {
 
 const App = () => {
   const Stack = createStackNavigator<RootStackParamList>();
-
   const [fontsLoaded] = useFonts({
     Outfit_300Light,
     Outfit_400Regular,
@@ -59,6 +59,28 @@ const App = () => {
     DMSerifDisplay_400Regular,
     OpenSans_300Light,
   });
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("¡Espera!", "¿Seguro que quieres salir de la app?", [{
+        text: "Cancelar",
+        onPress: () => null,
+        style: "cancel"
+      }, { 
+        text: "Salir", 
+        onPress: () => BackHandler.exitApp() 
+      }]);
+
+      return true;
+    }
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   if (!fontsLoaded) return null;
 
