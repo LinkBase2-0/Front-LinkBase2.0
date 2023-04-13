@@ -171,14 +171,7 @@ const ReviewsAdmin: React.FC<ReviewsAdminProps> = ({ navigation }) => {
     >
       <Box>
         <Box px={0.05} pt="10" pb="3" flexDirection="row" alignItems="center">
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({
-                name: "Home Admin",
-                params: { isAdmin: true },
-              })
-            }
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Home Admin")}>
             <ArrowBackIcon
               size="6"
               color="#464444"

@@ -81,7 +81,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
     Alert.alert(title, message, [
       {
         text: "OK",
-        onPress: () => navigation.navigate("Profile Admin", { isAdmin: true }),
+        onPress: () => navigation.navigate("Profile Admin"),
       },
     ]);
   };
@@ -102,7 +102,7 @@ const PasswordAdmin: React.FC<PasswordAdminProps> = ({ navigation }) => {
           <TouchableOpacity
             style={{ alignSelf: "flex-start", position: "absolute", left: 32 }}
             onPress={() =>
-              navigation.navigate("Profile Admin", { isAdmin: true })
+              navigation.navigate("Profile Admin")
             }
           >
             <ArrowLeftIcon color="black" size={30} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   ArrowBackIcon,
   Box,
@@ -14,6 +14,7 @@ import {
 } from "native-base";
 import { LogInProps } from "../../App";
 import { ScrollView } from "react-native-gesture-handler";
+import jwtDecode from "jwt-decode";
 
 type HandleInput = (
   value: string,
@@ -51,16 +52,45 @@ const LogInScreen: React.FC<LogInProps> = ({ navigation, route }) => {
     };
 
     try {
-      const user = await axios.post(`${process.env.IP_ADDRESS}/users/login`, logInRequestBody);
-      await AsyncStorage.setItem('token', user.data.token);
+      const user = await axios.post(
+        `${process.env.IP_ADDRESS}/users/login`,
+        logInRequestBody
+      );
+      await AsyncStorage.setItem("token", user.data.token);
 
-      if (isAdmin) {
-        navigation.reset({ 
-          index: 0, 
-          routes: [{ name: "Home Admin", params: { isAdmin: true } }]
-        });
+      // Obtiene la información del usuario
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) {
+        const decodedToken: any = jwtDecode(value);
+        const response = await axios.get(
+          `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
+        );
+        const user = response.data;
+
+        //console.log("USERSSS", user); // Aquí tienes acceso al usuario logueado
+
+        // Comprueba si el usuario es un admin y redirige a la pantalla de admin
+        if (
+          user.rol === "superAdmin" ||
+          user.rol === "adminProviders" ||
+          user.rol === "adminReviews"
+        ) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home Admin", params: { isAdmin: true } }],
+          });
+        } else if (user.rol === "checker") {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Employees", params: { isAdmin: true } }],
+          });
+        } else {
+          navigation.reset({ index: 0, routes: [{ name: "Main" }] });
+        }
+      } else {
+        // Si no se pudo obtener el token, muestra un mensaje de error
+        throw new Error("No se pudo obtener el token");
       }
-      else navigation.reset({ index: 0, routes: [{ name: "Main"}]});
     } catch (error: any) {
       const errorMessage = error.response.data;
       const formattedErrorMessage =

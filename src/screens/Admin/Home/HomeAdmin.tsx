@@ -429,6 +429,34 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
       });
   };
 
+  interface IUser {
+    id: number;
+    name: string;
+    email: string;
+    rol: string;
+    // Agrega aquí los campos necesarios del usuario
+  }
+
+  const [userInfo, setUserInfo] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) {
+        const decodedToken: any = jwtDecode(value);
+        const response = await axios.get(
+          `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
+        );
+        const user = response.data as IUser;
+        setUserInfo(user);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  //console.log("USERDATA", userInfo);
+
   return (
     <Box
       safeArea
@@ -452,12 +480,7 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
             </Text>
           </Center>
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({
-                name: "Profile Admin",
-                params: { isAdmin: true },
-              })
-            }
+            onPress={() => navigation.navigate("Profile Admin")}
           >
             <Ionicons
               name="person-circle-outline"
@@ -557,22 +580,24 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                     </Text>
                   </View>
                 </Box>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleDeleteProvider(proveedor.name);
-                    // Lógica para eliminar la imagen aquí
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 5,
-                    right: 5,
-                    borderRadius: 20,
-                    padding: 13,
-                  }}
-                >
-                  <TrashSvg />
-                </TouchableOpacity>
-
+                {userInfo?.rol === "adminProviders" ||
+                userInfo?.rol === "superAdmin" ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleDeleteProvider(proveedor.name);
+                      // Lógica para eliminar el proveedor aquí
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: 5,
+                      right: 5,
+                      borderRadius: 20,
+                      padding: 13,
+                    }}
+                  >
+                    <TrashSvg />
+                  </TouchableOpacity>
+                ) : null}
                 <Center>
                   <View
                     style={{
@@ -595,11 +620,13 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
                       }}
                     ></View>
 
-                    <TouchableOpacity
-                      onPress={() => handleYelpIconPress(proveedor.id)}
-                    >
-                      <YelpAdminSvg />
-                    </TouchableOpacity>
+                    {userInfo && userInfo.rol !== "adminProviders" && (
+                      <TouchableOpacity
+                        onPress={() => handleYelpIconPress(proveedor.id)}
+                      >
+                        <YelpAdminSvg />
+                      </TouchableOpacity>
+                    )}
                     {/* <TouchableOpacity
                       onPress={() =>
                         navigation.navigate({
@@ -617,24 +644,26 @@ const HomeAdmin: React.FC<HomeAdminProps> = ({ navigation }) => {
           })}
       </ScrollView>
 
-      <Button
-        style={{
-          backgroundColor: `${COLORS.COLORS.LINKBASECOLOR}`,
-          borderRadius: 50,
-          marginBottom: 20,
-          marginLeft: 70,
-          marginRight: 70,
-          height: 60,
-        }}
-        onPress={() => setIsOpen(true)}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="add" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 8 }}>
-            Registrar nuevo proveedor
-          </Text>
-        </View>
-      </Button>
+      {userInfo && userInfo.rol !== "adminReviews" && (
+        <Button
+          style={{
+            backgroundColor: `${COLORS.COLORS.LINKBASECOLOR}`,
+            borderRadius: 50,
+            marginBottom: 20,
+            marginLeft: 70,
+            marginRight: 70,
+            height: 60,
+          }}
+          onPress={() => setIsOpen(true)}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Ionicons name="add" size={24} color="white" />
+            <Text style={{ color: "white", marginLeft: 8 }}>
+              Registrar nuevo proveedor
+            </Text>
+          </View>
+        </Button>
+      )}
       {/* Modal */}
 
       <Modal

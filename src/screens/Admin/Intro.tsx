@@ -40,7 +40,7 @@ return(
       </Text>
       <Box display="flex" flexDirection="row">
         <Button
-          onPress={() => navigation.navigate("Log In", { isAdmin: true })}
+          onPress={() => navigation.navigate("Log In", {isAdmin: true})}
           width="300"
           height="60"
           borderLeftRadius="15"
