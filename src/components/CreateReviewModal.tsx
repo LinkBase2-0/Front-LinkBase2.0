@@ -23,14 +23,14 @@ const CreateReviewModal: React.FC<Props> = props => (
       <Modal.Body>
         <Center>
           <TextArea
-            value={props.newReviewText}
+            defaultValue={props.newReviewText}
             onChangeText={props.setNewReviewText}
             h={20}
             placeholder="¿Que te pareció este proveedor?"
             w="100%"
             maxW="350" 
-            autoCompleteType={true}
-            _focus={{ bg: "none", borderColor: "gray" }}                
+            autoCompleteType={false}
+            _focus={{ bg: "none", borderColor: "gray" }}              
           />
           <HStack width="100%" mt="4" justifyContent="center" space={1}>
           {[...Array(5)].map((element, index) => (
