@@ -6,6 +6,7 @@ const Container = styled.SafeAreaView`
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-top:-60px;
 `;
 
 const ScrollContainer = styled.View`
