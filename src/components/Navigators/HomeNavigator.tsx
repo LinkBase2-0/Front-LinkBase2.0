@@ -8,7 +8,7 @@ import ProviderScreen from "../ProviderScreen";
 type RootStackParamList = {
   Overview: undefined; 
   Provider: { name: string };
-  CategoryDetail: { categoryName: string, serviceFilter:string|undefined };
+  CategoryDetail: { categoryName: string, serviceFilter: number | undefined | string};
 }
 
 const HomeNavigator: React.FC = () => {
