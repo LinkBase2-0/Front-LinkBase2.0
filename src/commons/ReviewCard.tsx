@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { PixelRatio } from "react-native";
+import axios from "axios";
 import { Box, HStack, Image, Text } from "native-base";
 import { Review } from "../components/ProviderScreen";
 import StarSvg from "../assets/svg/StarSvg";
@@ -9,14 +10,42 @@ type ResponsiveFontSize = (size: number) => number;
 
 const ReviewCard: React.FC<Props> = ({ review }) => {
 
-  let formattedFirstName;
+  const [foundImage, setFoundImage] = useState<boolean>(false)
   const fontScale: number = PixelRatio.getFontScale();
   const getFontSize: ResponsiveFontSize = size => size / fontScale;
+  let formattedFirstName;
   
   if (review.User.fullName) {
 
     const userFirstName: string = review.User.fullName.trim().split(/(?<=^\S+)\s/)[0];
-    formattedFirstName = userFirstName.charAt(0).toUpperCase() + userFirstName.slice(1)
+    formattedFirstName = userFirstName.charAt(0).toUpperCase() + userFirstName.slice(1);
+  }
+
+  const checkImageURL = (url: string): Element => {
+
+    axios.get(url)
+      .then(() => setFoundImage(true))
+      .catch(() => setFoundImage(false));
+
+    if (foundImage) {
+      return (
+        <Image 
+          size="47"
+          borderRadius="10"
+          alt="User" 
+          source={{ uri: url }} 
+        /> 
+      );
+    }
+
+    return (
+      <Image 
+        size="47"
+        borderRadius="10"
+        alt="User" 
+        source={require("../assets/images/userImage.png")} 
+      />
+    );
   }
 
   return (
@@ -39,15 +68,7 @@ const ReviewCard: React.FC<Props> = ({ review }) => {
           alignItems="center"
           justifyContent="flex-start"
         >
-          <Image 
-            size="47"
-            borderRadius="10"
-            source={review.User.photoURL 
-              ? { uri: `${review.User.photoURL}`}
-              : require("../assets/images/userImage.png")
-            } 
-            alt="User's Profile Picture" 
-          />
+          {checkImageURL(review.User.photoURL)}
           <Box px="4">
             <Text
               fontFamily="body" 
