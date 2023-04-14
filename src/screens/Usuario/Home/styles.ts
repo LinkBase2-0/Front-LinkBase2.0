@@ -69,7 +69,7 @@ export const ScrollViewCategory = styled(ScrollView)`
 
 export const ContainerCategory = styled.View`
   position: relative;
-  margin-top: 10px;
+  margin-top: 30px;
   width: 90%;
   background: ${(props) => props.theme.COLORS.WHITE};
   border-radius: 50px;
@@ -87,13 +87,13 @@ export const TextProveedor = styled.Text`
   line-height: 25px;
   align-items: center;
   text-align: center;
-  margin-top:30px;
+  margin-top:10px;
   color: ${(props) => props.theme.COLORS.BLACK};
 `;
 export const ProveedorContainer = styled.View`
   display: flex;
   margin-left: 4%;
-  margin-top:60px;
+  margin-top:30px;
 `;
 
 export const ProveedorImage = styled.Image``;
