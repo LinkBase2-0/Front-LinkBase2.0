@@ -73,7 +73,6 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({ navigation,route }) => 
 
   const fetchData = async (filter) => {
       try{
-        console.log(location)
       const result = route.params.categoryName == "Todos" ? await axios.get(`${process.env.IP_ADDRESS}/providers`) : await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/${route.params.categoryName}`);
       // const result = await axios.get(`${process.env.IP_ADDRESS}/providers/filterByCategorie/Profesionales`);
       const promises = result.data.map(async (provider: any) => {
