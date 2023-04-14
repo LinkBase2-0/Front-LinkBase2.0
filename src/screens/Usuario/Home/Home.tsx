@@ -90,11 +90,11 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
   };
 
   const handleNavigate = (title: string, item: string) => {
-    if (title === "Proveedores")
-      return navigation.navigate("Provider", { name: item });
+    if (title === "Proveedores") return navigation.navigate("Provider", { name: item });
+    const filterId: number | undefined = services.find(service=>service.name===item)?.id
     navigation.navigate("CategoryDetail", {
       categoryName: "Todos",
-      serviceFilter: item,
+      serviceFilter: filterId
     });
   };
 
