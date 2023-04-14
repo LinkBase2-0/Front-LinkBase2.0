@@ -8,17 +8,18 @@ import {
   Button,
   Center,
   CloseIcon,
+  Flex,
   HStack,
   IconButton,
   Modal,
   Pressable,
   ScrollView,
   ShareIcon,
+  Skeleton,
   Text,
   TextArea,
   VStack,
 } from "native-base";
-import { ArrowRightIcon } from "react-native-heroicons/solid";
 import StarSvg from "../assets/svg/StarSvg";
 import MapSvg from "../assets/svg/MapSvg";
 import PageSvg from "../assets/svg/PageSvg";
@@ -34,6 +35,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ReviewCard from "../commons/ReviewCard";
 import CreateReviewModal from "./CreateReviewModal";
 import ViewReviewModal from "./ViewReviewModal";
+import ProviderScreenSkeleton from "./ProviderScreenSkeleton";
 
 type responsiveFontSize = (size: number) => number;
 export type User = {
@@ -94,6 +96,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
   const [newReviewText, setNewReviewText] = useState<string>("");
   const [starRating, setStarRating] = useState<number>(5);
   const [singleReview, setSingleReview] = useState<Review>({} as Review);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const fontScale: number = PixelRatio.getFontScale();
   const getFontSize: responsiveFontSize = (size) => size / fontScale;
 
@@ -142,6 +145,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       },
     };
     try {
+      setIsLoading(true);
       await axios.post(`${process.env.IP_ADDRESS}/reviews`, reviewBody);
       const { data }: AxiosResponse = await axios.get(
         `${process.env.IP_ADDRESS}/reviews/providerReviews/${provider.id}`
@@ -150,13 +154,14 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       setStarRating(5);
       setReviews(data.reviews);
       setReviewAverage(calculateReviewAverage(data.reviews));
+      setIsLoading(false)
     } catch (error: any) {
       console.error(error.response.data);
     }
     setShowWriteReview(false);
   };
 
-  if (!provider.name) return null;
+  if (!provider.name) return (<ProviderScreenSkeleton />);
 
   return (<>
     {/*Main Screen*/}
@@ -360,11 +365,10 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       </Box>
       {/*Review Section*/}
       <Box
-        flex="0.61"
+        flex={reviews.length ? reviews.length !== 1 ? "0.61" : "0.54" : "0.26"}
         width="320"
         my="4"
         alignSelf="center"
-        // height={reviews.length ? "275" : "140"}
       >
         <ScrollView>
           <Box flexDirection="row" mb="4" width="100%" height="auto">
@@ -425,6 +429,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
     </Box>
     {/*Modals*/}
     <CreateReviewModal
+      isLoading={isLoading}
       setShowWriteReview={setShowWriteReview}
       showWriteReview={showWriteReview}
       setNewReviewText={setNewReviewText}

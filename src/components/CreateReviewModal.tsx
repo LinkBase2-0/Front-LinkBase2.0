@@ -3,6 +3,7 @@ import { Button, Center, HStack, Modal, Pressable, TextArea } from "native-base"
 import StarSvg from "../assets/svg/StarSvg";
 
 type Props = {
+  isLoading: boolean,
   setShowWriteReview: React.Dispatch<React.SetStateAction<boolean>>,
   showWriteReview: boolean,
   setNewReviewText: React.Dispatch<React.SetStateAction<string>>, 
@@ -16,13 +17,16 @@ const CreateReviewModal: React.FC<Props> = props => (
 
   <Modal 
     isOpen={props.showWriteReview} 
-    onClose={() => props.setShowWriteReview(false)}
+    onClose={() => {
+      if (!props.isLoading) props.setShowWriteReview(false)
+    }}
   >
     <Modal.Content maxWidth="400">
       <Modal.Header>Nueva Reseña</Modal.Header>
       <Modal.Body>
         <Center>
           <TextArea
+            isDisabled={props.isLoading}
             defaultValue={props.newReviewText}
             onChangeText={props.setNewReviewText}
             h={20}
@@ -34,8 +38,17 @@ const CreateReviewModal: React.FC<Props> = props => (
           />
           <HStack width="100%" mt="4" justifyContent="center" space={1}>
           {[...Array(5)].map((element, index) => (
-            <Pressable key={index} onPress={() => props.setStarRating(index + 1)}>
-              <StarSvg size={25} fill={props.starRating >= index + 1 ? "#981D9A" : "#BAB1B1"} />
+            <Pressable 
+              key={index} 
+              onPress={() => { if (!props.isLoading) props.setStarRating(index + 1)}}
+            >
+              <StarSvg 
+                size={25} 
+                fill={!props.isLoading
+                  ? props.starRating >= index + 1 ? "#981D9A" : "#BAB1B1"
+                  : "#dadada"
+                } 
+              />
             </Pressable>
           ))}
           </HStack>
@@ -44,6 +57,7 @@ const CreateReviewModal: React.FC<Props> = props => (
       <Modal.Footer>
       <Button.Group space={2}>
         <Button 
+          isDisabled={props.isLoading}
           variant="ghost" 
           colorScheme="blueGray" 
           onPress={() => {
@@ -51,6 +65,10 @@ const CreateReviewModal: React.FC<Props> = props => (
           }}
         >Cancel</Button>
         <Button 
+          size="lg"
+          isLoading={props.isLoading}
+          isLoadingText="Submitting..."
+          spinnerPlacement="end"
           variant="outline"
           colorScheme="gray"
           onPress={props.handleSubmitReview}
