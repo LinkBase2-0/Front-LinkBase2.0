@@ -1,117 +1,97 @@
 import React, { useState, useEffect } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, View } from "react-native";
 import {
   Container,
   Title,
   Description,
   EmployeeSearch,
   SearchIcon,
-  EmployeeContainer,
-  FullName,
-  BusinessName,
-  Role,
-  Mail,
-  Trash,
 } from "./styles";
 import { EmployeeInfo } from "./EmployeeInfo";
 import { EmployeesProps } from "../../../../App";
-import { Logout } from "../../Usuario/Profile/styles";
-import COLORS from "../../../styles/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
+import jwtDecode from "jwt-decode";
+import axios from "axios";
 
 interface Empleado {
   id: string;
   fullName: string;
   company: string;
-  role: string;
+  rol: string;
+  charge: string;
   email: string;
+  photoURL: string;
+}
+interface IUser {
+  id: number;
+  name: string;
+  email: string;
+  rol: string;
+  CompanyId: number;
+  fullName: string;
+  company: string;
+  photoURL: string;
 }
 
-//const ProfileAdmin: React.FC<ProfileAdminProps> = ({ navigation }) =>
+interface ICompany {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  users: Empleado[];
+  company: string;
+}
 
 const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
-  const empleadosInit: Empleado[] = [
-    {
-      id: "1",
-      fullName: "Juan Pérez",
-      company: "Office Depot",
-      role: "Gerente Ventas",
-      email: "juanperez@officedepot.com",
-    },
-    {
-      id: "2",
-      fullName: "Carlos González",
-      company: "Office Depot",
-      role: "Director Finanzas",
-      email: "carlosgonzalez@officedepot.com",
-    },
-    {
-      id: "3",
-      fullName: "Pedro Fernández",
-      company: "Office Depot",
-      role: "CEO",
-      email: "pedrofernandez@officedepot.com",
-    },
-    {
-      id: "4",
-      fullName: "María Trejo",
-      company: "Office Depot",
-      role: "Gerente Marketing",
-      email: "mariatrejo@officedepot.com",
-    },
-    {
-      id: "5",
-      fullName: "Mauricio Rodríguez",
-      company: "Office Depot",
-      role: "Jefe Compras",
-      email: "mauriciorodriguez@officedepot.com",
-    },
-    {
-      id: "6",
-      fullName: "Pedro Pérez",
-      company: "Office Depot",
-      role: "Jefe RH",
-      email: "pedroperez@officedepot.com",
-    },
-    {
-      id: "7",
-      fullName: "Daniel Morales",
-      company: "Analista Sistemas",
-      role: "Analista Sistemas",
-      email: "danielmorales@officedepot.com",
-    },
-    {
-      id: "8",
-      fullName: "Sofía Córdova",
-      company: "Office Depot",
-      role: "Practicante Marketing",
-      email: "sofiacordova@officedepot.com",
-    },
-  ];
+  const [userInfo, setUserInfo] = useState<IUser | null>(null);
+
+  const [companyInfo, setCompanyInfo] = useState<ICompany | null>(null);
+  const [companyName, setCompanyName] = useState<string | null>(null);
+  const [userphotoURL, setUserphotoURL] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) {
+        const decodedToken: any = jwtDecode(value);
+        const response = await axios.get(
+          `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
+        );
+        const user = response.data as IUser;
+        setUserInfo(user);
+        setUserphotoURL(user.photoURL);
+
+        const companyResponse = await axios.get(
+          `${process.env.IP_ADDRESS}/companies/${user.CompanyId}`
+        );
+        const company = companyResponse.data as ICompany;
+        //console.log("COMPANY", company);
+
+        setCompanyInfo(company);
+        setCompanyName(company.name);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // console.log("USERDATA", userInfo);
+  // console.log("COMPANYDATA", companyInfo);
+  console.log("COMPANYNAME", companyName);
 
   const [search, setSearch] = useState("");
-  const [empleados, setEmpleados] = useState(empleadosInit);
-
-  const handleDelete = (id: string) => {
-    const updatedItems = empleados.filter((empleado) => empleado.id !== id);
-    setEmpleados(updatedItems);
-  };
 
   const handleSearch = (query: string) => {
-    setSearch(query);
-    if (query === "") return setEmpleados(empleadosInit);
-    const filteredItems = empleados.filter((empleado) =>
-      empleado.fullName.includes(search)
+    if (query === "") return companyInfo?.users;
+    const filteredItems = companyInfo?.users.filter((empleado) =>
+      empleado.fullName.includes(query)
     );
-    setEmpleados(filteredItems);
+    return filteredItems?.map((empleado) => ({
+      ...empleado,
+      photoURL: empleado.photoURL ? empleado.photoURL : "",
+    }));
   };
 
   const handleLogout = async () => {
@@ -132,21 +112,25 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
   };
 
   return (
-    // <SafeAreaView>
     <Container>
       <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-        <Title>Trabajadores</Title>
-        <Appbar.Header>
+        <View style={{ flex: 1 }}>
+          <Title style={{marginLeft: "30%", marginBottom: "5%"}}>Trabajadores</Title>
+        </View>
+        <Appbar.Header style={{marginLeft: "10%"}}>
           <Appbar.Action icon="logout" onPress={handleLogout} />
         </Appbar.Header>
       </View>
-      <Description>Ve y administra a los empleados de Office Depot</Description>
+
+      <Description>
+        Ve y administra a los empleados de {companyInfo?.name}
+      </Description>
       <View>
         <EmployeeSearch
           placeholder="Busca Colaboradores"
           placeholderTextColor={"#666161"}
           value={search}
-          onChangeText={(query) => handleSearch(query)}
+          onChangeText={(query) => setSearch(query)}
         />
         <SearchIcon color="black" />
       </View>
@@ -154,21 +138,23 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
       >
-        {empleados.map((empleado) => (
-          <EmployeeInfo
-            key={empleado.id}
-            id={empleado.id}
-            fullName={empleado.fullName}
-            company={empleado.company}
-            role={empleado.role}
-            email={empleado.email}
-            onDelete={handleDelete}
-          />
-        ))}
+        {handleSearch(search)?.map((empleado) => {
+          console.log("EMPLEADO", empleado);
+          return (
+            <EmployeeInfo
+              key={empleado.id}
+              id={empleado.id}
+              fullName={empleado.fullName}
+              company={companyName ? companyName : ""}
+              photoURL={empleado.photoURL ? empleado.photoURL : ""}
+              rol={empleado.rol}
+              charge={empleado.charge}
+              email={empleado.email}
+            />
+          );
+        })}
       </ScrollView>
     </Container>
-
-    // </SafeAreaView>
   );
 };
 
