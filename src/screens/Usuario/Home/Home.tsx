@@ -23,8 +23,8 @@ import {
   SearchTitle,
   SearchItem,
 } from "./styles";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { View,ScrollView } from "react-native";
+
 
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
@@ -125,13 +125,18 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <Container>
         <Image
           style={{ height: 155, width: "100%" }}
           source={require("../../../assets/svgImages/Usuario/Home/imgs/slider1.png")}
           resizeMode="cover"
-        />
+        />   
+      <Container>
+        <View>
+        <View style={{flexDirection:"row", justifyContent:"space-between",position:"relative"}}>
         <SearchBar style={{ elevation: 3 }} onChangeText={handleSearch} />
+        <SearchIcon style={{ elevation: 3 }} />  
+        </View>      
+        
         {searchResults.length === 0 ? (
           <></>
         ) : (
@@ -154,10 +159,10 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
           </SearchContainer>
         )}
 
-        <SearchIcon style={{ elevation: 3 }} />
+        <ScrollView>
         <ContainerCategory style={{ height: 200 }}>
-          <ScrollViewCategory style={{ elevation: 4 }}>
-            <Box>
+         
+            <Box alignSelf={"center"}>
               {categories.map((category, rowIndex) => (
                 <View style={{ flexDirection: "row" }} key={rowIndex}>
                   {[0, 1, 2].map((colIndex) => {
@@ -203,7 +208,6 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
                 </View>
               ))}
             </Box>
-          </ScrollViewCategory>
         </ContainerCategory>
         <TextProveedor>Proveedores Destacados</TextProveedor>
         <ProveedorContainer
@@ -217,6 +221,10 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
         >
           <Carousel providers={providers} />
         </ProveedorContainer>
+        </ScrollView>
+        </View>
+        
+       
       </Container>
     </SafeAreaView>
   );
