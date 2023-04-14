@@ -174,7 +174,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           right="0"
           bg="rgba(0, 0, 0, 0.6)"
         />
-        <Box width="100%" height="199" alignItems="center">
+        <Box flex="2" flexBasis="199" alignItems="center">
           <Box width="320" height="auto" mt="12" justifyContent="flex-start">
             <Pressable onPress={() => navigation.goBack()}>
               <ArrowBackIcon size="6" color="white" />
@@ -212,21 +212,25 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         </Box>
       </ImageBackground>
       {/*Header*/}
-      <Text 
-        mt="8"
-        alignSelf="center"
-        fontFamily="body" 
-        fontSize="20" 
-        fontWeight="700" 
-        color="black"
-      >{provider.name}</Text>
+      <Box 
+        flex="0.15" 
+        width="320" 
+        alignSelf="center" 
+        justifyContent="center"
+      >
+        <Text
+          alignSelf="center"
+          fontFamily="body" 
+          fontSize={getFontSize(16.2)}
+          fontWeight="700" 
+          color="black"
+        >{provider.name}</Text>
+      </Box>
       {/*Navbar*/}
       <Box
-        display="flex"
+        flex="0.18"
         flexDirection="row"
         width="320"
-        height="70"
-        mt="5"
         alignSelf="center"
         alignItems="center"
         justifyContent="space-evenly"
@@ -236,7 +240,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       >
         {/*Reviews Button*/}
         <Box
-          display="flex"
           flexDirection="column"
           width="10"
           height="12"
@@ -256,7 +259,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         </Box>
         {/*Map Button*/}
         <Pressable
-          display="flex"
           flexDirection="column"
           width="10"
           height="12"
@@ -277,7 +279,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         </Pressable>
         {/*Page Button*/}
         <Pressable
-          display="flex"
           flexDirection="column"
           width="10"
           height="12"
@@ -310,13 +311,13 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
                     justifyContent="center"
                   >
                     <HStack space={2} flexShrink={1}>
-                      <Alert.Icon mt="0.5" ml="2" mr="1" />
+                      <Alert.Icon mt="0.5" mx="2" />
                       <Text
-                        fontSize="sm"
+                        fontSize={getFontSize(10)}
                         color="coolGray.800"
                         alignSelf="center"
                       >
-                        Este proveedor no tiene página web.{" "}
+                        Este proveedor no tiene página web.
                       </Text>
                     </HStack>
                     <IconButton
@@ -334,7 +335,6 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
         </Pressable>
         {/*Call Button*/}
         <Pressable
-          display="flex"
           flexDirection="column"
           width="10"
           height="12"
@@ -357,12 +357,14 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       </Box>
       {/*Review Section*/}
       <Box
-        alignSelf="center"
+        flex="0.61"
         width="320"
-        height={reviews.length ? "275" : "140"}
+        my="4"
+        alignSelf="center"
+        // height={reviews.length ? "275" : "140"}
       >
         <ScrollView>
-          <Box flexDirection="row" my="6" width="100%" height="auto">
+          <Box flexDirection="row" mb="4" width="100%" height="auto">
             <VStack flex="3" space={1}>
               {reviewsToGraph(reviews)
                 .reverse()
@@ -386,7 +388,7 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
               </Text>
             </Center>
           </Box>
-          <VStack width="100%" height="auto" space={3}>
+          <VStack width="100%" height="auto" space={2}>
             {reviews.length
               ? reviews.map((review, index) => {
                   return (
@@ -407,8 +409,8 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
       </Box>
       {/*Create Review Button*/}
       <Button
+        flex="0"
         width="320"
-        mt="7"
         alignSelf="center"
         borderRadius="10"
         onPress={() => setShowWriteReview(true)}
