@@ -10,7 +10,7 @@ import {
 import { EmployeeInfo } from "./EmployeeInfo";
 import { EmployeesProps } from "../../../../App";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CommonActions } from "@react-navigation/native";
+import { CommonActions, useIsFocused } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
@@ -51,31 +51,44 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
   const [companyName, setCompanyName] = useState<string | null>(null);
   const [userphotoURL, setUserphotoURL] = useState<string | null>(null);
 
+  const [empleados, setEmpleados] = useState<Empleado[]>([]);
+  const [filteredEmpleados, setFilteredEmpleados] = useState<Empleado[]>([]);
+
+  const isFocused = useIsFocused();
+
+  const handleDeleteEmployee = (id: string) => {
+    const updatedEmpleados = empleados.filter((empleado) => empleado.id !== id);
+    setEmpleados(updatedEmpleados);
+    setFilteredEmpleados(updatedEmpleados);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const value = await AsyncStorage.getItem("token");
-      if (value !== null) {
-        const decodedToken: any = jwtDecode(value);
-        const response = await axios.get(
-          `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
-        );
-        const user = response.data as IUser;
-        setUserInfo(user);
-        setUserphotoURL(user.photoURL);
+    if (isFocused) {
+      const fetchData = async () => {
+        const value = await AsyncStorage.getItem("token");
+        if (value !== null) {
+          const decodedToken: any = jwtDecode(value);
+          const response = await axios.get(
+            `${process.env.IP_ADDRESS}/users/${decodedToken.user.id}`
+          );
+          const user = response.data as IUser;
+          setUserInfo(user);
+          setUserphotoURL(user.photoURL);
 
-        const companyResponse = await axios.get(
-          `${process.env.IP_ADDRESS}/companies/${user.CompanyId}`
-        );
-        const company = companyResponse.data as ICompany;
-        //console.log("COMPANY", company);
+          const companyResponse = await axios.get(
+            `${process.env.IP_ADDRESS}/companies/${user.CompanyId}`
+          );
+          const company = companyResponse.data as ICompany;
+          //console.log("COMPANY", company);
 
-        setCompanyInfo(company);
-        setCompanyName(company.name);
-      }
-    };
+          setCompanyInfo(company);
+          setCompanyName(company.name);
+        }
+      };
 
-    fetchData();
-  }, []);
+      fetchData();
+    }
+  }, [isFocused]);
 
   // console.log("USERDATA", userInfo);
   // console.log("COMPANYDATA", companyInfo);
@@ -84,15 +97,22 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
   const [search, setSearch] = useState("");
 
   const handleSearch = (query: string) => {
-    if (query === "") return companyInfo?.users;
-    const filteredItems = companyInfo?.users.filter((empleado) =>
+    if (query === "") return filteredEmpleados;
+    const filteredItems = filteredEmpleados.filter((empleado) =>
       empleado.fullName.includes(query)
     );
-    return filteredItems?.map((empleado) => ({
+    return filteredItems.map((empleado) => ({
       ...empleado,
       photoURL: empleado.photoURL ? empleado.photoURL : "",
     }));
   };
+
+  useEffect(() => {
+    if (companyInfo?.users) {
+      setEmpleados(companyInfo.users);
+      setFilteredEmpleados(companyInfo.users);
+    }
+  }, [companyInfo]);
 
   const handleLogout = async () => {
     try {
@@ -115,9 +135,11 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
     <Container>
       <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
         <View style={{ flex: 1 }}>
-          <Title style={{marginLeft: "30%", marginBottom: "5%"}}>Trabajadores</Title>
+          <Title style={{ marginLeft: "30%", marginBottom: "5%" }}>
+            Trabajadores
+          </Title>
         </View>
-        <Appbar.Header style={{marginLeft: "10%"}}>
+        <Appbar.Header style={{ marginLeft: "10%" }}>
           <Appbar.Action icon="logout" onPress={handleLogout} />
         </Appbar.Header>
       </View>
@@ -150,6 +172,7 @@ const Employees: React.FC<EmployeesProps> = ({ navigation }) => {
               rol={empleado.rol}
               charge={empleado.charge}
               email={empleado.email}
+              onDelete={handleDeleteEmployee}
             />
           );
         })}
