@@ -70,9 +70,9 @@ export const ScrollViewCategory = styled(ScrollView)`
 export const ContainerCategory = styled.View`
   position: relative;
   margin-top: 30px;
-  width: 90%;
+  width: 85%;
   background: ${(props) => props.theme.COLORS.WHITE};
-  border-radius: 50px;
+  border-radius: 20px;
   align-self:center;
 `;
 

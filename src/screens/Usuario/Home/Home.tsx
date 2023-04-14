@@ -160,7 +160,7 @@ const Home: React.FC<OverviewProps> = ({ navigation }) => {
         )}
 
         <ScrollView>
-        <ContainerCategory style={{ height: 200 }}>
+        <ContainerCategory style={{ height: 165, elevation: 4 }}>
          
             <Box alignSelf={"center"}>
               {categories.map((category, rowIndex) => (
