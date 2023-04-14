@@ -300,7 +300,10 @@ const ProviderScreen: React.FC<ProviderProps> = ({ navigation, route }) => {
           >
             Página
           </Text>
-          <Modal isOpen={showPageAlert}>
+          <Modal 
+            isOpen={showPageAlert} 
+            onClose={() => setShowPageAlert(false)}
+          >
             <Modal.Content maxWidth="400">
               <Alert w="100%" status="error">
                 <VStack space={2} flexShrink={1} w="100%">
